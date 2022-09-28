@@ -28,59 +28,155 @@
 
             $("#subtotal_amount").val(subtotal);
             $("#subtotal_amount_view").val(toRp(subtotal));
-
+            $("#subtotal_amount_after_discount_view").val(toRp(subtotal));
+            $("#subtotal_amount_after_discount").val(subtotal);
         });
-        $("#item_unit_cost").change(function(){
+
+        $("#item_unit_cost_view").change(function(){
             var quantity = $("#quantity").val();
-            var cost       = $("#item_unit_cost").val();
+            var cost     = $("#item_unit_cost").val();
             var subtotal = quantity * cost;
 
             $("#subtotal_amount").val(subtotal);
             $("#subtotal_amount_view").val(toRp(subtotal));
-
+            $("#subtotal_amount_after_discount_view").val(toRp(subtotal));
+            $("#subtotal_amount_after_discount").val(subtotal);
+            $("#item_unit_cost_view").val(toRp(cost));
         });
-        $("#discount_percentage_total").change(function(){
-            var discount_percentage_total   = $("#discount_percentage_total").val();
-            var subtotal_amount_total            = $("#subtotal_amount_total").val();
-            var discount_amount_total       = (discount_percentage_total * subtotal_amount_total) / 100;
-            var total_amount                = subtotal_amount_total - discount_amount_total;
 
-            $("#discount_amount_total").val(discount_amount_total);
-            $("#discount_amount_total_view").val(toRp(discount_amount_total));
-            $("#total_amount").val(total_amount);
-            $("#total_amount_view").val(toRp(total_amount));
+        $("#discount_percentage").change(function(){
+            var subtotal = parseInt($("#subtotal_amount").val());
+            var discount_percentage = parseInt($("#discount_percentage").val());
+            var discount_amount = (subtotal * discount_percentage) / 100;
+            
+            $('#discount_amount_view').val(toRp(discount_amount));
+            $('#discount_amount').val(discount_amount);
+
+            var subtotal_amount_after_discount = parseInt($("#subtotal_amount_after_discount").val());
+            var total_amount = subtotal - discount_amount;
+
+            $("#subtotal_amount_after_discount_view").val(toRp(total_amount));
+            $("#subtotal_amount_after_discount").val(total_amount);
         });
-        $("#paid_amount").change(function(){
-            var paid_amount = $("#paid_amount").val();
-            var total_amount = $("#total_amount").val();
+
+        $("#discount_amount_view").change(function(){
+            var subtotal = parseInt($("#subtotal_amount").val());
+            var discount_amount = parseInt($("#discount_amount_view").val());
+            var total_amount = subtotal - discount_amount;
+            
+            $('#subtotal_amount_after_discount_view').val(toRp(total_amount));
+            $('#subtotal_amount_after_discount').val(total_amount); 
+
+            var discount_percentage = (discount_amount / subtotal) * 100;
+
+            $('#discount_percentage').val(discount_percentage);
+            $('#discount_amount').val(discount_amount);
+            $('#discount_amount_view').val(toRp(discount_amount));
+        });
+
+        // $("#discount_percentage_total").change(function(){
+        //     var subtotal_amount_total = $("#subtotal_amount_total").val();
+        //     var tax_ppn_amount = $("#tax_ppn_amount").val();
+        //     var discount_percentage_total = $("#discount_percentage_total").val();
+        //     var shortover_amount = $('#shortover_amount').val();
+        //     var discount_amount = (parseInt(subtotal_amount_total) * parseInt(discount_percentage_total)) / 100;
+        //     var total_amount_after_discount = parseInt(subtotal_amount_total) - discount_amount;
+        //     var total_amount_after_ppn_discount = parseInt(subtotal_amount_total) - (parseInt(tax_ppn_amount) || 0 + discount_amount);
+        //     var final_amount = parseInt(shortover_amount) || 0 + total_amount_after_ppn_discount;
+
+        //     $("#discount_amount_total").val(discount_amount);
+        //     $("#discount_amount_total_view").val(toRp(discount_amount));
+        //     $("#total_amount").val(final_amount);
+        //     $("#total_amount_view").val(toRp(final_amount));
+        // });
+
+        $("#paid_amount_view").change(function(){
+            if ($("#paid_amount_view").val() == '') {
+                var paid_amount = 0;
+            } else {
+                var paid_amount = parseInt($("#paid_amount_view").val());
+            }
+            var total_amount = parseInt($("#total_amount").val());
             var owing_amount = paid_amount - total_amount;
 
-            $("#owing_amount").val(owing_amount);
-            $("#owing_amount_view").val(toRp(owing_amount));
+            $('#paid_amount_view').val(toRp(paid_amount));
+            $('#paid_amount').val(paid_amount);
+            $("#owing_amount").val(Math.abs(owing_amount));
+            $("#owing_amount_view").val(toRp(Math.abs(owing_amount)));
         });
+
+        if ($("#paid_amount_view").val() == '') {
+            var paid_amount = 0;
+        } else {
+            var paid_amount = parseInt($("#paid_amount_view").val());
+        }
+        var total_amount = parseInt($("#total_amount").val());
+        var owing_amount = paid_amount - total_amount;
+        
+        $('#paid_amount_view').val(toRp(paid_amount));
+        $('#paid_amount').val(paid_amount);
+        $("#owing_amount").val(Math.abs(owing_amount));
+        $("#owing_amount_view").val(toRp(Math.abs(owing_amount)));
+
+        // $("#tax_ppn_percentage").change(function(){
+        //     var subtotal_amount_total = $("#subtotal_amount_total").val();
+        //     var tax_ppn_percentage = $("#tax_ppn_percentage").val();
+        //     var discount_amount_total = $("#discount_amount_total").val();
+        //     var shortover_amount = $('#shortover_amount').val();
+        //     var tax_ppn_amount = (parseInt(subtotal_amount_total) * parseInt(tax_ppn_percentage)) / 100;
+        //     var total_amount_after_ppn = parseInt(subtotal_amount_total) - (parseInt(discount_amount_total) || 0 + tax_ppn_amount);
+        //     var final_total = parseInt(shortover_amount) || 0 + total_amount_after_ppn;
+
+        //     $("#tax_ppn_amount").val(tax_ppn_amount);
+        //     $("#tax_ppn_amount_view").val(toRp(tax_ppn_amount));
+        //     $("#total_amount").val(final_total);
+        //     $("#total_amount_view").val(toRp(final_total));
+
+        // });
+
+        // $('#shortover_amount_view').change(function(){
+        //     var shortover_amount = $('#shortover_amount_view').val();
+        //     var discount_amount_total = $('#discount_amount_total').val();
+        //     var subtotal_total = $('#subtotal_amount_total').val();
+        //     var tax_ppn_amount = $("#tax_ppn_amount").val();
+        //     var merge = parseInt(tax_ppn_amount) || 0 + parseInt(discount_amount_total) || 0;
+        //     var after_subtotal_total = parseInt(subtotal_total) - merge;
+        //     var final_total = parseInt(shortover_amount) + after_subtotal_total;
+
+        //     $("#total_amount").val(final_total);
+        //     $("#total_amount_view").val(toRp(final_total));
+        //     $('#shortover_amount').val(shortover_amount);
+        //     $('#shortover_amount_view').val(toRp(shortover_amount));
+        // });
     });
 
     function processAddArrayPurchaseInvoice(){
-        var item_category_id    = document.getElementById("item_category_id").value;
-        var item_id		        = document.getElementById("item_id").value;
-        var item_unit_id		= document.getElementById("item_unit_id").value;
-        var item_unit_cost		= document.getElementById("item_unit_cost").value;
-        var quantity            = document.getElementById("quantity").value;
-        var subtotal_amount     = document.getElementById("subtotal_amount").value;
-        var item_expired_date   = document.getElementById("item_expired_date").value;
+        var item_category_id                = document.getElementById("item_category_id").value;
+        var item_id		                    = document.getElementById("item_id").value;
+        var item_unit_id		            = document.getElementById("item_unit_id").value;
+        var item_unit_cost		            = document.getElementById("item_unit_cost").value;
+        var quantity                        = document.getElementById("quantity").value;
+        var discount_percentage             = document.getElementById("discount_percentage").value;
+        var discount_amount                 = document.getElementById("discount_amount").value;
+        var subtotal_amount_after_discount  = document.getElementById("subtotal_amount_after_discount").value;
+        var subtotal_amount                 = document.getElementById("subtotal_amount").value;
+        var item_expired_date               = document.getElementById("item_expired_date").value;
 
         $.ajax({
             type: "POST",
             url : "{{route('add-array-purchase-invoice')}}",
             data: {
-                'item_category_id'  : item_category_id,
-                'item_id'    	    : item_id, 
-                'item_unit_id'      : item_unit_id,
-                'item_unit_cost'    : item_unit_cost,
-                'quantity'          : quantity,
-                'subtotal_amount'   : subtotal_amount,
-                'item_expired_date' : item_expired_date,
-                '_token'            : '{{csrf_token()}}'
+                'item_category_id'                  : item_category_id,
+                'item_id'    	                    : item_id, 
+                'item_unit_id'                      : item_unit_id,
+                'item_unit_cost'                    : item_unit_cost,
+                'quantity'                          : quantity,
+                'discount_percentage'               : discount_percentage,
+                'discount_amount'                   : discount_amount,
+                'subtotal_amount_after_discount'    : subtotal_amount_after_discount,
+                'subtotal_amount'                   : subtotal_amount,
+                'item_expired_date'                 : item_expired_date,
+                '_token'                            : '{{csrf_token()}}'
             },
             success: function(msg){
                 location.reload();
@@ -144,13 +240,55 @@
                 dataType: "html",
                 success:function(data)
                 {
-                    $('#item_unit_cost').val(data);
-
+                    if (data != '') {
+                        $('#item_unit_cost').val(data); 
+                        $('#item_unit_cost_view').val(toRp(data)); 
+                    }
                 }
             });
 		});
 	});
     
+    function final_total(name, value){
+        var total_amount = parseInt($('#subtotal_amount_total').val());
+        if (name == 'discount_percentage_total') {
+            var discount_percentage_total = parseInt(value);
+            var tax_ppn_amount = parseInt($('#tax_ppn_amount').val()) || 0;
+            var shortover_amount = parseInt($('#shortover_amount').val()) || 0;
+            var discount_amount_total = (total_amount * discount_percentage_total) / 100;
+            var final_total_amount = total_amount + shortover_amount - discount_amount_total - tax_ppn_amount;
+
+            $('#discount_amount_total').val(discount_amount_total);
+            $('#discount_amount_total_view').val(toRp(discount_amount_total));
+            $('#total_amount_view').val(toRp(final_total_amount));
+            $('#total_amount').val(final_total_amount);
+
+        } else if (name == 'tax_ppn_percentage') {
+            var tax_ppn_percentage = parseInt(value);
+            var discount_amount_total = parseInt($('#discount_amount_total').val()) || 0;
+            var shortover_amount = parseInt($('#shortover_amount').val()) || 0;
+            var tax_ppn_amount = (total_amount * tax_ppn_percentage) / 100;
+            var final_total_amount = total_amount + shortover_amount - discount_amount_total - tax_ppn_amount;
+
+            $('#tax_ppn_amount').val(tax_ppn_amount);
+            $('#tax_ppn_amount_view').val(toRp(tax_ppn_amount));
+            $('#total_amount_view').val(toRp(final_total_amount));
+            $('#total_amount').val(final_total_amount);
+
+        } else if (name == 'shortover_amount_view') {
+            var shortover_amount_view = parseInt(value);
+            var tax_ppn_amount = parseInt($('#tax_ppn_amount').val()) || 0;
+            var discount_amount_total = parseInt($('#discount_amount_total').val()) || 0;
+            var final_total_amount = (total_amount - discount_amount_total - tax_ppn_amount) + shortover_amount_view ;
+
+            $('#shortover_amount_view').val(toRp(shortover_amount_view));
+            $('#shortover_amount').val(shortover_amount_view);
+            $('#total_amount_view').val(toRp(final_total_amount));
+            $('#total_amount').val(final_total_amount);
+
+        }
+        // console.log(name,value);
+    }
 </script>
 @stop
 @section('content_header')
@@ -205,7 +343,8 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <a class="text-dark">Nama Pemasok<a class='red'> *</a></a>
-                            <input class="form-control input-bb" name="purchase_invoice_supplier" id="purchase_invoice_supplier" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $datases['purchase_invoice_supplier'] }}"/>
+                            {{-- <input class="form-control input-bb" name="purchase_invoice_supplier" id="purchase_invoice_supplier" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $datases['purchase_invoice_supplier'] }}"/> --}}
+                            {!! Form::select('supplier_id', $suppliers, $datases['supplier_id'], ['class' => 'form-control selection-search-clear select-form', 'id' => 'supplier_id', 'name' => 'supplier_id', 'onchange' => 'function_elements_add(this.name, this.value)']) !!}
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -215,14 +354,17 @@
                             
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-6">
                         <div class="form-group">
                             <a class="text-dark">Tanggal Invoice Pembelian<a class='red'> *</a></a>
-                            <input class="form-control input-bb" name="purchase_invoice_date" id="purchase_invoice_date" type="date" data-date-format="dd-mm-yyyy" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $datases['purchase_invoice_date'] ? $datases['purchase_invoice_date'] : date('Y-m-d') }}"/>
+                            <input style="width: 40%" class="form-control input-bb" name="purchase_invoice_date" id="purchase_invoice_date" type="date" data-date-format="dd-mm-yyyy" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $datases['purchase_invoice_date'] ? $datases['purchase_invoice_date'] : date('Y-m-d') }}"/>
                         </div>
                     </div>
                     <div class="col-md-6">
-    
+                        <div class="form-group">
+                            <a class="text-dark">Metode Pembayaran<a class='red'> *</a></a>
+                            {!! Form::select(0, $purchase_payment_method, $datases['purchase_payment_method'], ['class' => 'form-control selection-search-clear select-form', 'id' => 'purchase_payment_method', 'name' => 'purchase_payment_method', 'onchange' => 'function_elements_add(this.name, this.value)']) !!}
+                        </div>
                     </div>
                     <div class="col-md-9 mt-3">
                         <div class="form-group">
@@ -256,7 +398,8 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <a class="text-dark">Biaya Barang Satuan<a class='red'> *</a></a>
-                            <input class="form-control input-bb" name="item_unit_cost" id="item_unit_cost" type="text" autocomplete="off" value=""/>
+                            <input style="text-align: right" class="form-control input-bb" name="item_unit_cost_view" id="item_unit_cost_view" type="text" autocomplete="off" value=""/>
+                            <input class="form-control input-bb" name="item_unit_cost" id="item_unit_cost" type="text" autocomplete="off" value="" hidden/>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -270,6 +413,26 @@
                             <a class="text-dark">Subtotal<a class='red'> *</a></a>
                             <input style="text-align: right" class="form-control input-bb" name="subtotal_amount_view" id="subtotal_amount_view" type="text" autocomplete="off" value="" disabled/>
                             <input class="form-control input-bb" name="subtotal_amount" id="subtotal_amount" type="text" autocomplete="off" value="" hidden/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <a class="text-dark">Diskon (%)</a>
+                            <input style="text-align: left" class="form-control input-bb" name="discount_percentage" id="discount_percentage" type="text" autocomplete="off" value=""/>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <a class="text-dark">Jumlah Diskon</a>
+                            <input style="text-align: right" class="form-control input-bb" name="discount_amount_view" id="discount_amount_view" type="text" autocomplete="off" value=""/>
+                            <input style="text-align: right" class="form-control input-bb" name="discount_amount" id="discount_amount" type="text" autocomplete="off" value="" hidden/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <a class="text-dark">Total<a class='red'> *</a></a>
+                            <input style="text-align: right" class="form-control input-bb" name="subtotal_amount_after_discount_view" id="subtotal_amount_after_discount_view" type="text" autocomplete="off" value="" disabled/>
+                            <input style="text-align: right" class="form-control input-bb" name="subtotal_amount_after_discount" id="subtotal_amount_after_discount" type="text" autocomplete="off" value="" hidden/>
                         </div>
                     </div>
                     <div class="col-md-2">
@@ -322,7 +485,7 @@
                                                     <td style='text-align  : left !important;'>".$PurchaseInvoice->getItemName($val['item_id'])."</td>
                                                     <td style='text-align  : right !important;'>".$val['quantity']."</td>
                                                     <td style='text-align  : right !important;'>".number_format($val['item_unit_cost'],2,',','.')."</td>
-                                                    <td style='text-align  : right !important;'>".number_format($val['subtotal_amount'],2,',','.')."</td>
+                                                    <td style='text-align  : right !important;'>".number_format($val['subtotal_amount_after_discount'],2,',','.')."</td>
                                                     <td style='text-align  : right !important;'>".date('d-m-Y', strtotime($val['item_expired_date']))."</td>";
                                                     ?>
                                                     
@@ -336,7 +499,7 @@
                                             ";
     
                                         $quantity += $val['quantity'];
-                                        $subtotal_amount += $val['subtotal_amount'];
+                                        $subtotal_amount += $val['subtotal_amount_after_discount'];
                                         
                                     }
                                 }
@@ -356,11 +519,32 @@
                                 <tr>
                                     <td colspan="2">Diskon (%)</td>
                                     <td style='text-align  : right !important;'>
-                                        <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="discount_percentage_total" id="discount_percentage_total" value="" autocomplete="off"/>
+                                        <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="discount_percentage_total" id="discount_percentage_total" value="" autocomplete="off" onchange="final_total(this.name, this.value)"/>
                                     </td>
                                     <td style='text-align  : right !important;'>
                                         <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="discount_amount_total_view" id="discount_amount_total_view" value="" readonly/>
                                         <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="discount_amount_total" id="discount_amount_total" value="" hidden/>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">PPN (%)</td>
+                                    <td style='text-align  : right !important;'>
+                                        <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="tax_ppn_percentage" id="tax_ppn_percentage" value="" autocomplete="off" onchange="final_total(this.name, this.value)"/>
+                                    </td>
+                                    <td style='text-align  : right !important;'>
+                                        <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="tax_ppn_amount_view" id="tax_ppn_amount_view" value="" readonly/>
+                                        <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="tax_ppn_amount" id="tax_ppn_amount" value="" hidden/>
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3">Selisih</td>
+                                    <td style='text-align  : right !important;'>
+                                        <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="shortover_amount_view" id="shortover_amount_view" value="" autocomplete="off" onchange="final_total(this.name, this.value)"/>
+                                        <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="shortover_amount" id="shortover_amount" value="" hidden/>
                                     </td>
                                     <td></td>
                                     <td></td>
@@ -377,7 +561,8 @@
                                 <tr>
                                     <td colspan="3">Di Bayar</td>
                                     <td style='text-align  : right !important;'>
-                                        <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="paid_amount" id="paid_amount" value="" autocomplete="off"/>
+                                        <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="paid_amount_view" id="paid_amount_view" value="" autocomplete="off"/>
+                                        <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="paid_amount" id="paid_amount" value="" autocomplete="off" hidden/>
                                     </td>
                                     <td></td>
                                     <td></td>

@@ -15,6 +15,13 @@
 
 		});
 	}
+    $(document).ready(function(){
+        var sales_payment_method = {!! json_encode($sales_payment_method) !!}
+
+        if (sales_payment_method == 0) {
+            $('#sales_payment_method').select2('val','0');
+        }
+    });
 </script>
 @stop
 @section('content_header')
@@ -68,6 +75,14 @@
                             <input type ="date" class="form-control form-control-inline input-medium date-picker input-date" data-date-format="dd-mm-yyyy" type="text" name="end_date" id="end_date" value="{{ $end_date }}" style="width: 15rem;"/>
                         </div>
                     </div>
+
+                    <div class = "col-md-4">
+                        <div class="form-group form-md-line-input">
+                            <section class="control-label">Metode Pembayaran
+                            </section>
+                            {!! Form::select(0, $sales_payment_method_list, $sales_payment_method, ['class' => 'form-control selection-search-clear select-form','name'=>'sales_payment_method','id'=>'sales_payment_method']) !!}
+                        </div>
+                    </div>
                     
                 </div>
             </div>
@@ -100,15 +115,15 @@
                 <thead>
                     <tr>
                         <th style='text-align:center; width: 5%'>No</th>
-                        <th style='text-align:center; width: 10%'>No. Invoice Penjualan</th>
-                        <th style='text-align:center; width: 15%'>Tanggal Ivoice Penjualan</th>
-                        <th style='text-align:center; width: 12%'>Nama Barang</th>
-                        <th style='text-align:center; width: 10%'>Satuan</th>
-                        <th style='text-align:center; width: 5%'>Qty</th>
-                        <th style='text-align:center; width: 8%'>Harga</th>
+                        <th style='text-align:center; width: 10%'>Pelanggan</th>
+                        <th style='text-align:center; width: 10%'>Metode</th>
+                        <th style='text-align:center; width: 10%'>Tanggal</th>
+                        <th style='text-align:center; width: 10%'>No. Penjulan</th>
+                        <th style='text-align:center; width: 8%'>Jumlah Barang</th>
                         <th style='text-align:center; width: 8%'>Subtotal</th>
-                        <th style='text-align:center; width: 8%'>Diskon</th>
-                        <th style='text-align:center; width: 10%'>Subtotal st Diskon</th>
+                        <th style='text-align:center; width: 9%'>Diskon (%)</th>
+                        <th style='text-align:center; width: 9%'>Total Diskon</th>
+                        <th style='text-align:center; width: 9%'>Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -116,15 +131,15 @@
                   @foreach ($data as $row)
                   <tr>
                     <td class="text-center">{{ $no++ }}.</td>
-                    <td>{{ $row['sales_invoice_no'] }}</td>
+                    <td>{{ $SIRC->getCustomerName($row['customer_id']) }}</td>
+                    <td>{{ $SIRC->getPaymentName($row['sales_payment_method']) }}</td>
                     <td>{{ date('d-m-Y', strtotime($row['sales_invoice_date'])) }}</td>
-                    <td>{{ $SIRC->getItemName($row['item_id']) }}</td>
-                    <td>{{ $SIRC->getItemUnitName($row['item_unit_id']) }}</td>
-                    <td>{{ $row['quantity'] }}</td>
-                    <td style="text-align: right">{{ number_format($row['item_unit_price'],2,'.',',') }}</td>
+                    <td>{{ $row['sales_invoice_no'] }}</td>
+                    <td style="text-align: center">{{ $row['subtotal_item'] }}</td>
                     <td style="text-align: right">{{ number_format($row['subtotal_amount'],2,'.',',') }}</td>
-                    <td style="text-align: right">{{ number_format($row['discount_amount'],2,'.',',') }}</td>
-                    <td style="text-align: right">{{ number_format($row['subtotal_amount_after_discount'],2,'.',',') }}</td>
+                    <td style="text-align: right">{{ $row['discount_percentage_total'] }}</td>
+                    <td style="text-align: right">{{ number_format($row['discount_amount_total'],2,'.',',') }}</td>
+                    <td style="text-align: right">{{ number_format($row['total_amount'],2,'.',',') }}</td>
                   </tr> 
                   @endforeach
                 </tbody>
@@ -135,6 +150,9 @@
         <div class="form-actions float-right">
             <a class="btn btn-secondary" href="{{ url('sales-invoice-report/print') }}"><i class="fa fa-file-pdf"></i> Pdf</a>
             <a class="btn btn-dark" href="{{ url('sales-invoice-report/export') }}"><i class="fa fa-download"></i> Export Data</a>
+            {{-- <p class="mt-2">
+                <a class="btn btn-secondary" href="{{ url('sales-invoice-report/print-detail') }}"><i class="fa fa-file-pdf"></i> Pdf Detail</a>
+            </p> --}}
         </div>
     </div>
   </div>

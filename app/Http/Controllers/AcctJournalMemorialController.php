@@ -31,7 +31,7 @@ class AcctJournalMemorialController extends Controller
             $end_date = Session::get('end_date');
         }
         $data = JournalVoucher::join('acct_journal_voucher_item','acct_journal_voucher_item.journal_voucher_id','=','acct_journal_voucher.journal_voucher_id')
-        // ->join('acct_account', 'acct_account.account_id','=','acct_journal_voucher_item.account_id')
+        ->select('acct_journal_voucher.journal_voucher_id','acct_journal_voucher_item.journal_voucher_debit_amount','acct_journal_voucher_item.journal_voucher_credit_amount','acct_journal_voucher_item.journal_voucher_item_id','acct_journal_voucher.transaction_module_code','acct_journal_voucher.journal_voucher_description','acct_journal_voucher.journal_voucher_date','acct_journal_voucher_item.account_id')
         ->where('acct_journal_voucher.journal_voucher_date', '>=', $start_date)
         ->where('acct_journal_voucher.journal_voucher_date', '<=', $end_date)
         ->where('acct_journal_voucher.company_id', Auth::user()->company_id)

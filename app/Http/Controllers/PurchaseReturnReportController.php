@@ -91,12 +91,12 @@ class PurchaseReturnReportController extends Controller
     public function printPurchaseReturnReport()
     {
         if(!$start_date = Session::get('start_date')){
-            $start_date = '';
+            $start_date = date('Y-m-d');
         } else {
             $start_date = Session::get('start_date');
         }
         if(!$end_date = Session::get('end_date')){
-            $end_date = '';
+            $end_date = date('Y-m-d');
         } else {
             $end_date = Session::get('end_date');
         }
@@ -127,7 +127,7 @@ class PurchaseReturnReportController extends Controller
         $pdf::SetPrintHeader(false);
         $pdf::SetPrintFooter(false);
 
-        $pdf::SetMargins(10, 10, 10, 10); // put space of 10 on top
+        $pdf::SetMargins(20, 10, 20, 10); // put space of 10 on top
 
         $pdf::setImageScale(PDF_IMAGE_SCALE_RATIO);
 
@@ -159,10 +159,10 @@ class PurchaseReturnReportController extends Controller
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
                 <td width=\"5%\" ><div style=\"text-align: center;\">No</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Nama Pemasok</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Nama Gudang</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Tanggal Retur Pembelian</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Jumlah Total</div></td>
+                <td width=\"20%\" ><div style=\"text-align: center;\">Nama Pemasok</div></td>
+                <td width=\"20%\" ><div style=\"text-align: center;\">Nama Gudang</div></td>
+                <td width=\"20%\" ><div style=\"text-align: center;\">Tanggal Retur Pembelian</div></td>
+                <td width=\"20%\" ><div style=\"text-align: center;\">Jumlah Total</div></td>
             </tr>
         
              ";
@@ -195,12 +195,12 @@ class PurchaseReturnReportController extends Controller
     public function exportPurchaseReturnReport()
     {
         if(!$start_date = Session::get('start_date')){
-            $start_date = '';
+            $start_date = date('Y-m-d');
         } else {
             $start_date = Session::get('start_date');
         }
         if(!$end_date = Session::get('end_date')){
-            $end_date = '';
+            $end_date = date('Y-m-d');
         } else {
             $end_date = Session::get('end_date');
         }

@@ -148,7 +148,7 @@ class PurchaseInvoicebyItemReportController extends Controller
 
         $total_amount = 0;
         foreach ($data as $key => $val) {
-            $total_amount += $val['subtotal_amount'];
+            $total_amount += $val['subtotal_amount_after_discount'];
         }
 
         return $total_amount;
@@ -212,17 +212,17 @@ class PurchaseInvoicebyItemReportController extends Controller
             </tr>
         </table>
         ";
+        $pdf::SetMargins(30, 10, 10, 10);
         $pdf::writeHTML($tbl, true, false, false, false, '');
-        
         $no = 1;
         $tblStock1 = "
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
                 <td width=\"5%\" ><div style=\"text-align: center;\">No</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Nama Kategori</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Nama Barang</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Jumlah Barang</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Jumlah Pembelian</div></td>
+                <td width=\"20%\" ><div style=\"text-align: center;\">Nama Kategori</div></td>
+                <td width=\"20%\" ><div style=\"text-align: center;\">Nama Barang</div></td>
+                <td width=\"20%\" ><div style=\"text-align: center;\">Jumlah Barang</div></td>
+                <td width=\"20%\" ><div style=\"text-align: center;\">Jumlah Pembelian</div></td>
             </tr>
         
              ";
@@ -232,10 +232,10 @@ class PurchaseInvoicebyItemReportController extends Controller
         foreach ($data as $key => $val) {
             $tblStock2 .="
                 <tr>			
-                    <td style=\"text-align:left\">$no.</td>
+                    <td style=\"text-align:center\">$no.</td>
                     <td style=\"text-align:left\">".$this->getCategoryName($val['item_category_id'])."</td>
                     <td style=\"text-align:left\">".$this->getItemName($val['item_id'])."</td>
-                    <td style=\"text-align:left\">".$this->getTotalItem($val['item_id'])."</td>
+                    <td style=\"text-align:center\">".$this->getTotalItem($val['item_id'])."</td>
                     <td style=\"text-align:right\">".number_format($this->getTotalAmount($val['item_id']),2,'.',',')."</td>
                 </tr>
                 

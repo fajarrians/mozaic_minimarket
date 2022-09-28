@@ -145,12 +145,12 @@ class SalesInvoicebyItemReportController extends Controller
     public function printSalesInvoicebyItemReport()
     {
         if(!$start_date = Session::get('start_date')){
-            $start_date = '';
+            $start_date = date('Y-m-d');
         } else {
             $start_date = Session::get('start_date');
         }
         if(!$end_date = Session::get('end_date')){
-            $end_date = '';
+            $end_date = date('Y-m-d');
         } else {
             $end_date = Session::get('end_date');
         }
@@ -201,16 +201,18 @@ class SalesInvoicebyItemReportController extends Controller
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
                 <td width=\"5%\"><div style=\"text-align: center;\">No</div></td>
-                <td width=\"15%\"><div style=\"text-align: center;\">Kategori Barang</div></td>
-                <td width=\"15%\"><div style=\"text-align: center;\">Nama Barang</div></td>
-                <td width=\"10%\"><div style=\"text-align: center;\">Jumlah Barang</div></td>
-                <td width=\"10%\"><div style=\"text-align: center;\">Jumlah Penjualan</div></td>
+                <td width=\"25%\"><div style=\"text-align: center;\">Kategori Barang</div></td>
+                <td width=\"25%\"><div style=\"text-align: center;\">Nama Barang</div></td>
+                <td width=\"20%\"><div style=\"text-align: center;\">Jumlah Barang</div></td>
+                <td width=\"25%\"><div style=\"text-align: center;\">Jumlah Penjualan</div></td>
 
             </tr>
         
              ";
 
         $no = 1;
+        $totalitem = 0;
+        $totalamount = 0;
         $tblStock2 =" ";
         foreach ($data as $key => $val) {
             $id = $val['purchase_retur_id'];
@@ -221,16 +223,22 @@ class SalesInvoicebyItemReportController extends Controller
                         <td style=\"text-align:center\">$no.</td>
                         <td style=\"text-align:left\">".$this->getCategoryName($val['item_category_id'])."</td>
                         <td style=\"text-align:left\">".$this->getItemName($val['item_id'])."</td>
-                        <td style=\"text-align:left\">".$this->getTotalItem($val['item_id'])."</td>
+                        <td style=\"text-align:center\">".$this->getTotalItem($val['item_id'])."</td>
                         <td style=\"text-align:right\">".number_format($this->getTotalAmount($val['item_id']),2,'.',',')."</td>
                     </tr>
                     
                 ";
+                $totalitem += $this->getTotalItem($val['item_id']);
+                $totalamount += $this->getTotalAmount($val['item_id']);
                 $no++;
             }
         }
         $tblStock3 = " 
-
+        <tr>
+            <td colspan=\"3\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
+            <td style=\"text-align:center;\"><div style=\"font-weight: bold\">". $totalitem ."</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($totalamount,2,'.',',') ."</div></td>
+        </tr>
         </table>";
 
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');
@@ -242,12 +250,12 @@ class SalesInvoicebyItemReportController extends Controller
     public function exportSalesInvoicebyItemReport()
     {
         if(!$start_date = Session::get('start_date')){
-            $start_date = '';
+            $start_date = date('Y-m-d');
         } else {
             $start_date = Session::get('start_date');
         }
         if(!$end_date = Session::get('end_date')){
-            $end_date = '';
+            $end_date = date('Y-m-d');
         } else {
             $end_date = Session::get('end_date');
         }
@@ -404,12 +412,12 @@ class SalesInvoicebyItemReportController extends Controller
     public function printSalesInvoicebyItemNotSoldReport()
     {
         if(!$start_date = Session::get('start_date')){
-            $start_date = '';
+            $start_date = date('Y-m-d');
         } else {
             $start_date = Session::get('start_date');
         }
         if(!$end_date = Session::get('end_date')){
-            $end_date = '';
+            $end_date = date('Y-m-d');
         } else {
             $end_date = Session::get('end_date');
         }
@@ -469,9 +477,9 @@ class SalesInvoicebyItemReportController extends Controller
         $tblStock1 = "
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <td width=\"5%\"><div style=\"text-align: center;\">No</div></td>
-                <td width=\"20%\"><div style=\"text-align: center;\">Kategori Barang</div></td>
-                <td width=\"20%\"><div style=\"text-align: center;\">Nama Barang</div></td>
+                <td width=\"10%\"><div style=\"text-align: center;\">No</div></td>
+                <td width=\"45%\"><div style=\"text-align: center;\">Kategori Barang</div></td>
+                <td width=\"45%\"><div style=\"text-align: center;\">Nama Barang</div></td>
             </tr>
         
              ";
@@ -506,12 +514,12 @@ class SalesInvoicebyItemReportController extends Controller
     public function exportSalesInvoicebyItemNotSoldReport()
     {
         if(!$start_date = Session::get('start_date')){
-            $start_date = '';
+            $start_date = date('Y-m-d');
         } else {
             $start_date = Session::get('start_date');
         }
         if(!$end_date = Session::get('end_date')){
-            $end_date = '';
+            $end_date = date('Y-m-d');
         } else {
             $end_date = Session::get('end_date');
         }

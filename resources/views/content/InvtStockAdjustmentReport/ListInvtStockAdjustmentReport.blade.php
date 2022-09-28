@@ -17,26 +17,25 @@
             }
         });
 
-        function function_change_stock(key,value){
-            change_stock = document.getElementById('change_stock_'+(key)).value;
-            stock_amount = document.getElementById('stock_amount_'+(key)).value;
-            btn_submit = document.getElementById('btn_submit_'+(key));
-            var difference_stock = stock_amount - change_stock;
-            // console.log(change_stock);
+        // function function_change_stock(key,value){
+        //     change_stock = document.getElementById('change_stock_'+(key)).value;
+        //     stock_amount = document.getElementById('stock_amount_'+(key)).value;
+        //     btn_submit = document.getElementById('btn_submit_'+(key));
+        //     var difference_stock = stock_amount - change_stock;
 
-            if (change_stock == '') {
-                $('#alert_'+key).html('<div id="alert_'+(key)+'"></div>');
-                btn_submit.classList.add('disabled');
-            } else if (change_stock != '' && difference_stock < 0) {
-                $('#alert_'+key).html('<div class="alert alert-danger mb-3" role="alert" id="alert_'+(key)+'">Sisa Stock Kurang Dari '+change_stock+'</div>');
-                btn_submit.classList.add('disabled');
-            } else if (change_stock != 0 && difference_stock >= 0) {
-                $('#alert_'+key).html('<div id="alert_'+(key)+'"></div>');
-                btn_submit.classList.remove('disabled');
-            } else if (change_stock == 0 && change_stock != '') {
-                $('#alert_'+key).html('<div id="alert_'+(key)+'"></div>');
-                btn_submit.classList.add('disabled');
-            }
+        //     if (change_stock == '') {
+        //         $('#alert_'+key).html('<div id="alert_'+(key)+'"></div>');
+        //         btn_submit.classList.add('disabled');
+        //     } else if (change_stock != '' && difference_stock < 0) {
+        //         $('#alert_'+key).html('<div class="alert alert-danger mb-3" role="alert" id="alert_'+(key)+'">Sisa Stock Kurang Dari '+change_stock+'</div>');
+        //         btn_submit.classList.add('disabled');
+        //     } else if (change_stock != 0 && difference_stock >= 0) {
+        //         $('#alert_'+key).html('<div id="alert_'+(key)+'"></div>');
+        //         btn_submit.classList.remove('disabled');
+        //     } else if (change_stock == 0 && change_stock != '') {
+        //         $('#alert_'+key).html('<div id="alert_'+(key)+'"></div>');
+        //         btn_submit.classList.add('disabled');
+        //     }
             
             // if (difference_stock < 0 && change_stock != NaN) {
             //     $('#alert_'+key).html('<div class="alert alert-danger mb-3" role="alert" id="alert_'+(key)+'">Sisa Stock Kurang Dari '+change_stock+'</div>');
@@ -49,7 +48,31 @@
 
 
             // console.log(difference_stock);
-        }
+        // }
+
+        var table;
+        $(document).ready(function(){
+            table =  $('#myDataTable').DataTable({
+     
+             "processing": true,
+             "serverSide": true,
+             "pageLength": 5,
+             "lengthMenu": [ [5, 15, 20, -1], [5, 15, 20, "All"] ],
+             "order": [[3, 'asc']],
+             "ajax": "{{ url('table-stock-item') }}",
+             "columns":[
+                {data: 'no'},
+                {data: 'warehouse_name'},
+                {data: 'item_category_name'},
+                {data: 'item_name'},
+                {data: 'item_unit_name'},
+                {data: 'total_stock'},
+                {data: 'rack_name'},
+                {data: 'action'},
+             ],
+        
+             });
+        });
     </script>
 @endsection
 
@@ -138,7 +161,7 @@
 
     <div class="card-body">
         <div class="table-responsive">
-            <table id="example" style="width:100%" class="table table-striped table-bordered table-hover table-full-width">
+            <table id="myDataTable" style="width:100%" class="table table-striped table-bordered table-hover table-full-width">
                 <thead>
                     <tr>
                         <th style='text-align:center; width: 5%'>No</th>
@@ -147,62 +170,11 @@
                         <th style='text-align:center'>Nama Barang</th>
                         <th style='text-align:center'>Satuan Barang</th>
                         <th style='text-align:center'>Stok Sistem</th>
-                        {{-- <th style='text-align:center'>Aksi</th> --}}
+                        <th style='text-align:center'>Daftar Rak</th>
+                        <th style='text-align:center'>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                   <?php $no =1; ?>
-                   @foreach ($data as $key=>$row )
-                       <tr>
-                        <td class="text-center">{{ $no++ }}.</td>
-                        <td>{{ $ISARC->getWarehouseName($row['warehouse_id']) }}</td>
-                        <td>{{ $ISARC->getItemCategoryName($row['item_category_id']) }}</td>
-                        <td>{{ $ISARC->getItemName($row['item_id']) }}</td>
-                        <td>{{ $ISARC->getItemUnitName($row['item_unit_id']) }}</td>
-                        <td class="text-center">{{ $ISARC->getStock($row['item_id'],$row['item_category_id'],$row['item_unit_id'],$row['warehouse_id']) }}</td>
-                        {{-- <td class="text-center">
-                            <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ $row['item_stock_id'] }}">Pecah Stok</button>
-                              
-                              <!-- Modal -->
-                            <div class="modal fade" id="staticBackdrop{{ $row['item_stock_id'] }}" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                                <div class="modal-dialog">
-                                    <form action="{{ route('change-stock-adjustment-report') }}" method="POST">
-                                        @csrf
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="staticBackdropLabel">Pecah Stock <b>{{  $ISARC->getItemName($row['item_id']) }}</b> Satuan <b>{{ $ISARC->getItemUnitName($row['item_unit_id']) }}</b></h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body text-left">
-                                                <div id="alert_{{ $row['item_stock_id'] }}"></div>
-                                                <div class="row form-group">
-                                                    <div class="col-md-6">
-                                                        <a class="text-dark">Jumlah Stok Yang Dipecah<a class='red'> *</a></a>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <input type="number" class="form-control input-bb" name="change_stock_{{ $row['item_stock_id'] }}" id="change_stock_{{ $row['item_stock_id'] }}" type="text" autocomplete="off" value="" oninput="function_change_stock({{ $row['item_stock_id'] }}, this.value)"/>
-                                                        <input class="form-control input-bb" name="item_stock_id" id="item_stock_id" type="text" autocomplete="off" value="{{ $row['item_stock_id'] }}" hidden/>
-                                                        <input class="form-control input-bb" name="stock_amount_{{ $row['item_stock_id'] }}" id="stock_amount_{{ $row['item_stock_id'] }}" type="text" autocomplete="off" value="{{ $row['last_balance'] }}" hidden/>
-                                                    </div>
-                                                    <div class="col-md-6 mt-4">
-                                                        <a class="text-dark">Ke Satuan<a class='red'> *</a></a>
-                                                    </div>
-                                                    <div class="col-md-6 mt-4">
-                                                        {!! Form::select(0, $ISARC->getSelectItemUnit($row['item_id'],$row['item_unit_id']), 0,['class' => 'form-control selection-search-clear select-form','name'=>'item_unit_id_'.$row['item_stock_id'],'id'=>'item_unit_id_'.$row['item_stock_id']]) !!} 
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="reset" class="btn btn-danger" data-bs-dismiss="modal"><i class="fa fa-times"></i> Batal</button>
-                                                <button type="submit" class="btn btn-success disabled" id="btn_submit_{{ $row['item_stock_id'] }}"><i class="fa fa-check" ></i> Pecah Stok</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </td> --}}
-                       </tr>
-                   @endforeach
                 </tbody>
             </table>
         </div>

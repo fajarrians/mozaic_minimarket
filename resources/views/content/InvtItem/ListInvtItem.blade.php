@@ -3,7 +3,31 @@
 @extends('adminlte::page')
 
 @section('title', 'MOZAIC Minimarket')
-
+@section('js')
+    <script>
+        var table;
+        $(document).ready(function(){
+            table =  $('#myDataTable').DataTable({
+     
+             "processing": true,
+             "serverSide": true,
+             "pageLength": 5,
+             "lengthMenu": [ [5, 15, 20, -1], [5, 15, 20, "All"] ],
+             "order": [[3, 'asc']],
+             "ajax": "{{ url('data-table-item') }}",
+             "columns":[
+                {data: 'no'},
+                {data: 'item_category_name'},
+                {data: 'item_code'},
+                {data: 'item_name'},
+                {data: 'barcode'},
+                {data: 'action'},
+             ],
+        
+             });
+        });
+    </script>
+@endsection
 @section('content_header')
     
 <nav aria-label="breadcrumb">
@@ -39,35 +63,18 @@
 
     <div class="card-body">
         <div class="table-responsive">
-            <table id="example" style="width:100%" class="table table-striped table-bordered table-hover table-full-width">
+            <table id="myDataTable" style="width:100%" class="table table-striped table-bordered table-hover table-full-width">
                 <thead>
                     <tr>
-                        <th width="2%" style='text-align:center'>No</th>
+                        <th width="5%" style='text-align:center'>No</th>
                         <th width="20%" style='text-align:center'>Kategori Barang</th>
                         <th width="20%" style='text-align:center'>Kode Barang</th>
                         <th width="20%" style='text-align:center'>Nama Barang</th>
                         <th width="20%" style='text-align:center'>Barcode Barang</th>
-                        <th width="10%" style='text-align:center'>Aksi</th>
+                        <th width="15%" style='text-align:center'>Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <?php $no = 1; ?>
-                    @foreach($data as $row)
-                    <tr>
-                        <td style='text-align:center'>{{ $no++ }}.</td>
-                        <td>{{ $row['item_category_name'] }}</td>
-                        <td>{{ $row['item_code'] }}</td>
-                        <td>{{ $row['item_name'] }}</td>
-                        <td class="text-center">
-                            <a type="button" class="btn btn-outline-dark btn-sm" href="{{ url('/item-barcode/'. $row['item_id']) }}"><i class="fa fa-barcode"></i> Barcode</a>
-                        </td>
-                        <td class="text-center">
-                            <a type="button" class="btn btn-outline-warning btn-sm" href="{{ url('/item/edit-item/'.$row['item_id']) }}">Edit</a>
-                            <a type="button" class="btn btn-outline-danger btn-sm" href="{{ url('/item/delete-item/'.$row['item_id']) }}">Hapus</a>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
+                <tbody></tbody>
             </table>
         </div>
     </div>

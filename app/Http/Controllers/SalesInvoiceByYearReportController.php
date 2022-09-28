@@ -168,17 +168,19 @@ class SalesInvoiceByYearReportController extends Controller
         $tblStock1 = "
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <td width=\"5%\"><div style=\"text-align: center;\">No</div></td>
-                <td width=\"15%\"><div style=\"text-align: center;\">Kategori Barang</div></td>
-                <td width=\"15%\"><div style=\"text-align: center;\">Nama Barang</div></td>
-                <td width=\"15%\"><div style=\"text-align: center;\">Jumlah Penjualan</div></td>
-                <td width=\"15%\"><div style=\"text-align: center;\">Total</div></td>
+                <td width=\"6%\"><div style=\"text-align: center;\">No</div></td>
+                <td width=\"23%\"><div style=\"text-align: center;\">Kategori Barang</div></td>
+                <td width=\"23%\"><div style=\"text-align: center;\">Nama Barang</div></td>
+                <td width=\"23%\"><div style=\"text-align: center;\">Jumlah Penjualan</div></td>
+                <td width=\"23%\"><div style=\"text-align: center;\">Total</div></td>
 
             </tr>
         
              ";
 
         $no = 1;
+        $totalitem = 0;
+        $totalamount = 0;
         $tblStock2 =" ";
         foreach ($data as $key => $val) {
             $tblStock2 .="
@@ -186,15 +188,21 @@ class SalesInvoiceByYearReportController extends Controller
                     <td style=\"text-align:center\">$no.</td>
                     <td style=\"text-align:left\">".$this->getCategoryName($val['item_category_id'])."</td>
                     <td style=\"text-align:left\">".$this->getItemName($val['item_id'])."</td>
-                    <td style=\"text-align:right\">".$this->getTotalItem($val['item_id'])."</td>
+                    <td style=\"text-align:center\">".$this->getTotalItem($val['item_id'])."</td>
                     <td style=\"text-align:right\">".number_format($this->getTotalAmount($val['item_id']),2,'.',',')."</td>
                 </tr>
                 
             ";
+            $totalitem += $this->getTotalItem($val['item_id']);
+            $totalamount += $this->getTotalAmount($val['item_id']);
             $no++;
         }
         $tblStock3 = " 
-
+        <tr>
+            <td colspan=\"3\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
+            <td style=\"text-align:center;\"><div style=\"font-weight: bold\">". $totalitem ."</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($totalamount,2,'.',',') ."</div></td>
+        </tr>
         </table>";
 
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');

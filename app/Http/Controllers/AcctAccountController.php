@@ -19,7 +19,8 @@ class AcctAccountController extends Controller
     public function index()
     {
         Session::forget('datases');
-        $data = AcctAccount::where('data_state',0)
+        $data = AcctAccount::select('account_code','account_name','account_group','account_type_id','account_status','account_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
         return view('content.AcctAccount.ListAcctAccount',compact('data'));
@@ -113,7 +114,8 @@ class AcctAccountController extends Controller
 
     public function editAcctAccount($account_id)
     {
-        $data = AcctAccount::where('data_state',0)
+        $data = AcctAccount::select('account_code','account_id','account_name','account_group','account_status','account_type_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->where('account_id',$account_id)
         ->first();

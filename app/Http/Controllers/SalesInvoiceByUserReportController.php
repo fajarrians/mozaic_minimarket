@@ -106,12 +106,12 @@ class SalesInvoiceByUserReportController extends Controller
     public function printSalesInvoicebyUserReport()
     {
         if(!$start_date = Session::get('start_date')){
-            $start_date = '';
+            $start_date = date('Y-m-d');
         } else {
             $start_date = Session::get('start_date');
         }
         if(!$end_date = Session::get('end_date')){
-            $end_date = '';
+            $end_date = date('Y-m-d');
         } else {
             $end_date = Session::get('end_date');
         }
@@ -168,27 +168,31 @@ class SalesInvoiceByUserReportController extends Controller
                 <td width=\"5%\"><div style=\"text-align: center;\">No</div></td>
                 <td width=\"9%\"><div style=\"text-align: center;\">Tanggal</div></td>
                 <td width=\"13%\"><div style=\"text-align: center;\">No. Invoice</div></td>
-                <td width=\"12%\"><div style=\"text-align: center;\">Nama Barang</div></td>
+                <td width=\"20%\"><div style=\"text-align: center;\">Nama Barang</div></td>
                 <td width=\"9%\"><div style=\"text-align: center;\">Satuan</div></td>
                 <td width=\"5%\"><div style=\"text-align: center;\">Qty</div></td>
-                <td width=\"8%\"><div style=\"text-align: center;\">Harga</div></td>
-                <td width=\"8%\" ><div style=\"text-align: center;\">Subtotal</div></td>
-                <td width=\"8%\"><div style=\"text-align: center;\">Diskon / Barang</div></td>
-                <td width=\"9%\"><div style=\"text-align: center;\">Subtotal St Diskon</div></td>
+                <td width=\"10%\"><div style=\"text-align: center;\">Harga</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center;\">Subtotal</div></td>
+                <td width=\"10%\"><div style=\"text-align: center;\">Diskon / Barang</div></td>
+                <td width=\"10%\"><div style=\"text-align: center;\">Subtotal St Diskon</div></td>
             </tr>
         
              ";
 
         $no = 1;
+        $quantity = 0;
+        $subtotal_amount = 0;
+        $discount_amount = 0;
+        $subtotal_amount_after_discount = 0;
         $tblStock2 =" ";
         foreach ($data as $key => $val) {
             $tblStock2 .="
                 <tr>			
                     <td style=\"text-align:center\">$no.</td>
-                    <td style=\"text-align:center\">".date('d-m-Y', strtotime($val['sales_invoice_date']))."</td>
-                    <td style=\"text-align:center\">".$val['sales_invoice_no']."</td>
-                    <td style=\"text-align:center\">".$this->getItemName($val['item_id'])."</td>
-                    <td style=\"text-align:center\">".$this->getItemUnitName($val['item_unit_id'])."</td>
+                    <td style=\"text-align:left\">".date('d-m-Y', strtotime($val['sales_invoice_date']))."</td>
+                    <td style=\"text-align:left\">".$val['sales_invoice_no']."</td>
+                    <td style=\"text-align:left\">".$this->getItemName($val['item_id'])."</td>
+                    <td style=\"text-align:left\">".$this->getItemUnitName($val['item_unit_id'])."</td>
                     <td style=\"text-align:center\">".$val['quantity']."</td>
                     <td style=\"text-align:right\">".number_format($val['item_unit_price'],2,'.',',')."</td>
                     <td style=\"text-align:right\">".number_format($val['subtotal_amount'],2,'.',',')."</td>
@@ -197,9 +201,21 @@ class SalesInvoiceByUserReportController extends Controller
                 </tr>
                 
             ";
+            $quantity += $val['quantity'];
+            $subtotal_amount += $val['subtotal_amount'];
+            $discount_amount += $val['discount_amount'];
+            $subtotal_amount_after_discount += $val['subtotal_amount_after_discount'];
             $no++;
         }
         $tblStock3 = " 
+        <tr>
+            <td colspan=\"5\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
+            <td style=\"text-align:center;\"><div style=\"font-weight: bold\">". $quantity ."</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($subtotal_amount,2,'.',',') ."</div></td>
+            <td></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($discount_amount,2,'.',',') ."</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($subtotal_amount_after_discount,2,'.',',') ."</div></td>
+        </tr>
 
         </table>";
 
@@ -212,12 +228,12 @@ class SalesInvoiceByUserReportController extends Controller
     public function exportSalesInvoicebyUserReport()
     {
         if(!$start_date = Session::get('start_date')){
-            $start_date = '';
+            $start_date = date('Y-m-d');
         } else {
             $start_date = Session::get('start_date');
         }
         if(!$end_date = Session::get('end_date')){
-            $end_date = '';
+            $end_date = date('Y-m-d');
         } else {
             $end_date = Session::get('end_date');
         }

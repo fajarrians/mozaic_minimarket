@@ -12,6 +12,7 @@ use App\Models\InvtWarehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Yajra\DataTables\Facades\DataTables;
 
 class InvtItemController extends Controller
 {
@@ -271,5 +272,72 @@ class InvtItemController extends Controller
     {
         Session::forget('items');
         return redirect('/item/add-item');
+    }
+
+    public function dataTableItem(Request $request)
+    {
+        $draw 				= 		$request->get('draw');
+        $start 				= 		$request->get("start");
+        $rowPerPage 		= 		$request->get("length");
+        $orderArray 	    = 		$request->get('order');
+        $columnNameArray 	= 		$request->get('columns');
+        $searchArray 		= 		$request->get('search');
+        $columnIndex 		= 		$orderArray[0]['column'];
+        $columnName 		= 		$columnNameArray[$columnIndex]['data'];
+        $columnSortOrder 	= 		$orderArray[0]['dir'];
+        $searchValue 		= 		$searchArray['value'];
+
+
+        $users = InvtItem::join('invt_item_category', 'invt_item_category.item_category_id', '=', 'invt_item.item_category_id')
+        ->where('invt_item.data_state','=',0)
+        ->where('invt_item.company_id', Auth::user()->company_id);
+        $total = $users->count();
+
+        $totalFilter = InvtItem::join('invt_item_category', 'invt_item_category.item_category_id', '=', 'invt_item.item_category_id')
+        ->where('invt_item.data_state','=',0)
+        ->where('invt_item.company_id', Auth::user()->company_id);
+        if (!empty($searchValue)) {
+            $totalFilter = $totalFilter->where('item_name','like','%'.$searchValue.'%');
+            $totalFilter = $totalFilter->orWhere('item_code','like','%'.$searchValue.'%');
+        }
+        $totalFilter = $totalFilter->count();
+
+
+        $arrData = InvtItem::join('invt_item_category', 'invt_item_category.item_category_id', '=', 'invt_item.item_category_id')
+        ->where('invt_item.data_state','=',0)
+        ->where('invt_item.company_id', Auth::user()->company_id);
+        $arrData = $arrData->skip($start)->take($rowPerPage);
+        $arrData = $arrData->orderBy($columnName,$columnSortOrder);
+
+        if (!empty($searchValue)) {
+            $arrData = $arrData->where('item_name','like','%'.$searchValue.'%');
+            $arrData = $arrData->orWhere('item_code','like','%'.$searchValue.'%');
+        }
+
+        $arrData = $arrData->get();
+
+         $no = $start;
+        $data = array();
+        foreach ($arrData as $key => $val) {
+            $no++;
+            $row = array();
+            $row['no'] = "<div class='text-center'>".$no.".</div>";
+            $row['item_category_name'] = $val['item_category_name'];
+            $row['item_code'] = $val['item_code'];
+            $row['item_name'] = $val['item_name'];
+            $row['barcode'] = "<div class='text-center'><a type='button' class='btn btn-outline-dark btn-sm' href='".url('/item-barcode/'. $val['item_id'])."'><i class='fa fa-barcode'></i> Barcode</a></div>";
+            $row['action'] = "<div class='text-center'><a type='button' class='btn btn-outline-warning btn-sm' href='".url('/item/edit-item/'.$val['item_id'])."'>Edit</a>
+            <a type='button' class='btn btn-outline-danger btn-sm' href='".url('/item/delete-item/'.$val['item_id'])."'>Hapus</a></div>";
+
+            $data[] = $row;
+        }
+        $response = array(
+            "draw" => intval($draw),
+            "recordsTotal" => $total,
+            "recordsFiltered" => $totalFilter,
+            "data" => $data,
+        );
+
+        return json_encode($response);
     }
 }

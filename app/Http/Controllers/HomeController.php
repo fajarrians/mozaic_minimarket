@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\InvtItem;
+use App\Models\InvtItemBarcode;
 use App\Models\InvtItemCategory;
 use App\Models\InvtItemPackge;
+use App\Models\InvtItemStock;
+use App\Models\InvtItemUnit;
+use App\Models\InvtWarehouse;
 use App\Models\PurchaseInvoice;
 use App\Models\SalesInvoice;
 use App\Models\SalesInvoiceItem;
@@ -76,11 +80,14 @@ class HomeController extends Controller
         ->where('company_id', Auth::user()->company_id)
         ->get();
         foreach ($item_data as $key => $val) {
-            $item[$key]['item_name'] =  $val['item_name'];
-            $item[$key]['quantity'] = $this->getQuantitySalesInvoice($val['item_id']);
+            $item_data[$key]['item_name'] =  $val['item_name'];
+            $item_data[$key]['quantity'] = $this->getQuantitySalesInvoice($val['item_id']);
+        }
+        if(empty($item_data)){
+            $item_data = [];
         }
 
-        return view('home',compact('menus','data','datasalesinvoiceweekly','item'));
+        return view('home',compact('menus','data','datasalesinvoiceweekly','item_data'));
     }
 
     public function getQuantitySalesInvoice($item_id)

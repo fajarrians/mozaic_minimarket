@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\CoreSupplier;
 use App\Models\InvtItem;
 use App\Models\InvtItemUnit;
 use App\Models\InvtWarehouse;
@@ -107,6 +108,14 @@ class PurchaseInvoiceReportController extends Controller
         return $data['item_unit_name'];
     }
 
+    public function getSupplierName($supplier_id)
+    {
+        $data = CoreSupplier::where('supplier_id', $supplier_id)
+        ->first();
+
+        return $data['supplier_name'];
+    }
+
     public function printPurchaseInvoiceReport()
     {
         if(!Session::get('start_date')){
@@ -198,14 +207,14 @@ class PurchaseInvoiceReportController extends Controller
             $tblStock2 .="
                 <tr>			
                     <td style=\"text-align:left\">$no.</td>
-                    <td style=\"text-align:left\">".$val['purchase_invoice_supplier']."</td>
+                    <td style=\"text-align:left\">".$this->getSupplierName($val['supplier_id'])."</td>
                     <td style=\"text-align:left\">".$this->getWarehouseName($val['warehouse_id'])."</td>
                     <td style=\"text-align:left\">".$this->getItemName($val['item_id'])."</td>
                     <td style=\"text-align:left\">".date('d-m-Y', strtotime($val['purchase_invoice_date']))."</td>
                     <td style=\"text-align:left\">".$val['quantity']."</td>
                     <td style=\"text-align:left\">".$this->getUnitName($val['item_unit_id'])."</td>
                     <td style=\"text-align:right\">".number_format($val['item_unit_cost'],2,'.',',')."</td>
-                    <td style=\"text-align:right\">".number_format($val['total_amount'],2,'.',',')."</td>
+                    <td style=\"text-align:right\">".number_format($val['subtotal_amount_after_discount'],2,'.',',')."</td>
                 </tr>
                 
             ";
@@ -327,14 +336,14 @@ class PurchaseInvoiceReportController extends Controller
 
                     $no++;
                     $sheet->setCellValue('B'.$j, $no);
-                    $sheet->setCellValue('C'.$j, $val['purchase_invoice_supplier']);
+                    $sheet->setCellValue('C'.$j, $this->getSupplierName($val['supplier_id']));
                     $sheet->setCellValue('D'.$j, $this->getWarehouseName($val['warehouse_id']));
                     $sheet->setCellValue('E'.$j, $this->getItemName($val['item_id']));
                     $sheet->setCellValue('F'.$j, date('d-m-Y', strtotime($val['purchase_invoice_date'])));
                     $sheet->setCellValue('G'.$j, $val['quantity']);
                     $sheet->setCellValue('H'.$j, $this->getUnitName($val['item_unit_id']));
                     $sheet->setCellValue('I'.$j, number_format($val['item_unit_cost'],2,'.',','));
-                    $sheet->setCellValue('J'.$j, number_format($val['subtotal_amount'],2,'.',','));
+                    $sheet->setCellValue('J'.$j, number_format($val['subtotal_amount_after_discount'],2,'.',','));
                 }
                 $j++;
         

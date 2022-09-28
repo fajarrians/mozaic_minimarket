@@ -86,6 +86,8 @@
         $("#item_category_id").change(function(){
             $("#item_unit_id").select2("val", "0");
             $("#item_id").select2("val", "0");
+            $('#purchase_return_cost').val('');
+            $('#purchase_return_cost_view').val('');
 			var id 	= $("#item_category_id").val();
             $.ajax({
                 url: "{{ url('select-item') }}"+'/'+id,
@@ -101,6 +103,8 @@
 
         $("#item_id").change(function(){
             $("#item_unit_id").select2("val", "0");
+            $('#purchase_return_cost').val('');
+            $('#purchase_return_cost_view').val('');
 			var id 	= $("#item_id").val();
             $.ajax({
                 url: "{{ url('select-item-unit') }}"+'/'+id,
@@ -123,7 +127,11 @@
                 dataType: "html",
                 success:function(data)
                 {
-                    $('#purchase_return_cost').val(data);
+                    if (data != ''){
+
+                        $('#purchase_return_cost').val(data);
+                        $('#purchase_return_cost_view').val(toRp(data));
+                    }
 
                 }
             });
@@ -240,7 +248,8 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <a class="text-dark">Biaya Barang Satuan<a class='red'> *</a></a>
-                            <input class="form-control input-bb" name="purchase_return_cost" id="purchase_return_cost" type="text" autocomplete="off" value=""/>
+                            <input style="text-align: right" class="form-control input-bb" name="purchase_return_cost_view" id="purchase_return_cost_view" type="text" autocomplete="off" value=""/>
+                            <input style="text-align: right" class="form-control input-bb" name="purchase_return_cost" id="purchase_return_cost" type="text" autocomplete="off" value="" hidden/>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -252,7 +261,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <a class="text-dark">Subtotal<a class='red'> *</a></a>
-                            <input class="form-control input-bb" name="purchase_return_subtotal_view" id="purchase_return_subtotal_view" type="text" autocomplete="off" value="" disabled/>
+                            <input style="text-align: right" class="form-control input-bb" name="purchase_return_subtotal_view" id="purchase_return_subtotal_view" type="text" autocomplete="off" value="" disabled/>
                             <input class="form-control input-bb" name="purchase_return_subtotal" id="purchase_return_subtotal" type="text" autocomplete="off" value="" hidden/>
                         </div>
                     </div>

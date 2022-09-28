@@ -81,51 +81,51 @@
                         </td>
                     </tr>
 
-                    {{-- <tr>
-                        <th colspan="3" style="text-align: center !important ;width: 100% !important">Pembelian Kredit</th>
+                    <tr>
+                        <th colspan="3" style="text-align: center !important ;width: 100% !important">Pembelian Hutang</th>
                     </tr>
                     <tr>
                         <th style="text-align: left !important; width: 40% !important">Pembelian</th>
                         <td style="text-align: left !important; width: 30% !important">
-                            {!! Form::select(0, $accountlist,0,['class' => 'selection-search-clear select-form','name'=>'purchase_payment_account_id','id'=>'purchase_payment_account_id']) !!}
+                            {!! Form::select(0, $accountlist, $AccountSetting->getAccountId('purchase_payment_account'),['class' => 'selection-search-clear select-form','name'=>'purchase_payment_account_id','id'=>'purchase_payment_account_id']) !!}
                         </td>
                         <td style="text-align: left !important; width: 30% !important">
-                            {!! Form::select(0, $status,0,['class' => 'selection-search-clear select-form','name'=>'purchase_payment_account_status','id'=>'purchase_payment_account_status']) !!}
+                            {!! Form::select(0, $status, $AccountSetting->getAccountSettingStatus('purchase_payment_account'),['class' => 'selection-search-clear select-form','name'=>'purchase_payment_account_status','id'=>'purchase_payment_account_status']) !!}
                         </td>
                     </tr>
                     <tr>
                         <th style="text-align: left !important; width: 40% !important">Hutang</th>
                         <td style="text-align: left !important; width: 30% !important">
-                            {!! Form::select(0, $accountlist,0,['class' => 'selection-search-clear select-form','name'=>'account_payable_account_id','id'=>'account_payable_account_id']) !!}
+                            {!! Form::select(0, $accountlist, $AccountSetting->getAccountId('purchase_payable_account'),['class' => 'selection-search-clear select-form','name'=>'account_payable_account_id','id'=>'account_payable_account_id']) !!}
                         </td>
                         <td style="text-align: left !important; width: 30% !important">
-                            {!! Form::select(0, $status,0,['class' => 'selection-search-clear select-form','name'=>'account_payable_account_status','id'=>'account_payable_account_status']) !!}
+                            {!! Form::select(0, $status, $AccountSetting->getAccountSettingStatus('purchase_payable_account'),['class' => 'selection-search-clear select-form','name'=>'account_payable_account_status','id'=>'account_payable_account_status']) !!}
                         </td>
                     </tr>
 
                     <tr>
-                        <th colspan="3" style="text-align: center !important ;width: 100% !important">Pembayaran Hutang Tunai</th>
+                        <th colspan="3" style="text-align: center !important ;width: 100% !important">Pembayaran Hutang</th>
                     </tr>
                     <tr>
-                        <th style="text-align: left !important; width: 40% !important">Hutang Pembelian</th>
+                        <th style="text-align: left !important; width: 40% !important">Hutang</th>
                         <td style="text-align: left !important; width: 30% !important">
-                            {!! Form::select(0, $accountlist,0,['class' => 'selection-search-clear select-form','name'=>'account_payable_cash_account_id','id'=>'account_payable_cash_account_id']) !!}
+                            {!! Form::select(0, $accountlist, $AccountSetting->getAccountId('purchase_cash_payable_account'),['class' => 'selection-search-clear select-form','name'=>'account_payable_cash_account_id','id'=>'account_payable_cash_account_id']) !!}
                         </td>
                         <td style="text-align: left !important; width: 30% !important">
-                            {!! Form::select(0, $status,0,['class' => 'selection-search-clear select-form','name'=>'account_payable_cash_account_status','id'=>'account_payable_cash_account_status']) !!}
+                            {!! Form::select(0, $status, $AccountSetting->getAccountSettingStatus('purchase_cash_payable_account'),['class' => 'selection-search-clear select-form','name'=>'account_payable_cash_account_status','id'=>'account_payable_cash_account_status']) !!}
                         </td>
                     </tr>
                     <tr>
-                        <th style="text-align: left !important; width: 40% !important">Akun Kas</th>
+                        <th style="text-align: left !important; width: 40% !important">Kas</th>
                         <td style="text-align: left !important; width: 30% !important">
-                            {!! Form::select(0, $accountlist,0,['class' => 'selection-search-clear select-form','name'=>'cash_purchase_payment_account_id','id'=>'cash_purchase_payment_account_id']) !!}
+                            {!! Form::select(0, $accountlist, $AccountSetting->getAccountId('purchase_cash_payment_account'),['class' => 'selection-search-clear select-form','name'=>'cash_purchase_payment_account_id','id'=>'cash_purchase_payment_account_id']) !!}
                         </td>
                         <td style="text-align: left !important; width: 30% !important">
-                            {!! Form::select(0, $status,0,['class' => 'selection-search-clear select-form','name'=>'cash_purchase_payment_account_status','id'=>'cash_purchase_payment_account_status']) !!}
+                            {!! Form::select(0, $status, $AccountSetting->getAccountSettingStatus('purchase_cash_payment_account'),['class' => 'selection-search-clear select-form','name'=>'cash_purchase_payment_account_status','id'=>'cash_purchase_payment_account_status']) !!}
                         </td>
                     </tr>
 
-                    <tr>
+                   {{-- <tr>
                         <th colspan="3" style="text-align: center !important ;width: 100% !important">Pembayaran Hutang Bank</th>
                     </tr>
                     <tr>
@@ -222,12 +222,21 @@
                         <tr>
                             <th style="text-align: left !important; width: 40% !important">Kas</th>
                             <td style="text-align: left !important; width: 30% !important">
+                                {!! Form::select(0, $accountlist, $AccountSetting->getAccountId('sales_cash_account'),['class' => 'form-control selection-search-clear select-form','name'=>'cash_sales_account_id','id'=>'cash_sales_account_id']) !!}
+                            </td>
+                            <td style="text-align: left !important; width: 30% !important">
+                                {!! Form::select(0, $status, $AccountSetting->getAccountSettingStatus('sales_cash_account'),['class' => 'form-control selection-search-clear select-form','name'=>'cash_sales_account_status','id'=>'cash_sales_account_status']) !!}
+                            </td>
+                        </tr>
+                        {{-- <tr>
+                            <th style="text-align: left !important; width: 40% !important">Kas</th>
+                            <td style="text-align: left !important; width: 30% !important">
                                 {!! Form::select(0, $accountlist, $AccountSetting->getAccountId('sales_cash_account'),['class' => 'form-control selection-search-clear select-form','name'=>'account_receivable_account_id','id'=>'account_receivable_account_id']) !!}
                             </td>
                             <td style="text-align: left !important; width: 30% !important">
                                 {!! Form::select(0, $status, $AccountSetting->getAccountSettingStatus('sales_cash_account'),['class' => 'form-control selection-search-clear select-form','name'=>'account_receivable_account_status','id'=>'account_receivable_account_status']) !!}
                             </td>
-                        </tr>
+                        </tr> --}}
                         <tr>
                             <th style="text-align: left !important; width: 40% !important">Penjualan</th>
                             <td style="text-align: left !important; width: 30% !important">
@@ -238,29 +247,29 @@
                             </td>
                         </tr>
     
-                        {{-- <tr>
-                            <th colspan="3" style="text-align: center !important ;width: 100% !important">Penjualan Kredit</th>
+                        <tr>
+                            <th colspan="3" style="text-align: center !important ;width: 100% !important">Penjualan Piutang</th>
                         </tr>
                         <tr>
                             <th style="text-align: left !important; width: 40% !important">Piutang</th>
                             <td style="text-align: left !important; width: 30% !important">
-                                {!! Form::select(0, $accountlist,0,['class' => 'selection-search-clear select-form','name'=>'account_receivable_account_2_id','id'=>'account_receivable_account_2_id']) !!}
+                                {!! Form::select(0, $accountlist, $AccountSetting->getAccountId('sales_receivable_account'),['class' => 'selection-search-clear select-form','name'=>'receivable_account_id','id'=>'receivable_account_id']) !!}
                             </td>
                             <td style="text-align: left !important; width: 30% !important">
-                                {!! Form::select(0, $status,0,['class' => 'selection-search-clear select-form','name'=>'account_receivable_account_2_status','id'=>'account_receivable_account_2_status']) !!}
+                                {!! Form::select(0, $status, $AccountSetting->getAccountSettingStatus('sales_receivable_account'),['class' => 'selection-search-clear select-form','name'=>'receivable_account_status','id'=>'receivable_account_status']) !!}
                             </td>
                         </tr>
                         <tr>
                             <th style="text-align: left !important; width: 40% !important">Penjualan</th>
                             <td style="text-align: left !important; width: 30% !important">
-                                {!! Form::select(0, $accountlist,0,['class' => 'selection-search-clear select-form','name'=>'sales_account_2_id','id'=>'sales_account_2_id']) !!}
+                                {!! Form::select(0, $accountlist, $AccountSetting->getAccountId('sales_cash_receivable_account'),['class' => 'selection-search-clear select-form','name'=>'sales_account_receivable_id','id'=>'sales_account_receivable_id']) !!}
                             </td>
                             <td style="text-align: left !important; width: 30% !important">
-                                {!! Form::select(0, $status,0,['class' => 'selection-search-clear select-form','name'=>'sales_account_2_status','id'=>'sales_account_2_status']) !!}
+                                {!! Form::select(0, $status, $AccountSetting->getAccountSettingStatus('sales_cash_receivable_account'),['class' => 'selection-search-clear select-form','name'=>'sales_account_receivable_status','id'=>'sales_account_receivable_status']) !!}
                             </td>
                         </tr>
     
-                        <tr>
+                        {{-- <tr>
                             <th colspan="3" style="text-align: center !important ;width: 100% !important">Potongan / Diskon Penjualan</th>
                         </tr>
                         <tr>
@@ -280,13 +289,13 @@
                             <td style="text-align: left !important; width: 30% !important">
                                 {!! Form::select(0, $status,0,['class' => 'selection-search-clear select-form','name'=>'account_receivable_discount_account_status','id'=>'account_receivable_discount_account_status']) !!}
                             </td>
-                        </tr>
+                        </tr> --}}
     
-                        <tr>
-                            <th colspan="3" style="text-align: center !important ;width: 100% !important">Pembayaran Piutang Tunai</th>
+                        {{-- <tr>
+                            <th colspan="3" style="text-align: center !important ;width: 100% !important">Pembayaran Piutang</th>
                         </tr>
                         <tr>
-                            <th style="text-align: left !important; width: 40% !important">Akun Kas</th>
+                            <th style="text-align: left !important; width: 40% !important">Kas</th>
                             <td style="text-align: left !important; width: 30% !important">
                                 {!! Form::select(0, $accountlist,0,['class' => 'selection-search-clear select-form','name'=>'cash_sales_collection_account_id','id'=>'cash_sales_collection_account_id']) !!}
                             </td>
@@ -295,16 +304,16 @@
                             </td>
                         </tr>
                         <tr>
-                            <th style="text-align: left !important; width: 40% !important">Piutang Penjualan</th>
+                            <th style="text-align: left !important; width: 40% !important">Piutang</th>
                             <td style="text-align: left !important; width: 30% !important">
                                 {!! Form::select(0, $accountlist,0,['class' => 'selection-search-clear select-form','name'=>'account_receivable_cash_account_id','id'=>'account_receivable_cash_account_id']) !!}
                             </td>
                             <td style="text-align: left !important; width: 30% !important">
                                 {!! Form::select(0, $status,0,['class' => 'selection-search-clear select-form','name'=>'account_receivable_cash_account_status','id'=>'account_receivable_cash_account_status']) !!}
                             </td>
-                        </tr>
+                        </tr> --}}
     
-                        <tr>
+                         {{--<tr>
                             <th colspan="3" style="text-align: center !important ;width: 100% !important">Pembayaran Piutang Bank</th>
                         </tr>
                         <tr>

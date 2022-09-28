@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcctAccount;
+use App\Models\AcctProfitLossReport;
 use App\Models\Expenditure;
 use App\Models\JournalVoucher;
 use App\Models\PurchaseInvoice;
@@ -34,44 +35,13 @@ class AcctProfitLossReportController extends Controller
         } else {
             $end_date = Session::get('end_date');
         }
-        // $sales_invoice = SalesInvoice::join('sales_invoice_item','sales_invoice_item.sales_invoice_id','=','sales_invoice.sales_invoice_id')
-        // ->where('sales_invoice.sales_invoice_date','>=',$start_date)
-        // ->where('sales_invoice.sales_invoice_date','<=',$end_date)
-        // ->where('sales_invoice.data_state',0)
-        // ->where('sales_invoice.company_id', Auth::user()->company_id)
-        // ->get();
-        // $total_sales_amount = 0;
-        // foreach($sales_invoice as $row){
-        //     $total_sales_amount += $row['total_amount'];
-        // }
 
-        // $purchase_invoice = PurchaseInvoice::join('purchase_invoice_item','purchase_invoice_item.purchase_invoice_id','=','purchase_invoice.purchase_invoice_id')
-        // ->where('purchase_invoice.purchase_invoice_date','>=',$start_date)
-        // ->where('purchase_invoice.purchase_invoice_date','<=',$end_date)
-        // ->where('purchase_invoice.data_state',0)
-        // ->where('purchase_invoice.company_id', Auth::user()->company_id)
-        // ->get();
-        // $total_purchase_amount = 0;
-        // foreach($purchase_invoice as $row){
-        //     $total_purchase_amount += $row['total_amount'];
-        // }
-
-        // $expenditure = Expenditure::where('company_id', Auth::user()->company_id)
-        // ->where('data_state',0)
-        // ->where('expenditure_date','>=',$start_date)
-        // ->where('expenditure_date','<=',$end_date)
-        // ->get();
-        // $total_expenditure_amount = 0;
-        // foreach($expenditure as $row){
-        //     $total_expenditure_amount += $row['expenditure_amount'];
-        // }
-
-        $income = AcctAccount::where('data_state',0)
+        $income = AcctProfitLossReport::where('data_state',0)
         ->where('account_type_id',2)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
-        $expenditure = AcctAccount::where('data_state',0)
+        $expenditure = AcctProfitLossReport::where('data_state',0)
         ->where('account_type_id',3)
         ->where('company_id', Auth::user()->company_id)
         ->get();
@@ -156,12 +126,12 @@ class AcctProfitLossReportController extends Controller
             $end_date = Session::get('end_date');
         }
 
-        $income = AcctAccount::where('data_state',0)
+        $income = AcctProfitLossReport::where('data_state',0)
         ->where('account_type_id',2)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
-        $expenditure = AcctAccount::where('data_state',0)
+        $expenditure = AcctProfitLossReport::where('data_state',0)
         ->where('account_type_id',3)
         ->where('company_id', Auth::user()->company_id)
         ->get();
@@ -171,7 +141,7 @@ class AcctProfitLossReportController extends Controller
         $pdf::SetPrintHeader(false);
         $pdf::SetPrintFooter(false);
 
-        $pdf::SetMargins(40, 10, 40, 10); // put space of 10 on top
+        $pdf::SetMargins(30, 10, 40, 10); // put space of 10 on top
 
         $pdf::setImageScale(PDF_IMAGE_SCALE_RATIO);
 
@@ -201,60 +171,302 @@ class AcctProfitLossReportController extends Controller
         $pdf::writeHTML($tbl, true, false, false, false, '');
         
         $no = 1;
-        
-        $tblStock1 = "
-        <table cellspacing=\"0\" cellpadding=\"1\" border=\"0\" width=\"100%\">
-            <tr>
-                <th colspan=\"2\" style=\"font-weight: bold\">Pendapatan</th>
-            </tr>
-        ";
-        $tblStock2 = "";
-        $amount_income = 0;
-        foreach ($income as $key => $val) {
-            $tblStock2 .= "
-            <tr>
-                <td style=\"width: 80%\">   ".$val['account_code'].' - '.$val['account_name']."</td>
-                <td style=\"width: 20%; text-align: right\">".number_format($this->getAmountAccount($val['account_id']),2,'.',',')."</td>
-            </tr>
-            ";
-            $amount_income += $this->getAmountAccount($val['account_id']);
-        }
-        $tblStock3 = "
-            <br>
-            <tr>
-                <th style=\"font-weight: bold; text-align:center\">TOTAL PENDAPATAN</th>
-                <th style=\"font-weight: bold; text-align:center\">".number_format($amount_income,2,'.',',')."</th>
-            </tr>
-            <br>
-            <tr>
-                <th colspan=\"2\" style=\"font-weight: bold\">Pengeluaran</th>
-            </tr>
-        ";
-        $expenditure1 = 0;
-        foreach ($expenditure as $key => $val) {
-            $tblStock3 .= "
-            <tr>
-                <td style=\"width: 80%\">   ".$val['account_code'].' - '.$val['account_name']."</td>
-                <td style=\"width: 20%; text-align: right\">".number_format($this->getAmountAccount($val['account_id']),2,'.',',')."</td>
-            </tr>
-            ";
-            $expenditure1 += $this->getAmountAccount($val['account_id']);
-        }
+        $tblHeader = "
+			<table id=\"items\" width=\"100%\" cellspacing=\"1\" cellpadding=\"1\" border=\"0\">";
+		        $tblheader_top = "
+		        	<tr>
+		        		<td width=\"5%\"></td>
+		        		<td width=\"100%\" style=\"border-top:1px black solid;border-left:1px black solid;border-right:1px black solid\">	
+			        		
+		        			<table id=\"items\" width=\"100%\" cellspacing=\"1\" cellpadding=\"2\" border=\"0\">";	
+			        			$tblitem_top = "";
+			        			foreach ($income as $keyTop => $valTop) {
+									if($valTop['report_tab'] == 0){
+										$report_tab = ' ';
+									} else if($valTop['report_tab'] == 1){
+										$report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+									} else if($valTop['report_tab'] == 2){
+										$report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+									} else if($valTop['report_tab'] == 3){
+										$report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+									}
 
-        $tblStock5 = "
-            <br>
-            <br>
-            <tr>
-                <th style=\"font-weight: bold; text-align: center\">TOTAL PENGELUARAN</th>
-                <th style=\"font-weight: bold; text-align:center\">".number_format($expenditure1,2,'.',',')."</th>
-            </tr>
-            <tr>
-                <th style=\"font-weight: bold; text-align: center\">RUGI / LABA</th>
-                <th style=\"font-weight: bold; text-align:center\">".number_format(($amount_income - $expenditure1),2,'.',',')."</th>
-            </tr>
-        </table>";
+									if($valTop['report_bold'] == 1){
+										$report_bold = 'bold';
+									} else {
+										$report_bold = 'normal';
+									}									
 
-        $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3.$tblStock5, true, false, false, false, '');
+									if($valTop['report_type'] == 1){
+										$tblitem_top1 = "
+											<tr>
+												<td colspan=\"2\" style='width: 100%'><div style=\"font-weight:".$report_bold."\">".$report_tab."".$valTop['account_name']."</div></td>
+											</tr>";
+									} else {
+										$tblitem_top1 = "";
+									}
+
+
+									if($valTop['report_type']	== 2){
+
+										$tblitem_top2 = "
+											<tr>
+												<td style=\"width: 73%\"><div style='font-weight:".$report_bold."'>".$report_tab."".$valTop['account_name']."</div></td>
+												<td style=\"width: 25%\"><div style='font-weight:".$report_bold."'></div></td>
+											</tr>";
+									} else {
+										$tblitem_top2 = "";
+									}									
+
+									if($valTop['report_type']	== 3){
+										$account_subtotal 	= $this->getAmountAccount($valTop['account_id']);
+
+										$tblitem_top3 = "
+											<tr>
+												<td style=\"width: 73%\"><div style='font-weight:".$report_bold."'>".$report_tab."(".$valTop['account_code'].") ".$valTop['account_name']."</div> </td>
+												<td style=\"text-align:right;width: 25%\">".number_format($account_subtotal, 2)."</td>
+											</tr>";
+
+										$account_amount[$valTop['report_no']] = $account_subtotal;
+
+									} else {
+										$tblitem_top3 = "";
+									}
+									
+
+									if($valTop['report_type'] == 5){
+										if(!empty($valTop['report_formula']) && !empty($valTop['report_operator'])){
+											$report_formula 	= explode('#', $valTop['report_formula']);
+											$report_operator 	= explode('#', $valTop['report_operator']);
+
+											$total_account_amount	= 0;
+											for($i = 0; $i < count($report_formula); $i++){
+												if($report_operator[$i] == '-'){
+													if($total_account_amount == 0 ){
+														$total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+													} else {
+														$total_account_amount = $total_account_amount - $account_amount[$report_formula[$i]];
+													}
+												} else if($report_operator[$i] == '+'){
+													if($total_account_amount == 0){
+														$total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+													} else {
+														$total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+													}
+												}
+											}
+											$tblitem_top5 = "
+												<tr>
+													<td><div style='font-weight:".$report_bold."'>".$report_tab."".$valTop['account_name']."</div></td>
+													<td style=\"text-align:right;\"><div style='font-weight:".$report_bold."'>".number_format($total_account_amount, 2)."</div></td>
+												</tr>";
+										} else {
+											$tblitem_top5 = "";
+										}
+									} else {
+										$tblitem_top5 = "";
+									}
+
+									$tblitem_top .= $tblitem_top1.$tblitem_top2.$tblitem_top3.$tblitem_top5;
+
+									if($valTop['report_type'] == 6){
+										if(!empty($valTop['report_formula']) && !empty($valTop['report_operator'])){
+											$report_formula 	= explode('#', $valTop['report_formula']);
+											$report_operator 	= explode('#', $valTop['report_operator']);
+
+											$grand_total_account_amount1	= 0;
+											for($i = 0; $i < count($report_formula); $i++){
+												if($report_operator[$i] == '-'){
+													if($grand_total_account_amount1 == 0 ){
+														$grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+													} else {
+														$grand_total_account_amount1 = $grand_total_account_amount1 - $account_amount[$report_formula[$i]];
+													}
+												} else if($report_operator[$i] == '+'){
+													if($grand_total_account_amount1 == 0){
+														$grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+													} else {
+														$grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+													}
+												}
+											}
+											
+										} else {
+											
+										}
+									} else {
+										
+									}
+
+								}
+
+		        $tblfooter_top	= "
+		        		</table>
+		        	</td>
+		        	<td width=\"10%\"></td>
+		        </tr>";
+
+			       /* print_r("tblitem_top ");
+			        print_r($tblitem_top);
+			        exit; */
+
+				$tblheader_bottom = "
+					<tr>
+						<td width=\"5%\"></td>
+			        	<td width=\"100%\" style=\"border-bottom:1px black solid;border-left:1px black solid;border-right:1px black solid\">	
+			        		<table id=\"items\" width=\"100%\" cellspacing=\"1\" cellpadding=\"2\" border=\"0\">";		
+			        			$tblitem_bottom = "";
+			        			foreach ($expenditure as $keyBottom => $valBottom) {
+									if($valBottom['report_tab'] == 0){
+										$report_tab = ' ';
+									} else if($valBottom['report_tab'] == 1){
+										$report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+									} else if($valBottom['report_tab'] == 2){
+										$report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+									} else if($valBottom['report_tab'] == 3){
+										$report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+									}
+
+									if($valBottom['report_bold'] == 1){
+										$report_bold = 'bold';
+									} else {
+										$report_bold = 'normal';
+									}									
+
+									if($valBottom['report_type'] == 1){
+										$tblitem_bottom1 = "
+											<tr>
+												<td colspan=\"2\"><div style=\"font-weight:".$report_bold."\">".$report_tab."".$valBottom['account_name']."</div></td>
+											</tr>";
+									} else {
+										$tblitem_bottom1 = "";
+									}
+
+
+
+									if($valBottom['report_type'] == 2){
+										$tblitem_bottom2 = "
+											<tr>
+												<td style=\"width: 73%\"><div style=\"font-weight:".$report_bold."\">".$report_tab."".$valBottom['account_name']."</div></td>
+												<td style=\"width: 25%\"><div style=\"font-weight:".$report_bold."\"></div></td>
+											</tr>";
+									} else {
+										$tblitem_bottom2 = "";
+									}									
+
+									if($valBottom['report_type']	== 3){
+										$account_subtotal 	= $this->getAmountAccount($valBottom['account_id']);
+
+										// print_r("account_subtotal ");
+										// print_r($account_subtotal);
+										// exit;
+
+										$tblitem_bottom3 = "
+											<tr>
+												<td style=\"width: 73%\"><div style=\"font-weight:".$report_bold."\">".$report_tab."(".$valBottom['account_code'].") ".$valBottom['account_name']."</div> </td>
+												<td style=\"text-align:right;width: 25%\">".number_format($account_subtotal, 2)."</td>
+											</tr>";
+
+										$account_amount[$valBottom['report_no']] = $account_subtotal;
+
+									} else {
+										$tblitem_bottom3 = "";
+									}
+									
+
+									if($valBottom['report_type'] == 5){
+										if(!empty($valBottom['report_formula']) && !empty($valBottom['report_operator'])){
+											$report_formula 	= explode('#', $valBottom['report_formula']);
+											$report_operator 	= explode('#', $valBottom['report_operator']);
+
+											$total_account_amount2	= 0;
+											for($i = 0; $i < count($report_formula); $i++){
+												if($report_operator[$i] == '-'){
+													if($total_account_amount2 == 0 ){
+														$total_account_amount2 = $total_account_amount2 + $account_amount[$report_formula[$i]];
+													} else {
+														$total_account_amount2 = $total_account_amount2 - $account_amount[$report_formula[$i]];
+													}
+												} else if($report_operator[$i] == '+'){
+													if($total_account_amount2 == 0){
+														$total_account_amount2 = $total_account_amount2 + $account_amount[$report_formula[$i]];
+													} else {
+														$total_account_amount2 = $total_account_amount2 + $account_amount[$report_formula[$i]];
+													}
+												}
+											}
+											$tblitem_bottom5 = "
+												<tr>
+													<td><div style=\"font-weight:".$report_bold."\">".$report_tab."".$valBottom['account_name']."</div></td>
+													<td style=\"text-align:righr;\"><div style=\"font-weight:".$report_bold."\">".number_format($total_account_amount2, 2)."</div></td>
+												</tr>";
+										} else {
+											$tblitem_bottom5 = "";
+										}
+									} else {
+										$tblitem_bottom5 = "";
+									}
+
+									$tblitem_bottom .= $tblitem_bottom1.$tblitem_bottom2.$tblitem_bottom3.$tblitem_bottom5;
+
+
+									if($valBottom['report_type'] == 6){
+										if(!empty($valBottom['report_formula']) && !empty($valBottom['report_operator'])){
+											$report_formula 	= explode('#', $valBottom['report_formula']);
+											$report_operator 	= explode('#', $valBottom['report_operator']);
+
+											$grand_total_account_amount2	= 0;
+											for($i = 0; $i < count($report_formula); $i++){
+												if($report_operator[$i] == '-'){
+													if($grand_total_account_amount2 == 0 ){
+														$grand_total_account_amount2 = $grand_total_account_amount2 + $account_amount[$report_formula[$i]];
+													} else {
+														$grand_total_account_amount2 = $grand_total_account_amount2 - $account_amount[$report_formula[$i]];
+													}
+												} else if($report_operator[$i] == '+'){
+													if($grand_total_account_amount2 == 0){
+														$grand_total_account_amount2 = $grand_total_account_amount2 + $account_amount[$report_formula[$i]];
+													} else {
+														$grand_total_account_amount2 = $grand_total_account_amount2 + $account_amount[$report_formula[$i]];
+													}
+												}
+											}
+										} else {
+											
+										}
+									} else {
+										
+									}
+
+								}
+								// exit;
+
+		       	$tblfooter_bottom = "
+		       			</table>
+		        	</td>
+		        	<td width=\"5%\"></td>
+		        </tr>";
+
+
+			        $shu = $grand_total_account_amount1 - $grand_total_account_amount2;
+
+			$tblFooter = "
+			   
+			    <tr>
+			    	<td width=\"5%\"></td>
+			    	<td style=\"border:1px black solid;\">
+			    		<table id=\"items\" width=\"100%\" cellspacing=\"1\" cellpadding=\"2\" border=\"0\">
+							<tr>
+								<td style=\"width: 75%\"><div style=\"font-weight:bold;font-size:14px\">RUGI / LABA</div></td>
+								<td style=\"width: 23%; text-align:right;\"><div style=\"font-weight:bold; font-size:14px\">".number_format($shu, 2)."</div></td>
+							</tr>
+			    		</table>
+			    	</td>
+			    	<td width=\"10%\"></td>
+			    </tr>
+			</table>";
+
+        $pdf::writeHTML($tblHeader.$tblheader_top.$tblitem_top.$tblfooter_top.$tblheader_bottom.$tblitem_bottom.$tblfooter_bottom.$tblFooter, true, false, false, false, '');
 
         $filename = 'Laporan_Rugi_Laba_'.$start_date.'s.d.'.$end_date.'.pdf';
         $pdf::Output($filename, 'I');
@@ -272,46 +484,13 @@ class AcctProfitLossReportController extends Controller
         } else {
             $end_date = Session::get('end_date');
         }
-        // $sales_invoice = SalesInvoice::join('sales_invoice_item','sales_invoice_item.sales_invoice_id','=','sales_invoice.sales_invoice_id')
-        // ->where('sales_invoice.sales_invoice_date','>=',$start_date)
-        // ->where('sales_invoice.sales_invoice_date','<=',$end_date)
-        // ->where('sales_invoice.data_state',0)
-        // ->where('sales_invoice.company_id', Auth::user()->company_id)
-        // ->get();
-        // $total_sales_amount = 0;
-        // foreach($sales_invoice as $row){
-        //     $total_sales_amount += $row['total_amount'];
-        // }
-
-        // $purchase_invoice = PurchaseInvoice::join('purchase_invoice_item','purchase_invoice_item.purchase_invoice_id','=','purchase_invoice.purchase_invoice_id')
-        // ->where('purchase_invoice.purchase_invoice_date','>=',$start_date)
-        // ->where('purchase_invoice.purchase_invoice_date','<=',$end_date)
-        // ->where('purchase_invoice.data_state',0)
-        // ->where('purchase_invoice.company_id', Auth::user()->company_id)
-        // ->get();
-        // $total_purchase_amount = 0;
-        // foreach($purchase_invoice as $row){
-        //     $total_purchase_amount += $row['total_amount'];
-        // }
-
-        // $expenditure = Expenditure::where('company_id', Auth::user()->company_id)
-        // ->where('data_state',0)
-        // ->where('expenditure_date','>=',$start_date)
-        // ->where('expenditure_date','<=',$end_date)
-        // ->get();
-        // $total_expenditure_amount = 0;
-        // foreach($expenditure as $row){
-        //     $total_expenditure_amount += $row['expenditure_amount'];
-        // }
-
-        // $subtotal_expenditure = $total_purchase_amount + $total_expenditure_amount;
-        // $subtotal_difference = $total_sales_amount - $subtotal_expenditure;
-        $income = AcctAccount::where('data_state',0)
+       
+        $income = AcctProfitLossReport::where('data_state',0)
         ->where('account_type_id',2)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
-        $expenditure = AcctAccount::where('data_state',0)
+        $expenditure = AcctProfitLossReport::where('data_state',0)
         ->where('account_type_id',3)
         ->where('company_id', Auth::user()->company_id)
         ->get();    
@@ -338,58 +517,258 @@ class AcctProfitLossReportController extends Controller
             $spreadsheet->getActiveSheet()->getStyle('B1')->getFont()->setBold(true)->setSize(16);
             $spreadsheet->getActiveSheet()->mergeCells("B2:C2");
             $spreadsheet->getActiveSheet()->getStyle('B2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            $spreadsheet->getActiveSheet()->mergeCells("B4:C4");
-            $spreadsheet->getActiveSheet()->getStyle('B4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-            $spreadsheet->getActiveSheet()->getStyle('B4')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle('B9')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle('B7')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            $spreadsheet->getActiveSheet()->getStyle('B14')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            $spreadsheet->getActiveSheet()->getStyle('B15')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            $spreadsheet->getActiveSheet()->getStyle('C7')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle('C14')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle('C15')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle('B7')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle('B14')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle('B15')->getFont()->setBold(true);
-            for ($i=0; $i < 37 ; $i++) { 
-                $spreadsheet->getActiveSheet()->getStyle('C'.$i)->getNumberFormat()->setFormatCode('0.00');
-            }
-
 
             $sheet->setCellValue('B1',"LAPORAN RUGI LABA");	
             $sheet->setCellValue('B2', 'Period '.date('d M Y', strtotime($start_date))." s.d. ".date('d M Y', strtotime($end_date)));
-            $sheet->setCellValue('B4',"PENDAPATAN");
-            $no = 5;
-            $no1 = 5;
-            $income_amount = 0;
-            $expenditure1 = 0;
-            $expenditure2 = 0;
-            foreach ($income as $key => $val) {
-                $sheet->setCellValue('B'.$no++, '  '.$val['account_code'].' - '.$val['account_name']);
-                $sheet->setCellValue('C'.$no1++, $this->getAmountAccount($val['account_id']));
-                $income_amount += $this->getAmountAccount($val['account_id']);
-            }
-            $no++;
-            $sheet->setCellValue('B'.$no++,"TOTAL PENDAPATAN");
-            $no1 = 7;
-            $sheet->setCellValue('C'.$no1, $income_amount);
-            $no++;
-            $sheet->setCellValue('B'.$no++,"PENGELUARAN");
-            $no1 = 10;
-            foreach ($expenditure as $key => $val) {
-                $sheet->setCellValue('B'.$no++, '  '.$val['account_code'].' - '.$val['account_name']);
-                $sheet->setCellValue('C'.$no1++, $this->getAmountAccount($val['account_id']));
-                $expenditure1 += $this->getAmountAccount($val['account_id']);
-            }
-            $no++;
-            $no1 = 15;
-            $no++;
-            $sheet->setCellValue('B'.$no++,"TOTAL PENGELUARAN");
-            $sheet->setCellValue('C14', $expenditure1);
-            $sheet->setCellValue('B'.$no++,"RUGI / LABA");
-            $sheet->setCellValue('C15', $income_amount - $expenditure1);
+            $j = 4;
+
+            foreach($income as $keyTop => $valTop){
+                if(is_numeric($keyTop)){
+                    
+                    $spreadsheet->setActiveSheetIndex(0);
+                    $spreadsheet->getActiveSheet()->getStyle('B'.$j.':C'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            
+                    $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+                    $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                    
+
+                    if($valTop['report_tab'] == 0){
+                        $report_tab = ' ';
+                    } else if($valTop['report_tab'] == 1){
+                        $report_tab = '     ';
+                    } else if($valTop['report_tab'] == 2){
+                        $report_tab = '          ';
+                    } else if($valTop['report_tab'] == 3){
+                        $report_tab = '               ';
+                    }
+
+                    if($valTop['report_bold'] == 1){
+                        $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getFont()->setBold(true);	
+                        $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getFont()->setBold(true);	
+                    } else {
+                    
+                    }
+
+                    if($valTop['report_type'] == 1){
+                        $spreadsheet->getActiveSheet()->mergeCells("B".$j.":C".$j."");
+                        $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $valTop['account_name']);
+
+                        $j++;
+                    }
+                        
+                    
+                    if($valTop['report_type']	== 2){
+                        $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $valTop['account_name']);
+
+                        $j++;
+                    }
+                            
+
+                    if($valTop['report_type']	== 3){
+                        $account_subtotal 	= $this->getAmountAccount($valTop['account_id']);
+
+                        $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $report_tab.$valTop['account_name']);
+                        $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab.$account_subtotal);
+
+                        $account_amount[$valTop['report_no']] = $account_subtotal;
+
+                        $j++;
+                    }
 
 
+                    if($valTop['report_type'] == 5){
+                        if(!empty($valTop['report_formula']) && !empty($valTop['report_operator'])){
+                            $report_formula 	= explode('#', $valTop['report_formula']);
+                            $report_operator 	= explode('#', $valTop['report_operator']);
+
+                            $total_account_amount	= 0;
+                            for($i = 0; $i < count($report_formula); $i++){
+                                if($report_operator[$i] == '-'){
+                                    if($total_account_amount == 0 ){
+                                        $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                    } else {
+                                        $total_account_amount = $total_account_amount - $account_amount[$report_formula[$i]];
+                                    }
+                                } else if($report_operator[$i] == '+'){
+                                    if($total_account_amount == 0){
+                                        $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                    } else {
+                                        $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                    }
+                                }
+                            }
+
+                            $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $report_tab.$valTop['account_name']);
+                            $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab.$total_account_amount);
+
+                            $j++;
+                        }
+                    }
+
+                    if($valTop['report_type'] == 6){
+                        if(!empty($valTop['report_formula']) && !empty($valTop['report_operator'])){
+                            $report_formula 	= explode('#', $valTop['report_formula']);
+                            $report_operator 	= explode('#', $valTop['report_operator']);
+
+                            $grand_total_account_amount1	= 0;
+                            for($i = 0; $i < count($report_formula); $i++){
+                                if($report_operator[$i] == '-'){
+                                    if($grand_total_account_amount1 == 0 ){
+                                        $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                                    } else {
+                                        $grand_total_account_amount1 = $grand_total_account_amount1 - $account_amount[$report_formula[$i]];
+                                    }
+                                } else if($report_operator[$i] == '+'){
+                                    if($grand_total_account_amount1 == 0){
+                                        $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                                    } else {
+                                        $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                                    }
+                                }
+                            }
+
+                            $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $report_tab.$valTop['account_name']);
+                            $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab.$grand_total_account_amount1);
+
+                            $j++;
+                        }
+
+                    }
+                            
+
+                }else{
+                    continue;
+                }
+
+                
+            }
+
+            // $j--;
+
+            foreach($expenditure as $keyBottom => $valBottom){
+                if(is_numeric($keyTop)){
+                    
+                    $spreadsheet->setActiveSheetIndex(0);
+                    $spreadsheet->getActiveSheet()->getStyle('B'.$j.':C'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            
+                    $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+                    $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                    
+
+                    if($valBottom['report_tab'] == 0){
+                        $report_tab = ' ';
+                    } else if($valBottom['report_tab'] == 1){
+                        $report_tab = '     ';
+                    } else if($valBottom['report_tab'] == 2){
+                        $report_tab = '          ';
+                    } else if($valBottom['report_tab'] == 3){
+                        $report_tab = '               ';
+                    }
+
+                    if($valBottom['report_bold'] == 1){
+                        $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getFont()->setBold(true);	
+                        $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getFont()->setBold(true);	
+                    } else {
+                    
+                    }
+
+                    if($valBottom['report_type'] == 1){
+                        $spreadsheet->getActiveSheet()->mergeCells("B".$j.":C".$j."");
+                        $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $valBottom['account_name']);
+                    }
+                        
+                    
+                    if($valBottom['report_type']	== 2){
+                        $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $valBottom['account_name']);
+                    }
+                            
+
+                    if($valBottom['report_type']	== 3){
+                        $account_subtotal 	= $this->getAmountAccount($valBottom['account_id']);
+
+                        $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $report_tab.$valBottom['account_name']);
+                        $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab.$account_subtotal);
+
+                        $account_amount[$valBottom['report_no']] = $account_subtotal;
+                    }
+
+
+                    if($valBottom['report_type'] == 5){
+                        if(!empty($valBottom['report_formula']) && !empty($valBottom['report_operator'])){
+                            $report_formula 	= explode('#', $valBottom['report_formula']);
+                            $report_operator 	= explode('#', $valBottom['report_operator']);
+
+                            $total_account_amount	= 0;
+                            for($i = 0; $i < count($report_formula); $i++){
+                                if($report_operator[$i] == '-'){
+                                    if($total_account_amount == 0 ){
+                                        $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                    } else {
+                                        $total_account_amount = $total_account_amount - $account_amount[$report_formula[$i]];
+                                    }
+                                } else if($report_operator[$i] == '+'){
+                                    if($total_account_amount == 0){
+                                        $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                    } else {
+                                        $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                    }
+                                }
+                            }
+
+                            $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $report_tab.$valBottom['account_name']);
+                            $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab.$total_account_amount);
+                        }
+                    }
+
+                    if($valBottom['report_type'] == 6){
+                        if(!empty($valBottom['report_formula']) && !empty($valBottom['report_operator'])){
+                            $report_formula 	= explode('#', $valBottom['report_formula']);
+                            $report_operator 	= explode('#', $valBottom['report_operator']);
+
+                            $grand_total_account_amount2	= 0;
+                            for($i = 0; $i < count($report_formula); $i++){
+                                if($report_operator[$i] == '-'){
+                                    if($grand_total_account_amount2 == 0 ){
+                                        $grand_total_account_amount2 = $grand_total_account_amount2 + $account_amount[$report_formula[$i]];
+                                    } else {
+                                        $grand_total_account_amount2 = $grand_total_account_amount2 - $account_amount[$report_formula[$i]];
+                                    }
+                                } else if($report_operator[$i] == '+'){
+                                    if($grand_total_account_amount2 == 0){
+                                        $grand_total_account_amount2 = $grand_total_account_amount2 + $account_amount[$report_formula[$i]];
+                                    } else {
+                                        $grand_total_account_amount2 = $grand_total_account_amount2 + $account_amount[$report_formula[$i]];
+                                    }
+                                }
+                            }
+
+                            $spreadsheet->getActiveSheet()->setCellValue('B'.$j, $report_tab.$valBottom['account_name']);
+                            $spreadsheet->getActiveSheet()->setCellValue('C'.$j, $report_tab.$grand_total_account_amount2);
+                        }
+
+                    }
+                            
+
+                }else{
+                    continue;
+                }
+
+                $j++;
+            }
+
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+            $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':C'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+
+            $spreadsheet->getActiveSheet()->getStyle("B".($j).":C".$j)->getFont()->setBold(true);	
+
+            $shu = $grand_total_account_amount1 - $grand_total_account_amount2;
+
+            $spreadsheet->getActiveSheet()->setCellValue('B'.($j), "RUGI / LABA");
+            $spreadsheet->getActiveSheet()->setCellValue('C'.($j), $shu);
+
+            
             $filename='Laporan_Rugi_Laba_'.$start_date.'_s.d._'.$end_date.'.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment;filename="'.$filename.'"');

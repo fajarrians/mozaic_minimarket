@@ -129,14 +129,14 @@
                     @foreach ($data as $row)
                         <tr>
                             <td class="text-center">{{ $no++ }}.</td>
-                            <td>{{ $row['purchase_invoice_supplier'] }}</td>
+                            <td>{{ $PIRC->getSupplierName($row['supplier_id']) }}</td>
                             <td>{{ $PIRC->getWarehouseName($row['warehouse_id']) }}</td>
                             <td>{{ $PIRC->getItemName($row['item_id']) }}</td>
                             <td>{{ date('d-m-Y', strtotime($row['purchase_invoice_date'])) }}</td>
                             <td>{{ $row['quantity'] }}</td>
                             <td>{{ $PIRC->getUnitName($row['item_unit_id']) }}</td>
                             <td style="text-align: right">{{ number_format($row['item_unit_cost'],2,'.',',') }}</td>
-                            <td style="text-align: right">{{ number_format($row['subtotal_amount'],2,'.',',') }}</td>
+                            <td style="text-align: right">{{ number_format($row['subtotal_amount_after_discount'],2,'.',',') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

@@ -60,7 +60,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <a class="text-dark">Nama Pemasok<a class='red'> *</a></a>
-                        <input class="form-control input-bb" name="purchase_invoice_supplier" id="purchase_invoice_supplier" type="text" autocomplete="off" value="{{ $purchaseinvoice['purchase_invoice_supplier'] }}" readonly/>
+                        <input class="form-control input-bb" name="purchase_invoice_supplier" id="purchase_invoice_supplier" type="text" autocomplete="off" value="{{ $PurchaseInvoice->getSupplierName($purchaseinvoice['supplier_id']) }}" readonly/>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -117,7 +117,7 @@
                                                 <td style='text-align  : left !important;'>".$PurchaseInvoice->getItemName($val['item_id'])."</td>
                                                 <td style='text-align  : right !important;'>".$val['quantity']."</td>
                                                 <td style='text-align  : right !important;'>".number_format($val['item_unit_cost'],2,',','.')."</td>
-                                                <td style='text-align  : right !important;'>".number_format($val['subtotal_amount'],2,',','.')."</td>
+                                                <td style='text-align  : right !important;'>".number_format($val['subtotal_amount_after_discount'],2,',','.')."</td>
                                                 <td style='text-align  : right !important;'>".date('d-m-Y', strtotime($val['item_expired_date']))."</td>
                                     </tr>";
                                 }
@@ -128,10 +128,20 @@
                             <td colspan = "2" style='text-align  : right !important;'>{{ number_format($purchaseinvoice['subtotal_amount_total'],2,',','.') }}</td>
                         </tr>
                         <tr>
-                            <td colspan = "3"><b>Diskon</b></td>
+                            <td colspan = "3"><b>Diskon (%)</b></td>
                             <td colspan = "1" style='text-align  : right !important;'>{{ $purchaseinvoice['discount_percentage_total'] }}
                             </td>
                             <td colspan = "1" style='text-align  : right !important;'>{{ number_format($purchaseinvoice['discount_amount_total'],2,',','.') }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan = "3"><b>PPN (%)</b></td>
+                            <td colspan = "1" style='text-align  : right !important;'>{{ $purchaseinvoice['tax_ppn_percentage'] }}
+                            </td>
+                            <td colspan = "1" style='text-align  : right !important;'>{{ number_format($purchaseinvoice['tax_ppn_amount'],2,',','.') }}</td>
+                        </tr>
+                        <tr>
+                            <td colspan = "3"><b>Selisih</b></td>
+                            <td colspan = "2" style='text-align  : right !important;'>{{ number_format($purchaseinvoice['shortover_amount'],2,',','.') }}</td>
                         </tr>
                         <tr>
                             <td colspan = "3"><b>Total Jumlah</b></td>

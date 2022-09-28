@@ -69,6 +69,7 @@ class SalesCustomerController extends Controller
         $table                  = SalesCustomer::findOrFail($request->customer_id);
         $table->customer_name   = $request->customer_name;
         $table->customer_gender = $request->customer_gender;
+        $table->customer_status = $request->customer_status;
         $table->updated_id      = Auth::id();
 
         if($table->save()){

@@ -10,15 +10,26 @@ use App\Http\Controllers\AcctProfitLossYearReportController;
 use App\Http\Controllers\AcctReceiptsController;
 use App\Http\Controllers\AcctReceiptsReportController;
 use App\Http\Controllers\AttendanceReportController;
+use App\Http\Controllers\ConfigurationDataController;
+use App\Http\Controllers\ConsolidatedDisbursementReportController;
+use App\Http\Controllers\ConsolidatedProfitLossReportController;
+use App\Http\Controllers\ConsolidatedProfitLossYearReportController;
+use App\Http\Controllers\ConsolidatedReceiptsReportController;
+use App\Http\Controllers\CoreSupplierController;
+use App\Http\Controllers\CoreBankController;
+use App\Http\Controllers\CoreMemberController;
+use App\Http\Controllers\CoreMemberReportController;
 use App\Http\Controllers\ExpenditureController;
 use App\Http\Controllers\GeneralLedgerController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InvtItemBarcodeController;
+use App\Http\Controllers\SalesCustomerReportController;
 use App\Http\Controllers\SystemUserController;
 use App\Http\Controllers\SystemUserGroupController;
 use App\Http\Controllers\InvtItemCategoryController;
 use App\Http\Controllers\InvtItemController;
+use App\Http\Controllers\InvtItemRackController;
 use App\Http\Controllers\InvtItemUnitController;
 use App\Http\Controllers\InvtStockAdjustmentController;
 use App\Http\Controllers\InvtStockAdjustmentReportController;
@@ -29,12 +40,14 @@ use App\Http\Controllers\PurchaseInvoiceController;
 use App\Http\Controllers\PurchaseInvoiceReportController;
 use App\Http\Controllers\PurchaseReturnController;
 use App\Http\Controllers\PurchaseReturnReportController;
+use App\Http\Controllers\PurchasePaymentController;
 use App\Http\Controllers\SalesCustomerController;
 use App\Http\Controllers\SalesInvoicebyItemReportController;
 use App\Http\Controllers\SalesInvoiceByUserReportController;
 use App\Http\Controllers\SalesInvoiceByYearReportController;
 use App\Http\Controllers\SalesInvoiceController;
 use App\Http\Controllers\SalesInvoiceReportController;
+use App\Http\Controllers\SalesInvoiceDetailReportController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -129,6 +142,7 @@ Route::get('/sales-invoice/delete/{sales_invoice_id}',[SalesInvoiceController::c
 Route::get('/sales-invoice/filter-reset',[SalesInvoiceController::class, 'filterResetSalesInvoice'])->name('filter-reset-sales-invoice');
 Route::post('/sales-invoice/filter',[SalesInvoiceController::class, 'filterSalesInvoice'])->name('filter-sales-invoice');
 Route::get('/sales-invoice/print',[SalesInvoiceController::class, 'printSalesInvoice'])->name('print-sales-invoice');
+Route::post('/sales-invoice/check-customer',[SalesInvoiceController::class, 'checkCustomerSalesInvoice'])->name('check-customer-sales-invoice');
 
 Route::get('/purchase-invoice', [PurchaseInvoiceController::class, 'index'])->name('purchase-invoice');
 Route::get('/purchase-invoice/add', [PurchaseInvoiceController::class, 'addPurchaseInvoice'])->name('add-purchase-invoice');
@@ -174,6 +188,8 @@ Route::get('/stock-adjustment-report/reset',[InvtStockAdjustmentReportController
 Route::get('/stock-adjustment-report/print',[InvtStockAdjustmentReportController::class, 'printStockAdjustmentReport'])->name('stock-adjustment-report-print');
 Route::get('/stock-adjustment-report/export',[InvtStockAdjustmentReportController::class, 'exportStockAdjustmentReport'])->name('stock-adjustment-report-export');
 Route::post('/stock-adjustment-report/change-stock',[InvtStockAdjustmentReportController::class, 'changeStockAdjustmentReport'])->name('change-stock-adjustment-report');
+Route::get('/stock-adjustment-report/edit-rack/{stock_id}',[InvtStockAdjustmentReportController::class, 'editRackStockAdjustmentReport'])->name('edit-rack-stock-adjustment-report');
+Route::post('/stock-adjustment-report/process-edit-rack',[InvtStockAdjustmentReportController::class, 'processEditRackStockAdjustmentReport'])->name('process-edit-rack-stock-adjustment-report');
 
 Route::get('/purchase-invoice-report', [PurchaseInvoiceReportController::class, 'index'])->name('purchase-invoice-report');
 Route::post('/purchase-invoice-report/filter',[PurchaseInvoiceReportController::class, 'filterPurchaseInvoiceReport'])->name('filter-purchase-invoice-report');
@@ -198,6 +214,12 @@ Route::post('/sales-invoice-report/filter', [SalesInvoiceReportController::class
 Route::get('/sales-invoice-report/filter-reset', [SalesInvoiceReportController::class, 'filterResetSalesInvoiceReport'])->name('filter-reset-sales-invoice-report');
 Route::get('/sales-invoice-report/print', [SalesInvoiceReportController::class, 'printSalesInvoiceReport'])->name('print-sales-invoice-report');
 Route::get('/sales-invoice-report/export', [SalesInvoiceReportController::class, 'exportSalesInvoiceReport'])->name('export-sales-invoice-report');
+
+Route::get('/sales-invoice-report-detail', [SalesInvoiceDetailReportController::class, 'index'])->name('sales-invoice-report-detail');
+Route::post('/sales-invoice-report-detail/filter', [SalesInvoiceDetailReportController::class, 'filterSalesInvoiceReport'])->name('filter-sales-invoice-report-detail');
+Route::get('/sales-invoice-report-detail/filter-reset', [SalesInvoiceDetailReportController::class, 'filterResetSalesInvoiceReport'])->name('filter-reset-sales-invoice-report-detail');
+Route::get('/sales-invoice-report-detail/print', [SalesInvoiceDetailReportController::class, 'printSalesInvoiceReport'])->name('print-sales-invoice-report-detail');
+Route::get('/sales-invoice-report-detail/export', [SalesInvoiceDetailReportController::class, 'exportSalesInvoiceReport'])->name('export-sales-invoice-report-detail');
 
 Route::get('/sales-invoice-by-item-report',[SalesInvoicebyItemReportController::class, 'index'])->name('sales-invoice-by-item-report');
 Route::post('/sales-invoice-by-item-report/filter',[SalesInvoicebyItemReportController::class, 'filterSalesInvoicebyItemReport'])->name('filter-sales-invoice-by-item-report');
@@ -303,3 +325,90 @@ Route::get('/expenditure/delete/{expenditure_id}',[ExpenditureController::class,
 Route::get('/item-barcode/{item_id}', [InvtItemBarcodeController::class, 'index'])->name('item-barcode');
 Route::post('/item-barcode/process-add', [InvtItemBarcodeController::class, 'processAddItemBarcode'])->name('process-add-item-barcode');
 Route::get('/item-barcode/delete/{item_id}', [InvtItemBarcodeController::class, 'deleteItemBarcode'])->name('delete-item-barcode');
+
+Route::get('/configuration-data',[ConfigurationDataController::class,'index'])->name('configuration-data');
+Route::get('/configuration-data/dwonload',[ConfigurationDataController::class,'dwonloadConfigurationData'])->name('configuration-data-dwonload');
+Route::get('/configuration-data/upload',[ConfigurationDataController::class,'uploadConfigurationData'])->name('configuration-data-upload');
+Route::get('/configuration-data/check-data',[ConfigurationDataController::class,'checkDataConfiguration'])->name('check-data-configuration');
+
+Route::get('/consolidated-receipts-report', [ConsolidatedReceiptsReportController::class, 'index'])->name('consolidated-receipts-report');
+Route::post('/consolidated-receipts-report/filter', [ConsolidatedReceiptsReportController::class, 'filterConsolidatedReceiptsReport'])->name('filter-consolidated-receipts-report');
+Route::get('/consolidated-receipts-report/reset-filter', [ConsolidatedReceiptsReportController::class, 'resetFilterConsolidatedReceiptsReport'])->name('reset-filter-consolidated-receipts-report');
+Route::get('/consolidated-receipts-report/print', [ConsolidatedReceiptsReportController::class, 'printConsolidatedReceiptsReport'])->name('print-consolidated-receipts-report');
+Route::get('/consolidated-receipts-report/export', [ConsolidatedReceiptsReportController::class, 'exportConsolidatedReceiptsReport'])->name('export-consolidated-receipts-report');
+
+Route::get('/consolidated-disbursement-report', [ConsolidatedDisbursementReportController::class, 'index'])->name('consolidated-disbursement-report');
+Route::post('/consolidated-disbursement-report/filter', [ConsolidatedDisbursementReportController::class, 'filterConsolidatedDisbursementReport'])->name('filter-consolidated-disbursement-report');
+Route::get('/consolidated-disbursement-report/reset-filter', [ConsolidatedDisbursementReportController::class, 'resetFilterConsolidatedDisbursementReport'])->name('reset-filter-consolidated-disbursement-report');
+Route::get('/consolidated-disbursement-report/print', [ConsolidatedDisbursementReportController::class, 'printConsolidatedDisbursementReport'])->name('print-consolidated-disbursement-report');
+Route::get('/consolidated-disbursement-report/export', [ConsolidatedDisbursementReportController::class, 'exportConsolidatedDisbursementReport'])->name('export-consolidated-disbursement-report');
+
+Route::get('/consolidated-profit-loss-report', [ConsolidatedProfitLossReportController::class, 'index'])->name('consolidated-profit-loss-report');
+Route::post('/consolidated-profit-loss-report/filter', [ConsolidatedProfitLossReportController::class, 'filterConsolidatedProfitLossReport'])->name('filter-consolidated-profit-loss-report');
+Route::get('/consolidated-profit-loss-report/reset-filter', [ConsolidatedProfitLossReportController::class, 'resetFilterConsolidatedProfitLossReport'])->name('reset-filter-consolidated-profit-loss-report');
+Route::get('/consolidated-profit-loss-report/print', [ConsolidatedProfitLossReportController::class, 'printConsolidatedProfitLossReport'])->name('print-consolidated-profit-loss-report');
+Route::get('/consolidated-profit-loss-report/export', [ConsolidatedProfitLossReportController::class, 'exportConsolidatedProfitLossReport'])->name('export-consolidated-profit-loss-report');
+
+Route::get('/consolidated-profit-loss-year-report', [ConsolidatedProfitLossYearReportController::class, 'index'])->name('consolidated-profit-loss-year-report');
+Route::post('/consolidated-profit-loss-year-report/filter', [ConsolidatedProfitLossYearReportController::class, 'filterConsolidatedProfitLossYearReport'])->name('filter-consolidated-profit-loss-year-report');
+Route::get('/consolidated-profit-loss-year-report/reset-filter', [ConsolidatedProfitLossYearReportController::class, 'resetFilterConsolidatedProfitLossYearReport'])->name('reset-filter-consolidated-profit-loss-year-report');
+Route::get('/consolidated-profit-loss-year-report/print', [ConsolidatedProfitLossYearReportController::class, 'printConsolidatedProfitLossYearReport'])->name('print-consolidated-profit-loss-year-report');
+Route::get('/consolidated-profit-loss-year-report/export', [ConsolidatedProfitLossYearReportController::class, 'exportConsolidatedProfitLossYearReport'])->name('export-consolidated-profit-loss-year-report');
+
+Route::get('/item-rack',[InvtItemRackController::class, 'index'])->name('item-rack');
+Route::post('/item-rack/add-elements',[InvtItemRackController::class, 'addElementsInvtItemRack'])->name('add-elements-item-rack');
+Route::get('/item-rack/reset-elements',[InvtItemRackController::class, 'resetElementsInvtItemRack'])->name('reset-elements-item-rack');
+Route::get('/item-rack/add',[InvtItemRackController::class, 'addInvtItemRack'])->name('add-item-rack');
+Route::post('/item-rack/process-add',[InvtItemRackController::class, 'processAddInvtItemRack'])->name('process-add-item-rack');
+Route::get('/item-rack/edit/{item_rack_id}',[InvtItemRackController::class, 'editInvtItemRack'])->name('edit-item-rack');
+Route::post('/item-rack/process-edit',[InvtItemRackController::class, 'processEditInvtItemRack'])->name('process-edit-item-rack');
+Route::get('/item-rack/delete/{item_rack_id}',[InvtItemRackController::class, 'deleteInvtItemRack'])->name('delete-item-rack');
+
+Route::get('/core-supplier', [CoreSupplierController::class, 'index'])->name('core-supplier');
+Route::post('/core-supplier/add-elements', [CoreSupplierController::class, 'addElementsCoreSupplier'])->name('add-elements-core-supplier');
+Route::get('/core-supplier/reset-elements', [CoreSupplierController::class, 'resetElementsCoreSupplier'])->name('reset-elements-core-supplier');
+Route::get('/core-supplier/add', [CoreSupplierController::class, 'addCoreSupplier'])->name('add-core-supplier');
+Route::post('/core-supplier/process-add', [CoreSupplierController::class, 'processAddCoreSupplier'])->name('process-add-core-supplier');
+Route::get('/core-supplier/edit/{supplier_id}', [CoreSupplierController::class, 'editCoreSupplier'])->name('edit-core-supplier');
+Route::post('/core-supplier/process-edit', [CoreSupplierController::class, 'processEditCoreSupplier'])->name('process-edit-core-supplier');
+Route::get('/core-supplier/delete/{supplier_id}', [CoreSupplierController::class, 'deleteCoreSupplier'])->name('delete-core-supplier');
+
+Route::get('/purchase-payment',[PurchasePaymentController::class, 'index'])->name('purchase-payment');
+Route::post('/purchase-payment/filter',[PurchasePaymentController::class, 'filterPurchasePayment'])->name('filter-purchase-payment');
+Route::get('/purchase-payment/reset-filter',[PurchasePaymentController::class, 'resetFilterPurchasePayment'])->name('reset-filter-purchase-payment');
+Route::get('/purchase-payment/search', [PurchasePaymentController::class, 'searchPurchasePayment'])->name('search-purchase-payment');
+Route::get('/purchase-payment/select-supplier/{supplier_id}', [PurchasePaymentController::class, 'selectSupplierPurchasePayment'])->name('select-supplier-purchase-payment');
+
+Route::post('/purchase-payment/elements-add/', [PurchasePaymentController::class, 'elements_add'])->name('elements-add-purchase-payment');
+Route::post('/purchase-payment/add-transfer-array/', [PurchasePaymentController::class, 'processAddTransferArray'])->name('add-transfer-array-purchase-payment');
+Route::post('/purchase-payment/process-add/', [PurchasePaymentController::class, 'processAddPurchasePayment'])->name('process-add-purchase-payment');
+Route::get('/purchase-payment/delete-transfer-array/{record_id}/{supplier_id}', [PurchasePaymentController::class, 'deleteTransferArray'])->name('delete-transfer-array-purchase-payment');
+Route::get('/purchase-payment/delete/{supplier_id}', [PurchasePaymentController::class, 'deletePurchasePayment'])->name('delete-purchase-payment');
+Route::post('/purchase-payment/process-delete', [PurchasePaymentController::class, 'processDeletePurchasePayment'])->name('process-delete-purchase-payment');
+Route::get('/purchase-payment/detail/{supplier_id}', [PurchasePaymentController::class, 'detailPurchasePayment'])->name('detail-purchase-payment');
+
+Route::get('/core-bank',[CoreBankController::class, 'index'])->name('core-bank');
+Route::post('/core-bank/add-elements',[CoreBankController::class, 'addElementsCoreBank'])->name('add-elements-core-bank');
+Route::get('/core-bank/reset-elements',[CoreBankController::class, 'resetElementsCoreBank'])->name('reset-elements-core-bank');
+Route::get('/core-bank/add',[CoreBankController::class, 'addCoreBank'])->name('add-core-bank');
+Route::post('/core-bank/process-add',[CoreBankController::class, 'processAddCoreBank'])->name('process-add-core-bank');
+Route::get('/core-bank/edit/{bank_id}',[CoreBankController::class, 'editCoreBank'])->name('edit-core-bank');
+Route::post('/core-bank/process-edit',[CoreBankController::class, 'processEditCoreBank'])->name('process-edit-core-bank');
+Route::get('/core-bank/delete/{bank_id}',[CoreBankController::class, 'deleteCoreBank'])->name('delete-core-bank');
+
+Route::get('/sales-customer-report', [SalesCustomerReportController::class, 'index'])->name('sales-customer-report');
+Route::post('/sales-customer-report/filter', [SalesCustomerReportController::class, 'filterSalesCustomerReport'])->name('filter-sales-customer-report');
+Route::get('/sales-customer-report/reset-filter', [SalesCustomerReportController::class, 'resetFilterSalesCustomerReport'])->name('reset-filter-sales-customer-report');
+Route::get('/sales-customer-report/print', [SalesCustomerReportController::class, 'printSalesCustomerReport'])->name('print-sales-customer-report');
+Route::get('/sales-customer-report/export', [SalesCustomerReportController::class, 'exportSalesCustomerReport'])->name('export-sales-customer-report');
+
+Route::get('/core-member',[CoreMemberController::class, 'index'])->name('core-member');
+Route::get('/core-member-report', [CoreMemberReportController::class, 'index'])->name('core-member-report');
+Route::post('/core-member-report/filter', [CoreMemberReportController::class, 'filterCoreMemberReport'])->name('filter-core-member-report');
+Route::get('/core-member-report/reset-filter', [CoreMemberReportController::class, 'resetFilterCoreMemberReport'])->name('reset-filter-core-member-report');
+Route::get('/core-member-report/print', [CoreMemberReportController::class, 'printCoreMemberReport'])->name('print-core-member-report');
+Route::get('/core-member-report/export', [CoreMemberReportController::class, 'exportCoreMemberReport'])->name('export-core-member-report');
+
+Route::get('/data-table-item',[InvtItemController::class, 'dataTableItem']);
+Route::get('/table-sales-item',[SalesInvoiceController::class, 'tableSalesItem']);
+Route::get('/table-stock-item',[InvtStockAdjustmentReportController::class, 'tableStockItem']);

@@ -174,7 +174,7 @@ am5.ready(function() {
     // Set data
     // https://www.amcharts.com/docs/v5/charts/percent-charts/pie-chart/#Setting_data
     series.data.setAll([
-        <?php foreach ($item as $key => $val) { ?>
+        <?php foreach ($item_data as $key => $val) { ?>
             <?php if($val['quantity'] > 0) {?>
                 { value: <?php echo $val['quantity'] ?>, category: "<?php echo $val['item_name'] ?>" },
                 <?php }?>
@@ -334,12 +334,28 @@ am5.ready(function() {
     // chart.appear(5000, 500);
 
 });
+
+// $('body').append('<div style="" id="loadingDiv"><div class="loader">Loading...</div></div>');
+// $(window).on('load', function(){
+//   setTimeout(removeLoader, 2000); //wait for page load PLUS two seconds.
+// });
+// function removeLoader(){
+//     $( "#loadingDiv" ).fadeOut(500, function() {
+//       // fadeOut complete. Remove the loading div
+//       $( "#loadingDiv" ).remove(); //makes page more lightweight 
+//   });  
+// }
+
+// $('body').append('<div class="modal" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true"><div class="modal-dialog"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="staticBackdropLabel">Modal title</h5><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button></div><div class="modal-body">...</div><div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button><button type="button" class="btn btn-primary">Understood</button></div></div></div></div>');
+
+// $(document).ready(function(){
+//     $('#modal').modal('show');
+// });
 </script>
 
 @stop
 
 @section('content')
-    
 <br>
 
 <div class="row">

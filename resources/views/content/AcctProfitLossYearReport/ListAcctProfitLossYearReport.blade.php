@@ -9,7 +9,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{{ url('home') }}">Beranda</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Laporan Laba/Rugi Tahunan </li>
+      <li class="breadcrumb-item active" aria-current="page">Laporan Rugi / Laba Tahunan </li>
     </ol>
   </nav>
 
@@ -17,7 +17,7 @@
 
 @section('content')
 <h3 class="page-title">
-    <b>Laporan Perhitungan Laba/Rugi Tahunan</b>
+    <b>Laporan Perhitungan Rugi / Laba Tahunan</b>
 </h3>
 <br/>
 <div id="accordion">
@@ -81,11 +81,11 @@
 
     <div class="card-body">
         <div class="table-responsive pt-5">
-            <table id="" style="width:100%" class="table table-striped table-bordered table-hover table-full-width">
+            <table id="" style="width:100%" class="table table-bordered table-full-width">
                 <thead>
                     <tr>
                         <td colspan='2' style='text-align:center;'>
-                            <div style='font-weight:bold'>Laporan Perhitungan Laba/Rugi
+                            <div style='font-weight:bold'>Laporan Perhitungan Rugi / Laba
                             </div>
                         </td>
                     </tr>
@@ -101,88 +101,302 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th colspan="2">Pendapatan</th>
-                    </tr>
-                    <?php 
-                        $income_amount      = 0;
-                    ?>
-                    @foreach ($income as $row)
-                        <?php $income_amount += $APLYR->getAmountAccount($row['account_id']) ?>
-                        <tr>
-                            <td style="width: 80%">&nbsp&nbsp&nbsp&nbsp&nbsp {{ $row['account_code'] }} - {{ $row['account_name'] }}</td>
-                            <td style="width: 20%; text-align: right">{{ number_format($APLYR->getAmountAccount($row['account_id']),2,'.',',') }}</td>
-                        </tr>
+                    @foreach ($income as $val)
+                        <?php
+                            if($val['report_tab'] == 0){
+                                $report_tab = ' ';
+                            } else if($val['report_tab'] == 1){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 2){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 3){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 4){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 5){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 6){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 7){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 8){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            }
+
+                            if($val['report_bold'] == 1){
+                                $report_bold = 'bold';
+                            } else {
+                                $report_bold = 'normal';
+                            }
+
+                            echo "
+                                <tr>";
+
+                                if($val['report_type'] == 1){
+                                    echo "
+                                        <td colspan='2'><div style='font-weight:".$report_bold."'>".$report_tab."".$val['account_name']."</div></td>
+                                        ";
+                                }
+                                
+                            echo "
+                                </tr>";
+
+                            echo "
+                                <tr>";
+
+                                if($val['report_type']	== 2){
+                                    echo "
+                                        <td style='width: 75%'><div style='font-weight:".$report_bold."'>".$report_tab."".$val['account_name']."</div></td>
+                                        <td style='width: 25%'><div style='font-weight:".$report_bold."'></div></td>
+                                        ";
+                                }
+                                    
+                            echo "
+                                </tr>";
+
+                            echo "
+                                <tr>";
+
+                                if($val['report_type']	== 3){
+                                    $income_subtotal 	= $APLYR->getAmountAccount($val['account_id']);
+
+                                    echo "
+                                        <td><div style='font-weight:".$report_bold."'>".$report_tab."(".$val['account_code'].") ".$val['account_name']."</div> </td>
+                                        <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($income_subtotal, 2)."</div></td>
+                                    ";
+
+                                    $account_amount[$val['report_no']] = $income_subtotal;
+                                }
+
+                                
+                                    
+                            echo "
+                                </tr>";
+
+                            echo "
+                                <tr>";
+
+                                if($val['report_type'] == 5){
+                                    if(!empty($val['report_formula']) && !empty($val['report_operator'])){
+                                        $report_formula 	= explode('#', $val['report_formula']);
+                                        $report_operator 	= explode('#', $val['report_operator']);
+
+                                        $total_account_amount	= 0;
+                                        for($i = 0; $i < count($report_formula); $i++){
+                                            if($report_operator[$i] == '-'){
+                                                if($total_account_amount == 0 ){
+                                                    $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                } else {
+                                                    $total_account_amount = $total_account_amount - $account_amount[$report_formula[$i]];
+                                                }
+                                            } else if($report_operator[$i] == '+'){
+                                                if($total_account_amount == 0){
+                                                    $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                } else {
+                                                    $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                }
+                                            }
+                                        }
+
+                                        echo "
+                                            <td><div style='font-weight:".$report_bold."'>".$report_tab."".$val['account_name']."</div></td>
+                                            <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($total_account_amount, 2)."</div></td>
+                                            ";
+                                }
+
+                            }
+
+                            // print_r($total_account_amount);
+
+                            echo "			
+                                </tr>";
+
+
+                            if($val['report_type'] == 6){
+                                if(!empty($val['report_formula']) && !empty($val['report_operator'])){
+                                    $report_formula 	= explode('#', $val['report_formula']);
+                                    $report_operator 	= explode('#', $val['report_operator']);
+
+                                    
+                                    $grand_total_account_amount1	= 0;
+                                    for($i = 0; $i < count($report_formula); $i++){
+                                        if($report_operator[$i] == '-'){
+                                            if($grand_total_account_amount1 == 0 ){
+                                                $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                                            } else {
+                                                $grand_total_account_amount1 = $grand_total_account_amount1 - $account_amount[$report_formula[$i]];
+                                            }
+                                        } else if($report_operator[$i] == '+'){
+                                            if($grand_total_account_amount1 == 0){
+                                                $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                                            } else {
+                                                $grand_total_account_amount1 = $grand_total_account_amount1 + $account_amount[$report_formula[$i]];
+                                            }
+                                        }
+                                    }
+
+                                    echo "
+                                        <td><div style='font-weight:".$report_bold."'>".$report_tab."".$val['account_name']."</div></td>
+                                        <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($grand_total_account_amount1, 2)."</div></td>
+                                        ";
+                                }
+
+                            }
+                         ?>
                     @endforeach
                     <tr>
-                        <th class="text-center" style="width: 80%">Total Pendapatan</th>
-                        <th style="width: 20%; text-align: right">{{ number_format($income_amount,2,'.',',') }}</th>
-                    </tr>
-                    <tr>
                         <td colspan='2'></td>
                     </tr>
-                    <tr>
-                        <th colspan="2">Pengeluaran</th>
-                    </tr>
-                    <?php
-                        $expenditure_amount = 0;
-                    ?>
-                    @foreach ($expenditure as $row)
-                        <?php $expenditure_amount += $APLYR->getAmountAccount($row['account_id']) ?>
-                        <tr>
-                            <td style="width: 80%">&nbsp&nbsp&nbsp&nbsp&nbsp {{ $row['account_code'] }} - {{ $row['account_name'] }}</td>
-                            <td style="width: 20%; text-align: right">{{ number_format($APLYR->getAmountAccount($row['account_id']),2,'.',',') }}</td>
-                        </tr>   
+                    @foreach ($expenditure as $val)
+                        <?php
+                            if($val['report_tab'] == 0){
+                                $report_tab = ' ';
+                            } else if($val['report_tab'] == 1){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 2){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 3){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 4){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 5){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 6){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 7){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            } else if($val['report_tab'] == 8){
+                                $report_tab = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+                            }
+
+                            if($val['report_bold'] == 1){
+                                $report_bold = 'bold';
+                            } else {
+                                $report_bold = 'normal';
+                            }
+
+                            echo "
+                                <tr>";
+
+                                if($val['report_type'] == 1){
+                                    echo "
+                                        <td colspan='2'><div style='font-weight:".$report_bold."'>".$report_tab."".$val['account_name']."</div></td>
+                                        ";
+                                }
+                                
+                            echo "
+                                </tr>";
+
+                            echo "
+                                <tr>";
+
+                                if($val['report_type']	== 2){
+                                    echo "
+                                        <td style='width: 75%'><div style='font-weight:".$report_bold."'>".$report_tab."".$val['account_name']."</div></td>
+                                        <td style='width: 25%'><div style='font-weight:".$report_bold."'></div></td>
+                                        ";
+                                }
+                                    
+                            echo "
+                                </tr>";
+
+                            echo "
+                                <tr>";
+
+                                if($val['report_type']	== 3){
+                                    $expenditure_subtotal 	= $APLYR->getAmountAccount($val['account_id']);
+
+                                    echo "
+                                        <td><div style='font-weight:".$report_bold."'>".$report_tab."(".$val['account_code'].") ".$val['account_name']."</div> </td>
+                                        <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($expenditure_subtotal, 2)."</div></td>
+                                    ";
+
+                                    $account_amount[$val['report_no']] = $expenditure_subtotal;
+                                }
+
+                                
+                                    
+                            echo "
+                                </tr>";
+
+                            echo "
+                                <tr>";
+
+                                if($val['report_type'] == 5){
+                                    if(!empty($val['report_formula']) && !empty($val['report_operator'])){
+                                        $report_formula 	= explode('#', $val['report_formula']);
+                                        $report_operator 	= explode('#', $val['report_operator']);
+
+                                        $total_account_amount	= 0;
+                                        for($i = 0; $i < count($report_formula); $i++){
+                                            if($report_operator[$i] == '-'){
+                                                if($total_account_amount == 0 ){
+                                                    $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                } else {
+                                                    $total_account_amount = $total_account_amount - $account_amount[$report_formula[$i]];
+                                                }
+                                            } else if($report_operator[$i] == '+'){
+                                                if($total_account_amount == 0){
+                                                    $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                } else {
+                                                    $total_account_amount = $total_account_amount + $account_amount[$report_formula[$i]];
+                                                }
+                                            }
+                                        }
+
+                                        echo "
+                                            <td><div style='font-weight:".$report_bold."'>".$report_tab."".$val['account_name']."</div></td>
+                                            <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($total_account_amount, 2)."</div></td>
+                                            ";
+                                }
+
+                            }
+
+                            // print_r($total_account_amount);
+
+                            echo "			
+                                </tr>";
+
+
+                            if($val['report_type'] == 6){
+                                if(!empty($val['report_formula']) && !empty($val['report_operator'])){
+                                    $report_formula 	= explode('#', $val['report_formula']);
+                                    $report_operator 	= explode('#', $val['report_operator']);
+
+                                    
+                                    $grand_total_account_amount2	= 0;
+                                    for($i = 0; $i < count($report_formula); $i++){
+                                        if($report_operator[$i] == '-'){
+                                            if($grand_total_account_amount2 == 0 ){
+                                                $grand_total_account_amount2 = $grand_total_account_amount2 + $account_amount[$report_formula[$i]];
+                                            } else {
+                                                $grand_total_account_amount2 = $grand_total_account_amount2 - $account_amount[$report_formula[$i]];
+                                            }
+                                        } else if($report_operator[$i] == '+'){
+                                            if($grand_total_account_amount2 == 0){
+                                                $grand_total_account_amount2 = $grand_total_account_amount2 + $account_amount[$report_formula[$i]];
+                                            } else {
+                                                $grand_total_account_amount2 = $grand_total_account_amount2 + $account_amount[$report_formula[$i]];
+                                            }
+                                        }
+                                    }
+
+                                    echo "
+                                        <td><div style='font-weight:".$report_bold."'>".$report_tab."".$val['account_name']."</div></td>
+                                        <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($grand_total_account_amount2, 2)."</div></td>
+                                        ";
+                                }
+
+                            }
+                        ?> 
                     @endforeach
                     <tr>
-                        <th class="text-center" style="width: 80%">Total Pengeluaran</th>
-                        <th style="width: 20%; text-align: right">{{ number_format($expenditure_amount,2,'.',',') }}</th>
-                    </tr>
-                    <tr>
                         <td colspan='2'></td>
                     </tr>
                     <tr>
-                        <th class="text-center" style="width: 80%">Rugi / Laba</th>
-                        <th style="width: 20%; text-align: right">{{ number_format($income_amount - $expenditure_amount,2,'.',',') }}</th>
+                        <th style="width: 80%">RUGI / LABA</th>
+                        <th style="width: 20%; text-align: right">{{ number_format($grand_total_account_amount1 - $grand_total_account_amount2,2,'.',',') }}</th>
                     </tr>
-                    {{-- <tr>
-                        <th colspan="2">Pendapatan</th>
-                    </tr>
-                    <tr>
-                        <td style="width: 80%">&nbsp&nbsp&nbsp&nbsp&nbsp Penjualan Produk</td>
-                        <td style="width: 20%; text-align: right">{{ number_format($total_sales_amount,2,'.',',') }}</td>
-                    </tr>
-                    <tr>
-                        <th style="width: 80%">Total Pendapatan</th>
-                        <th style="width: 20%; text-align: right">{{ number_format($total_sales_amount,2,'.',',') }}</th>
-                    </tr>
-                    <tr>
-                        <td colspan='2'></td>
-                    </tr>
-                    <tr>
-                        <th colspan="2">Pengeluaran</th>
-                    </tr>
-                    <tr>
-                        <td style="width: 80%">&nbsp&nbsp&nbsp&nbsp&nbsp Pembelian Produk</td>
-                        <td style="width: 20%; text-align: right">{{ number_format($total_purchase_amount,2,'.',',') }}</td>
-                    </tr>
-                    <tr>
-                        <td style="width: 80%">&nbsp&nbsp&nbsp&nbsp&nbsp Pengeluaran Lainya</td>
-                        <td style="width: 20%; text-align: right">{{ number_format($total_expenditure_amount,2,'.',',') }}</td>
-                    </tr>
-                    <tr>
-                        <?php $subtotal_expenditure = $total_purchase_amount + $total_expenditure_amount ?>
-                        <th style="width: 80%">Total Pengeluaran</th>
-                        <th style="width: 20%; text-align: right">{{ number_format($subtotal_expenditure,2,'.',',') }}</th>
-                    </tr>
-                    <tr>
-                        <td colspan='2'></td>
-                    </tr>
-                    <tr>
-                        <?php $subtotal_difference = $total_sales_amount - $subtotal_expenditure ?>
-                        <th style="width: 80%">Selisih</th>
-                        <th style="width: 20%; text-align: right">{{ number_format($subtotal_difference,2,'.',',') }}</th>
-                    </tr> --}}
                 </tbody>
             </table>
         </div>

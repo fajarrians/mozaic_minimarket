@@ -62,6 +62,18 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
+                        <a class="text-dark">Status<a class='red'> *</a></a>
+                        <?php 
+                            $status = [
+                                0 => 'Aktif',
+                                1 => 'Non Aktif'
+                            ];
+                        ?>
+                        {!! Form::select(0, $status, $data['customer_status'], ['class' => 'selection-search-clear select-form', 'id' => 'customer_status', 'name' => 'customer_status']) !!}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
                         <a class="text-dark">Jenis Kelamin<a class='red'> *</a></a>
                         {!! Form::select(0, $listgender, $data['customer_gender'], ['class' => 'selection-search-clear select-form', 'id' => 'customer_gender', 'name' => 'customer_gender']) !!}
                     </div>

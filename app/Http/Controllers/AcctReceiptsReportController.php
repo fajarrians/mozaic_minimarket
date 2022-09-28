@@ -128,15 +128,16 @@ class AcctReceiptsReportController extends Controller
         $tblStock1 = "
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <td width=\"3%\" ><div style=\"text-align: center;\">No</div></td>
-                <td width=\"20%\" ><div style=\"text-align: center;\">Keterangan</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Tanggal</div></td>
-                <td width=\"13%\" ><div style=\"text-align: center;\">Nominal</div></td>
+                <td width=\"7%\" ><div style=\"text-align: center;\">No</div></td>
+                <td width=\"31%\" ><div style=\"text-align: center;\">Keterangan</div></td>
+                <td width=\"31%\" ><div style=\"text-align: center;\">Tanggal</div></td>
+                <td width=\"31%\" ><div style=\"text-align: center;\">Nominal</div></td>
             </tr>
         
              ";
 
         $no = 1;
+        $totalamount = 0;
         $tblStock2 =" ";
         foreach ($data as $key => $val) {
             $tblStock2 .="
@@ -148,10 +149,14 @@ class AcctReceiptsReportController extends Controller
                 </tr>
                 
             ";
+            $totalamount += $val['total_amount'];
             $no++;
         }
         $tblStock3 = " 
-
+        <tr>
+            <td colspan=\"3\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($totalamount,2,'.',',') ."</div></td>
+        </tr>
         </table>";
 
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');

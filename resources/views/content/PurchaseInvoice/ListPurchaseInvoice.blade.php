@@ -144,7 +144,7 @@
                         <td class="text-center">{{ $no++ }}.</td>
                         <td>{{ $row['purchase_invoice_no'] }}</td>
                         <td>{{ date('d-m-Y', strtotime($row['purchase_invoice_date'])) }}</td>
-                        <td>{{ $row['purchase_invoice_supplier'] }}</td>
+                        <td>{{ $PurchaseInvoice->getSupplierName($row['supplier_id']) }}</td>
                         <td>{{ $PurchaseInvoice->getWarehouseName($row['warehouse_id']) }}</td>
                         <td style="text-align: right">{{ number_format($row['total_amount'],2,',','.') }}</td>
                         <td style="text-align: right">{{ number_format($row['paid_amount'],2,',','.') }}</td>
