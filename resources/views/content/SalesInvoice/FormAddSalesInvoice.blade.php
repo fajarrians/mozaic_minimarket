@@ -14,22 +14,22 @@
                 {
                     if (data != "") {
                         var html = '';
-                        var i = 1;
+                        var i = 0;
                         var no = 1;
                         var total_amount = 0; 
                         var total_item = 0;
                         var paid_amount = $('#paid_amount').val() || 0;
                         var discount_percentage_total = $('#discount_percentage_total').val() || 0;
-                        while (i <= Object.keys(data).length) {
+                        while (i < data.length) {
                             if (data[i].quantity != 0) {
-                                total_amount += data[i].subtotal_amount_after_discount;
-                                total_item += data[i].quantity;
+                                total_amount += parseInt(data[i].subtotal_amount_after_discount);
+                                total_item += parseInt(data[i].quantity);
                                 html += '<tr>'+
                                         '<td class="text-center">'+no+'.</td>'+
                                         '<td>'+data[i].item_name+'</td>'+
                                         '<td>'+data[i].item_unit_name+'</td>'+
                                         '<td>'+toRp(data[i].item_unit_price)+'</td>'+
-                                        '<td><input oninput="function_change_quantity('+data[i].item_packge_id+','+i+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
+                                        '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
                                         '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
                                         '</tr>';
 
@@ -51,7 +51,6 @@
                         $('#subtotal_amount').val(total_amount);
                         $('#discount_amount_total').val(discount_amount);
                         $('#total_item').val(total_item);
-                        console.log(html);
                         $('#show_data').html(html);
 
                         $('#item_code').val('');
@@ -72,28 +71,25 @@
             {
                 if (data != "") {
                     var html = '';
-                    var i = 1;
+                    var i = 0;
                     var no = 1;
                     var total_amount = 0; 
                     var total_item = 0;
                     var paid_amount = $('#paid_amount').val() || 0;
                     var discount_percentage_total = $('#discount_percentage_total').val() || 0;
-                    while (i <= Object.keys(data).length) {
+                    while (i < data.length) {
                         if (data[i].quantity != 0) {
-                            total_amount += data[i].subtotal_amount_after_discount;
-                            total_item += data[i].quantity;
+                            total_amount += parseInt(data[i].subtotal_amount_after_discount);
+                            total_item += parseInt(data[i].quantity);
                             html += '<tr>'+
                                     '<td class="text-center">'+no+'.</td>'+
                                     '<td>'+data[i].item_name+'</td>'+
                                     '<td>'+data[i].item_unit_name+'</td>'+
                                     '<td>'+toRp(data[i].item_unit_price)+'</td>'+
-                                    '<td><input oninput="function_change_quantity('+data[i].item_packge_id+','+i+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
+                                    '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
                                     '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
                                     '</tr>';
-
                             no++;
-                        } else {
-                            continue;
                         }
                         i++;
                     }
@@ -111,7 +107,6 @@
                     $('#subtotal_amount').val(total_amount);
                     $('#discount_amount_total').val(discount_amount);
                     $('#total_item').val(total_item);
-                    console.log(html);
                     $('#show_data').html(html);
 
                     $('#item_name').val('');
@@ -123,27 +118,25 @@
     $(document).ready(function(){
         var msg = {!! json_encode(session('msg')) !!};
         var data = {!! json_encode(session('data_itemses')) !!};
-        console.log(data);
         if (data != null) {
-            console.log(data);
 
             var html = '';
-            var i = 1;
+            var i = 0;
             var no = 1;
             var total_amount = 0;
             var total_item = 0;
             var paid_amount = $('#paid_amount').val() || 0;
             var discount_percentage_total = $('#discount_percentage_total').val() || 0;
-            while (i <= Object.keys(data).length) {
+            while (i < data.length) {
                 if (data[i].quantity != 0) {
-                    total_amount += data[i].subtotal_amount_after_discount;
-                    total_item += data[i].quantity;
+                    total_amount += parseInt(data[i].subtotal_amount_after_discount);
+                    total_item += parseInt(data[i].quantity);
                     html += '<tr>'+
                             '<td class="text-center">'+no+'.</td>'+
                             '<td>'+data[i].item_name+'</td>'+
                             '<td>'+data[i].item_unit_name+'</td>'+
                             '<td>'+toRp(data[i].item_unit_price)+'</td>'+
-                            '<td><input oninput="function_change_quantity('+data[i].item_packge_id+','+i+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
+                            '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
                             '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
                             '</tr>';
 
@@ -165,7 +158,6 @@
             $('#subtotal_amount').val(total_amount);
             $('#discount_amount_total').val(discount_amount);
             $('#total_item').val(total_item);
-            console.log(html);
             $('#show_data').html(html);
 
         } else if (data == null) {
@@ -190,56 +182,56 @@
         $('#label-payment').text('Piutang');
     }
 
-    function function_change_quantity(key,no, value){
-        $.ajax({
-            url: "{{ url('sales-invoice/change-qty') }}"+'/'+key+'/'+value,
-            type: "GET",
-            dataType: "json",
-            success:function(data)
-            {
-                console.log(data);
-                var html = '';
-                var i = 1;
-                var no = 1;
-                var total_amount = 0;
-                var total_item = 0;
-                var paid_amount = $('#paid_amount').val() || 0;
-                var discount_percentage_total = $('#discount_percentage_total').val() || 0;
-                while (i <= Object.keys(data).length) {
-                    if (data[i].quantity != 0) {
-                        total_amount += data[i].subtotal_amount_after_discount;
-                        total_item += data[i].quantity;
-                        html += '<tr>'+
-                                '<td class="text-center">'+no+'.</td>'+
-                                '<td>'+data[i].item_name+'</td>'+
-                                '<td>'+data[i].item_unit_name+'</td>'+
-                                '<td>'+toRp(data[i].item_unit_price)+'</td>'+
-                                '<td><input oninput="function_change_quantity('+data[i].item_packge_id+','+i+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
-                                '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
-                                '</tr>';
-
-                        no++;
+    function function_change_quantity(item_packge_id, value){
+        if (value != '') {
+            $.ajax({
+                url: "{{ url('sales-invoice/change-qty') }}"+'/'+item_packge_id+'/'+value,
+                type: "GET",
+                dataType: "json",
+                success:function(data)
+                {
+                    var html = '';
+                    var i = 0;
+                    var no = 1;
+                    var total_amount = 0;
+                    var total_item = 0;
+                    var paid_amount = $('#paid_amount').val() || 0;
+                    var discount_percentage_total = $('#discount_percentage_total').val() || 0;
+                    while (i < data.length) {
+                        if (data[i].quantity != 0) {
+                            total_amount += parseInt(data[i].subtotal_amount_after_discount);
+                            total_item += parseInt(data[i].quantity);
+                            html += '<tr>'+
+                                    '<td class="text-center">'+no+'.</td>'+
+                                    '<td>'+data[i].item_name+'</td>'+
+                                    '<td>'+data[i].item_unit_name+'</td>'+
+                                    '<td>'+toRp(data[i].item_unit_price)+'</td>'+
+                                    '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
+                                    '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
+                                    '</tr>';
+    
+                            no++;
+                        }
+                        i++;
                     }
-                    i++;
+                    
+                    discount_amount = (total_amount * discount_percentage_total) / 100;
+                    total_amount_af_discount = total_amount - discount_amount;
+                    change_amount = paid_amount - total_amount_af_discount;
+    
+                    if (paid_amount != 0) {
+                        $('#change_amount_view').val(toRp(Math.abs(change_amount)));
+                        $('#change_amount').val(Math.abs(change_amount));
+                    }
+                    $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
+                    $('#subtotal_amount_change').val(total_amount_af_discount);
+                    $('#subtotal_amount').val(total_amount);
+                    $('#discount_amount_total').val(discount_amount);
+                    $('#total_item').val(total_item);
+                    $('#show_data').html(html);
                 }
-                
-                discount_amount = (total_amount * discount_percentage_total) / 100;
-                total_amount_af_discount = total_amount - discount_amount;
-                change_amount = paid_amount - total_amount_af_discount;
-
-                if (paid_amount != 0) {
-                    $('#change_amount_view').val(toRp(Math.abs(change_amount)));
-                    $('#change_amount').val(Math.abs(change_amount));
-                }
-                $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
-                $('#subtotal_amount_change').val(total_amount_af_discount);
-                $('#subtotal_amount').val(total_amount);
-                $('#discount_amount_total').val(discount_amount);
-                $('#total_item').val(total_item);
-                console.log(html);
-                $('#show_data').html(html);
-            }
-        });
+            });
+        }
     }
 
     function count_total(){
@@ -267,7 +259,6 @@
     }
     
     function function_elements_add(name, value){
-        console.log("name " + name);
         if (name == 'sales_payment_method') {
             if (value == '1') {
                 $('#label-payment').text('Kembalian');
@@ -275,7 +266,6 @@
                 $('#label-payment').text('Piutang');
             }
         }
-        console.log("value " + value);
 		$.ajax({
 				type: "POST",
 				url : "{{route('add-elements-sales-invoice')}}",
@@ -311,7 +301,6 @@
 
     $(document).ready(function(){
         var customer_id = {!! json_encode($datases['customer_id']) !!}
-        console.log(customer_id);
         if (customer_id == null) {
             $('#customer_id').select2('val','0');
         }

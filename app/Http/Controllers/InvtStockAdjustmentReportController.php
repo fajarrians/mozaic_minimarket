@@ -287,36 +287,47 @@ class InvtStockAdjustmentReportController extends Controller
         // ->get();
         if ($warehouse_id == ""){
             if ($category_id == "") {
-                $data = InvtItemStock::where('data_state',0)
-                ->where('company_id', Auth::user()->company_id)
+                $data = InvtItemStock::where('invt_item_stock.data_state',0)
+                ->where('invt_item_stock.company_id', Auth::user()->company_id)
+                ->join('invt_item','invt_item.item_id','=','invt_item_stock.item_id')
                 ->get();
             } else {
-                $data = InvtItemStock::where('data_state',0)
-                ->where('item_category_id',$category_id)
-                ->where('company_id', Auth::user()->company_id)
+                $data = InvtItemStock::where('invt_item_stock.data_state',0)
+                ->where('invt_item_stock.item_category_id',$category_id)
+                ->where('invt_item_stock.company_id', Auth::user()->company_id)
+                ->join('invt_item','invt_item.item_id','=','invt_item_stock.item_id')
                 ->get();
             }
         } else if ($category_id == "") {
             if ($warehouse_id == "") {
-                $data = InvtItemStock::where('data_state',0)
-                ->where('company_id', Auth::user()->company_id)
+                $data = InvtItemStock::where('invt_item_stock.data_state',0)
+                ->where('invt_item_stock.company_id', Auth::user()->company_id)
+                ->join('invt_item','invt_item.item_id','=','invt_item_stock.item_id')
                 ->get();
             } else {
-                $data = InvtItemStock::where('data_state',0)
-                ->where('warehouse_id',$warehouse_id)
-                ->where('company_id', Auth::user()->company_id)
+                $data = InvtItemStock::where('invt_item_stock.data_state',0)
+                ->where('invt_item_stock.warehouse_id',$warehouse_id)
+                ->where('invt_item_stock.company_id', Auth::user()->company_id)
+                ->join('invt_item','invt_item.item_id','=','invt_item_stock.item_id')
                 ->get();
             }
         } else if ($warehouse_id == "" && $category_id == "") {
-            $data = InvtItemStock::where('data_state',0)
-            ->where('company_id', Auth::user()->company_id)
+            $data = InvtItemStock::where('invt_item_stock.data_state',0)
+            ->where('invt_item_stock.company_id', Auth::user()->company_id)
+            ->join('invt_item','invt_item.item_id','=','invt_item_stock.item_id')
             ->get();
         } else {
-            $data = InvtItemStock::where('data_state',0)
-            ->where('item_category_id',$category_id)
-            ->where('warehouse_id',$warehouse_id)
-            ->where('company_id', Auth::user()->company_id)
+            $data = InvtItemStock::where('invt_item_stock.data_state',0)
+            ->where('invt_item_stock.item_category_id',$category_id)
+            ->where('invt_item_stock.warehouse_id',$warehouse_id)
+            ->where('invt_item_stock.company_id', Auth::user()->company_id)
+            ->join('invt_item','invt_item.item_id','=','invt_item_stock.item_id')
             ->get();
+        }
+        if ($warehouse_id == null) {
+            $warehouse_id = "Semua Gudang";
+        } else {
+            $warehouse_id = $this->getWarehouseName($warehouse_id);
         }
 
         $pdf = new TCPDF('P', PDF_UNIT, 'F4', true, 'UTF-8', false);
@@ -342,23 +353,49 @@ class InvtStockAdjustmentReportController extends Controller
         $tbl = "
         <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
             <tr>
-                <td><div style=\"text-align: center; font-size:14px; font-weight: bold\">LAPORAN STOK</div></td>
+                <td><div style=\"text-align: center; font-size:14px; font-weight: bold\">LAPORAN STOK BARANG</div></td>
+            </tr>
+            <tr>
+                <td></td>
             </tr>
         </table>
+        
         ";
         $pdf::writeHTML($tbl, true, false, false, false, '');
         
         $no = 1;
         $tblStock1 = "
+        <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
+            <tr>
+                <td width=\"8%\"><div style=\"\">Tanggal</div></td>
+                <td width=\"2%\"><div style=\"\">:</div></td>
+                <td width=\"50%\"><div style=\"\">".date('d-m-Y')."</div></td>
+            </tr>
+            <tr>
+                <td width=\"8%\"><div style=\"\">Dicetak</div></td>
+                <td width=\"2%\"><div style=\"\">:</div></td>
+                <td width=\"50%\"><div style=\"\">".Auth::user()->name."</div></td>
+            </tr>
+            <tr>
+                <td width=\"8%\"><div style=\"\">Gudang</div></td>
+                <td width=\"2%\"><div style=\"\">:</div></td>
+                <td width=\"50%\"><div style=\"\">".$warehouse_id."</div></td>
+            </tr>
+            <tr>
+                <td></td>
+            </tr>
+        </table>
+
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
                 <td width=\"5%\" ><div style=\"text-align: center;\">No</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Nama Gudang</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Nama Kategori</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Nama Barang</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Nama Satuan</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Rak</div></td>
-                <td width=\"15%\" ><div style=\"text-align: center;\">Stok Sistem</div></td>
+                <td width=\"12%\" ><div style=\"text-align: center;\">Nama Kategori</div></td>
+                <td width=\"26%\" ><div style=\"text-align: center;\">Nama Barang</div></td>
+                <td width=\"12%\" ><div style=\"text-align: center;\">Nama Satuan</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center;\">Rak</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center;\">Stok Sistem</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center;\">Harga</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center;\">Jumlah</div></td>
             </tr>
         
              ";
@@ -366,23 +403,21 @@ class InvtStockAdjustmentReportController extends Controller
         $no = 1;
         $tblStock2 =" ";
         foreach ($data as $key => $val) {
-            $id = $val['purchase_invoice_id'];
 
-            if($val['purchase_invoice_id'] == $id){
-                $tblStock2 .="
-                    <tr>			
-                        <td style=\"text-align:center\">$no.</td>
-                        <td>".$this->getWarehouseName($val['warehouse_id'])."</td>
-                        <td>".$this->getItemCategoryName($val['item_category_id'])."</td>
-                        <td>".$this->getItemName($val['item_id'])."</td>
-                        <td>".$this->getItemUnitName($val['item_unit_id'])."</td>
-                        <td>".$this->getRackName($val['rack_column']).' | '.$this->getRackName($val['rack_line'])."</td>
-                        <td style=\"text-align:center\">".$this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id'])."</td>
-                    </tr>
-                    
-                ";
-                $no++;
-            }
+            $tblStock2 .="
+                <tr>			
+                    <td style=\"text-align:center\">$no.</td>
+                    <td>".$this->getItemCategoryName($val['item_category_id'])."</td>
+                    <td>".$this->getItemName($val['item_id'])."</td>
+                    <td>".$this->getItemUnitName($val['item_unit_id'])."</td>
+                    <td>".$this->getRackName($val['rack_column']).' | '.$this->getRackName($val['rack_line'])."</td>
+                    <td style=\"text-align:center\">".$this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id'])."</td>
+                    <td style=\"text-align:right\">".number_format($val['item_unit_cost'],2,'.',',')."</td>
+                    <td style=\"text-align:right\">".number_format(($val['item_unit_cost'] * $this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id'])),2,'.',',')."</td>
+                </tr>
+                
+            ";
+            $no++;
         }
         $tblStock3 = " 
 
@@ -406,44 +441,49 @@ class InvtStockAdjustmentReportController extends Controller
         } else {
             $warehouse_id = Session::get('warehouse_id');
         }
-        // $data = InvtStockAdjustment::join('invt_stock_adjustment_item','invt_stock_adjustment.stock_adjustment_id','=','invt_stock_adjustment_item.stock_adjustment_id')
-        // ->where('invt_stock_adjustment_item.item_category_id',$category_id)
-        // ->where('invt_stock_adjustment.warehouse_id',$warehouse_id)
-        // ->where('invt_stock_adjustment.company_id', Auth::user()->company_id)
-        // ->where('invt_stock_adjustment.data_state',0)
-        // ->get();
         if ($warehouse_id == ""){
             if ($category_id == "") {
-                $data = InvtItemStock::where('data_state',0)
-                ->where('company_id', Auth::user()->company_id)
+                $data = InvtItemStock::where('invt_item_stock.data_state',0)
+                ->where('invt_item_stock.company_id', Auth::user()->company_id)
+                ->join('invt_item','invt_item.item_id','=','invt_item_stock.item_id')
                 ->get();
             } else {
-                $data = InvtItemStock::where('data_state',0)
-                ->where('item_category_id',$category_id)
-                ->where('company_id', Auth::user()->company_id)
+                $data = InvtItemStock::where('invt_item_stock.data_state',0)
+                ->where('invt_item_stock.item_category_id',$category_id)
+                ->where('invt_item_stock.company_id', Auth::user()->company_id)
+                ->join('invt_item','invt_item.item_id','=','invt_item_stock.item_id')
                 ->get();
             }
         } else if ($category_id == "") {
             if ($warehouse_id == "") {
-                $data = InvtItemStock::where('data_state',0)
-                ->where('company_id', Auth::user()->company_id)
+                $data = InvtItemStock::where('invt_item_stock.data_state',0)
+                ->where('invt_item_stock.company_id', Auth::user()->company_id)
+                ->join('invt_item','invt_item.item_id','=','invt_item_stock.item_id')
                 ->get();
             } else {
-                $data = InvtItemStock::where('data_state',0)
-                ->where('warehouse_id',$warehouse_id)
-                ->where('company_id', Auth::user()->company_id)
+                $data = InvtItemStock::where('invt_item_stock.data_state',0)
+                ->where('invt_item_stock.warehouse_id',$warehouse_id)
+                ->where('invt_item_stock.company_id', Auth::user()->company_id)
+                ->join('invt_item','invt_item.item_id','=','invt_item_stock.item_id')
                 ->get();
             }
         } else if ($warehouse_id == "" && $category_id == "") {
-            $data = InvtItemStock::where('data_state',0)
-            ->where('company_id', Auth::user()->company_id)
+            $data = InvtItemStock::where('invt_item_stock.data_state',0)
+            ->where('invt_item_stock.company_id', Auth::user()->company_id)
+            ->join('invt_item','invt_item.item_id','=','invt_item_stock.item_id')
             ->get();
         } else {
-            $data = InvtItemStock::where('data_state',0)
-            ->where('item_category_id',$category_id)
-            ->where('warehouse_id',$warehouse_id)
-            ->where('company_id', Auth::user()->company_id)
+            $data = InvtItemStock::where('invt_item_stock.data_state',0)
+            ->where('invt_item_stock.item_category_id',$category_id)
+            ->where('invt_item_stock.warehouse_id',$warehouse_id)
+            ->where('invt_item_stock.company_id', Auth::user()->company_id)
+            ->join('invt_item','invt_item.item_id','=','invt_item_stock.item_id')
             ->get();
+        }
+        if ($warehouse_id == null) {
+            $warehouse_id = "Semua Gudang";
+        } else {
+            $warehouse_id = $this->getWarehouseName($warehouse_id);
         }
         
         $spreadsheet = new Spreadsheet();
@@ -462,29 +502,43 @@ class InvtStockAdjustmentReportController extends Controller
             $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
             $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(5);
             $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(20);
-            $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(20);
+            $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(40);
             $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(20);
             $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(20);
             $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(20);
             $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(20);
+            $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(20);
     
-            $spreadsheet->getActiveSheet()->mergeCells("B1:H1");
+            $spreadsheet->getActiveSheet()->mergeCells("B1:I1");
             $spreadsheet->getActiveSheet()->getStyle('B1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->mergeCells("B3:I3");
+            $spreadsheet->getActiveSheet()->getStyle('B3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+            $spreadsheet->getActiveSheet()->mergeCells("B4:I4");
+            $spreadsheet->getActiveSheet()->getStyle('B4')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+            $spreadsheet->getActiveSheet()->mergeCells("B5:I5");
+            $spreadsheet->getActiveSheet()->getStyle('B5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
             $spreadsheet->getActiveSheet()->getStyle('B1')->getFont()->setBold(true)->setSize(16);
+            $spreadsheet->getActiveSheet()->getStyle('B7:I7')->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('B7:I7')->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('FAFAFA');
+            $spreadsheet->getActiveSheet()->getStyle('B7:I7')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle('B7:I7')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-            $spreadsheet->getActiveSheet()->getStyle('B3:H3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-            $spreadsheet->getActiveSheet()->getStyle('B3:H3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-
-            $sheet->setCellValue('B1',"Laporan Stok");	
-            $sheet->setCellValue('B3',"No");
-            $sheet->setCellValue('C3',"Nama Gudang");
-            $sheet->setCellValue('D3',"Nama Kategori");
-            $sheet->setCellValue('E3',"Nama Barang");
-            $sheet->setCellValue('F3',"Nama Satuan");
-            $sheet->setCellValue('G3',"Rak");
-            $sheet->setCellValue('H3',"Stok Sistem");
+            $sheet->setCellValue('B1',"Laporan Stok Barang");
+            $sheet->setCellValue('B3',"Tanggal  : ".date('d-m-Y'));
+            $sheet->setCellValue('B4',"Dicetak  : ".Auth::user()->name);
+            $sheet->setCellValue('B5',"Gudang   : ".$warehouse_id);
+            $sheet->setCellValue('B7',"No");
+            $sheet->setCellValue('C7',"Nama Kategori");
+            $sheet->setCellValue('D7',"Nama Barang");
+            $sheet->setCellValue('E7',"Nama Satuan");
+            $sheet->setCellValue('F7',"Rak");
+            $sheet->setCellValue('G7',"Stok Sistem");
+            $sheet->setCellValue('H7',"Harga");
+            $sheet->setCellValue('I7',"Jumlah");
             
-            $j=4;
+            $j=8;
             $no=0;
             
             foreach($data as $key=>$val){
@@ -492,32 +546,29 @@ class InvtStockAdjustmentReportController extends Controller
                 if(is_numeric($key)){
                     
                     $sheet = $spreadsheet->getActiveSheet(0);
-                    $spreadsheet->getActiveSheet()->setTitle("Laporan Stok");
-                    $spreadsheet->getActiveSheet()->getStyle('B'.$j.':H'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-
+                    $spreadsheet->getActiveSheet()->setTitle("Laporan Stok Barang");
+                    $spreadsheet->getActiveSheet()->getStyle('B'.$j.':I'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                    $spreadsheet->getActiveSheet()->getStyle('H'.$j.':I'.$j)->getNumberFormat()->setFormatCode('0.00');
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                     $spreadsheet->getActiveSheet()->getStyle('D'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                     $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                     $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('H'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                    $spreadsheet->getActiveSheet()->getStyle('G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                    $spreadsheet->getActiveSheet()->getStyle('H'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                    $spreadsheet->getActiveSheet()->getStyle('I'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
 
 
-                    $id = $val['purchase_invoice_id'];
-
-                    if($val['purchase_invoice_id'] == $id){
-
-                        $no++;
-                        $sheet->setCellValue('B'.$j, $no);
-                        $sheet->setCellValue('C'.$j, $this->getWarehouseName($val['warehouse_id']));
-                        $sheet->setCellValue('D'.$j, $this->getItemCategoryName($val['item_category_id']));
-                        $sheet->setCellValue('E'.$j, $this->getItemName($val['item_id']));
-                        $sheet->setCellValue('F'.$j, $this->getItemUnitName($val['item_unit_id']));
-                        $sheet->setCellValue('G'.$j, $this->getRackName($val['rack_column']).' | '.$this->getRackName($val['rack_line']));
-                        $sheet->setCellValue('H'.$j, $this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id']));
-                    }
-                           
+                    $no++;
+                    $sheet->setCellValue('B'.$j, $no);
+                    $sheet->setCellValue('C'.$j, $this->getItemCategoryName($val['item_category_id']));
+                    $sheet->setCellValue('D'.$j, $this->getItemName($val['item_id']));
+                    $sheet->setCellValue('E'.$j, $this->getItemUnitName($val['item_unit_id']));
+                    $sheet->setCellValue('F'.$j, $this->getRackName($val['rack_column']).' | '.$this->getRackName($val['rack_line']));
+                    $sheet->setCellValue('G'.$j, $this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id']));
+                    $sheet->setCellValue('H'.$j, number_format($val['item_unit_cost'],2,'.',','));
+                    $sheet->setCellValue('I'.$j, number_format(($val['item_unit_cost'] * $this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id'])),2,'.',','));
+                          
                     
                 }else{
                     continue;

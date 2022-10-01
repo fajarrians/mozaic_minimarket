@@ -12,6 +12,8 @@ MySQL - 10.4.19-MariaDB : Database - ciptapro_mozaic_minimarket
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`ciptapro_mozaic_minimarket` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+
 USE `ciptapro_mozaic_minimarket`;
 
 /*Table structure for table `acct_account` */
@@ -28697,7 +28699,7 @@ CREATE TABLE `system_login_log` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`login_log_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=91 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `system_login_log` */
 
@@ -28791,7 +28793,8 @@ insert  into `system_login_log`(`login_log_id`,`user_id`,`company_id`,`log_time`
 (87,55,1,'2022-09-24 11:57:53',0,'2022-09-24 11:57:53','2022-09-24 11:57:53'),
 (88,55,1,'2022-09-26 09:06:55',0,'2022-09-26 09:06:55','2022-09-26 09:06:55'),
 (89,55,1,'2022-09-27 09:14:51',0,'2022-09-27 09:14:51','2022-09-27 09:14:51'),
-(90,55,1,'2022-09-28 09:17:10',0,'2022-09-28 09:17:10','2022-09-28 09:17:10');
+(90,55,1,'2022-09-28 09:17:10',0,'2022-09-28 09:17:10','2022-09-28 09:17:10'),
+(91,55,1,'2022-09-29 09:03:10',0,'2022-09-29 09:03:10','2022-09-29 09:03:10');
 
 /*Table structure for table `system_menu` */
 

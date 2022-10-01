@@ -88,6 +88,12 @@ class SalesInvoiceController extends Controller
             1 => 'Tunai',
             2 => 'Piutang'
         ];
+        $data = Session::get('data_itemses');
+        // $data_item = Session::get('data_input');
+        // dd(array_search(1, array_column($data, 'item_packge_id')));
+        // Session::forget('data_itemses');
+        // dd(count($data));
+        // dd($data);
         return view('content.SalesInvoice.FormAddSalesInvoice',compact('date','categorys','items','units','arraydatases','customers','data_itemses','datases','item_packges','sales_payment_method_list'));
     }
 
@@ -176,7 +182,7 @@ class SalesInvoiceController extends Controller
             'customer_id'               => $request->customer_id,
             'sales_invoice_date'        => $fields['sales_invoice_date'],
             'sales_payment_method'      => $fields['sales_payment_method'],
-            'subtotal_item'             => $request->subtotal_item,
+            'subtotal_item'             => $request->total_item,
             'subtotal_amount'           => $fields['subtotal_amount'],
             'discount_percentage_total' => $discount_percentage_total,
             'discount_amount_total'     => $discount_amount_total,
@@ -208,37 +214,39 @@ class SalesInvoiceController extends Controller
         if(JournalVoucher::create($journal)){
             $arraydatases       = Session::get('data_itemses');
             foreach ($arraydatases as $key => $val) {
-                $dataarray[$key] = array(
-                    'sales_invoice_id'                  => $sales_invoice_id['sales_invoice_id'],
-                    'item_category_id'                  => $val['item_category_id'],
-                    'item_unit_id'                      => $val['item_unit_id'],
-                    'item_id'                           => $val['item_id'],
-                    'quantity'                          => $val['quantity'],
-                    'item_unit_price'                   => $val['item_unit_price'],
-                    'subtotal_amount'                   => $val['subtotal_amount_after_discount'],
-                    // 'discount_percentage'               => $val['discount_percentage'],
-                    // 'discount_amount'                   => $val['discount_amount'],
-                    'subtotal_amount_after_discount'    => $val['subtotal_amount_after_discount'],
-                    'company_id'                        => Auth::user()->company_id,
-                    'created_id'                        => Auth::id(),
-                    'updated_id'                        => Auth::id()
-                );
-                SalesInvoiceItem::create($dataarray[$key]);
-                $stock_item = InvtItemStock::where('item_id',$dataarray[$key]['item_id'])
-                ->where('item_category_id',$dataarray[$key]['item_category_id'])
-                ->where('company_id', Auth::user()->company_id)
-                ->first();
-                $item_packge = InvtItemPackge::where('item_id',$dataarray[$key]['item_id'])
-                ->where('item_category_id',$dataarray[$key]['item_category_id'])
-                ->where('item_unit_id', $dataarray[$key]['item_unit_id'])
-                ->where('company_id', Auth::user()->company_id)
-                ->first();
-                if(isset($stock_item)){
-                    $table = InvtItemStock::findOrFail($stock_item['item_stock_id']);
-                    $table->last_balance = $stock_item['last_balance'] - ($dataarray[$key]['quantity'] * $item_packge['item_default_quantity']);
-                    $table->updated_id = Auth::id();
-                    $table->save();
-
+                if ($val['quantity'] != 0) {
+                    $dataarray[$key] = array(
+                        'sales_invoice_id'                  => $sales_invoice_id['sales_invoice_id'],
+                        'item_category_id'                  => $val['item_category_id'],
+                        'item_unit_id'                      => $val['item_unit_id'],
+                        'item_id'                           => $val['item_id'],
+                        'quantity'                          => $val['quantity'],
+                        'item_unit_price'                   => $val['item_unit_price'],
+                        'subtotal_amount'                   => $val['subtotal_amount_after_discount'],
+                        // 'discount_percentage'               => $val['discount_percentage'],
+                        // 'discount_amount'                   => $val['discount_amount'],
+                        'subtotal_amount_after_discount'    => $val['subtotal_amount_after_discount'],
+                        'company_id'                        => Auth::user()->company_id,
+                        'created_id'                        => Auth::id(),
+                        'updated_id'                        => Auth::id()
+                    );
+                    SalesInvoiceItem::create($dataarray[$key]);
+                    $stock_item = InvtItemStock::where('item_id',$dataarray[$key]['item_id'])
+                    ->where('item_category_id',$dataarray[$key]['item_category_id'])
+                    ->where('company_id', Auth::user()->company_id)
+                    ->first();
+                    $item_packge = InvtItemPackge::where('item_id',$dataarray[$key]['item_id'])
+                    ->where('item_category_id',$dataarray[$key]['item_category_id'])
+                    ->where('item_unit_id', $dataarray[$key]['item_unit_id'])
+                    ->where('company_id', Auth::user()->company_id)
+                    ->first();
+                    if(isset($stock_item)){
+                        $table = InvtItemStock::findOrFail($stock_item['item_stock_id']);
+                        $table->last_balance = $stock_item['last_balance'] - ($dataarray[$key]['quantity'] * $item_packge['item_default_quantity']);
+                        $table->updated_id = Auth::id();
+                        $table->save();
+    
+                    }
                 }
             }
 
@@ -650,99 +658,135 @@ class SalesInvoiceController extends Controller
 
     public function selectSalesInvoice($item_barcode)
     {
-        $data_item = InvtItemPackge::join('invt_item_barcode','invt_item_barcode.item_packge_id','=','invt_item_packge.item_packge_id')
-        ->where('invt_item_packge.data_state',0)
-        ->where('invt_item_barcode.data_state',0)
+        $data = InvtItemPackge::where('invt_item_packge.data_state',0)
+        ->join('invt_item', 'invt_item_packge.item_id','=','invt_item.item_id')
+        ->join('invt_item_unit','invt_item_packge.item_unit_id','=','invt_item_unit.item_unit_id')
+        ->join('invt_item_barcode','invt_item_barcode.item_packge_id','=','invt_item_packge.item_packge_id')
         ->where('invt_item_packge.company_id', Auth::user()->company_id)
-        ->where('invt_item_barcode.company_id', Auth::user()->company_id)
-        ->where('invt_item_barcode.item_barcode',$item_barcode)
+        ->where('invt_item_barcode.item_barcode', $item_barcode)
         ->first();
-        // if ()
 
-        $data_session = Session::get('data_input');
-        if ($data_item != null) {
-
-            if($data_session !== null){
-                array_push($data_session, $data_item['item_packge_id']);
-                Session::put('data_input', $data_session);
+        if ($data != null) {
+            $data_itemses = Session::get('data_itemses');
+            if ($data_itemses != null) {
+                $array = array();
+                $i=0;
+                while ( $i < count($data_itemses)) {
+                    if ($data_itemses[$i]['item_packge_id'] == $data['item_packge_id']) {
+                        $data_input = [
+                            'item_packge_id'                    => $data_itemses[$i]['item_packge_id'],
+                            'item_id'                           => $data_itemses[$i]['item_id'],
+                            'item_name'                         => $data_itemses[$i]['item_name'],
+                            'item_unit_name'                    => $data_itemses[$i]['item_unit_name'],
+                            'item_category_id'                  => $data_itemses[$i]['item_category_id'],
+                            'item_unit_id'                      => $data_itemses[$i]['item_unit_id'],
+                            'item_unit_price'                   => $data_itemses[$i]['item_unit_price'],
+                            'quantity'                          => $data_itemses[$i]['quantity'] + 1,
+                            'subtotal_amount_after_discount'    => $data_itemses[$i]['item_unit_price'] * ($data_itemses[$i]['quantity'] + 1)
+                        ];
+                        array_push($array, $data_input);
+                    }  else if ($data_itemses[$i]['item_packge_id'] != $data['item_packge_id']) {
+                        $data_input = [
+                            'item_packge_id'                    => $data_itemses[$i]['item_packge_id'],
+                            'item_id'                           => $data_itemses[$i]['item_id'],
+                            'item_name'                         => $data_itemses[$i]['item_name'],
+                            'item_unit_name'                    => $data_itemses[$i]['item_unit_name'],
+                            'item_category_id'                  => $data_itemses[$i]['item_category_id'],
+                            'item_unit_id'                      => $data_itemses[$i]['item_unit_id'],
+                            'item_unit_price'                   => $data_itemses[$i]['item_unit_price'],
+                            'quantity'                          => $data_itemses[$i]['quantity'],
+                            'subtotal_amount_after_discount'    => $data_itemses[$i]['subtotal_amount_after_discount']
+                        ];
+                        array_push($array, $data_input);
+                    }
+                    $i++;
+                }
+                if (array_search($data['item_packge_id'], array_column($data_itemses, 'item_packge_id')) === false) {
+                    $data_input = [
+                        'item_packge_id'                    => $data['item_packge_id'],
+                        'item_id'                           => $data['item_id'],
+                        'item_name'                         => $data['item_name'],
+                        'item_unit_name'                    => $data['item_unit_name'],
+                        'item_category_id'                  => $data['item_category_id'],
+                        'item_unit_id'                      => $data['item_unit_id'],
+                        'item_unit_price'                   => $data['item_unit_price'],
+                        'quantity'                          => 1,
+                        'subtotal_amount_after_discount'    => $data['item_unit_price']
+                    ];
+                    array_push($array, $data_input);
+                }
+                Session::put('data_itemses',$array);
             } else {
-                $data_session = [];
-                array_push($data_session, $data_item['item_packge_id']);
-                Session::push('data_input', $data_item['item_packge_id']);
+                $data_input = [
+                    'item_packge_id'                    => $data['item_packge_id'],
+                    'item_id'                           => $data['item_id'],
+                    'item_name'                         => $data['item_name'],
+                    'item_unit_name'                    => $data['item_unit_name'],
+                    'item_category_id'                  => $data['item_category_id'],
+                    'item_unit_id'                      => $data['item_unit_id'],
+                    'item_unit_price'                   => $data['item_unit_price'],
+                    'quantity'                          => 1,
+                    'subtotal_amount_after_discount'    => $data['item_unit_price']
+                ];
+                Session::push('data_itemses', $data_input);
             }
+    
+            $data_itemses = Session::get('data_itemses');
+    
+            return $data_itemses;
         }
-
-        $data_input = Session::get('data_input');
-        if ($data_input != null) {
-            $count_values = array_count_values($data_input);
-            foreach ($count_values as $key => $val) {
-                $data_items[$key] = InvtItemPackge::where('invt_item_packge.data_state',0)
-                ->join('invt_item', 'invt_item_packge.item_id','=','invt_item.item_id')
-                ->join('invt_item_unit','invt_item_packge.item_unit_id','=','invt_item_unit.item_unit_id')
-                ->where('invt_item_packge.company_id', Auth::user()->company_id)
-                ->where('invt_item_packge.item_packge_id', $key)
-                ->first();
-            }
-            foreach ($data_items as $key => $val) {
-                $data_itemses[$key] = array(
-                    'item_packge_id'                    => $val['item_packge_id'],
-                    'item_id'                           => $val['item_id'],
-                    'item_name'                         => $val['item_name'],
-                    'item_unit_name'                    => $val['item_unit_name'],
-                    'item_category_id'                  => $val['item_category_id'],
-                    'item_unit_id'                      => $val['item_unit_id'],
-                    'item_unit_price'                   => $val['item_unit_price'],
-                    'quantity'                          => $count_values[$key],
-                    'subtotal_amount_after_discount'    => $count_values[$key] * $val['item_unit_price']
-                );
-            }
-        } else {
-            $data_itemses = null;
-        }
-        Session::put('data_itemses', $data_itemses);
-        $data = Session::get('data_itemses');
-        
-        return $data;
 
     }
 
     public function changeQtySalesInvoice($item_packge_id, $qty) 
     {
-        $data_itemses = Session::get('data_itemses');
-        $data_input = Session::get('data_input');
-        $count_values = array_count_values($data_input);
-        $first_count_values = $count_values[$item_packge_id];
-        $end_count_values = (int)$qty;
+        // $data = InvtItemPackge::where('invt_item_packge.data_state',0)
+        // ->join('invt_item', 'invt_item_packge.item_id','=','invt_item.item_id')
+        // ->join('invt_item_unit','invt_item_packge.item_unit_id','=','invt_item_unit.item_unit_id')
+        // ->where('invt_item_packge.company_id', Auth::user()->company_id)
+        // ->where('invt_item_packge.item_packge_id', $item_packge_id)
+        // ->first();
 
-        foreach ($data_itemses as $key => $val) {
-            $data_itemses[$key] = array(
-                'item_packge_id'                    => $val['item_packge_id'],
-                'item_id'                           => $val['item_id'],
-                'item_name'                         => $val['item_name'],
-                'item_unit_name'                    => $val['item_unit_name'],
-                'item_category_id'                  => $val['item_category_id'],
-                'item_unit_id'                      => $val['item_unit_id'],
-                'item_unit_price'                   => $val['item_unit_price'],
-                'quantity'                          => $key == $item_packge_id ? $qty : $val['quantity'],
-                'subtotal_amount_after_discount'    => ($key == $item_packge_id ? $qty : $val['quantity']) * $val['item_unit_price']
-            );
-        }
-        Session::forget('data_itemses');
-        Session::put('data_itemses', $data_itemses);
-
-        $data_input1 = array_diff($data_input, [(int)$item_packge_id]);
-        Session::forget('data_input');
-        Session::put('data_input',$data_input1);
-        if ($data_input != []) {
-            for ($i=0; $i < $end_count_values; $i++) { 
-                $data[$i] = Session::push('data_input',(int)$item_packge_id);
+        // if ($data != null) {
+            $data_itemses = Session::get('data_itemses');
+            $array = array();
+            $i=0;
+            while ( $i < count($data_itemses)) {
+                if ($data_itemses[$i]['item_packge_id'] == $item_packge_id) {
+                    $data_input = [
+                        'item_packge_id'                    => $data_itemses[$i]['item_packge_id'],
+                        'item_id'                           => $data_itemses[$i]['item_id'],
+                        'item_name'                         => $data_itemses[$i]['item_name'],
+                        'item_unit_name'                    => $data_itemses[$i]['item_unit_name'],
+                        'item_category_id'                  => $data_itemses[$i]['item_category_id'],
+                        'item_unit_id'                      => $data_itemses[$i]['item_unit_id'],
+                        'item_unit_price'                   => $data_itemses[$i]['item_unit_price'],
+                        'quantity'                          => $qty,
+                        'subtotal_amount_after_discount'    => $data_itemses[$i]['item_unit_price'] * $qty
+                    ];
+                    array_push($array, $data_input);
+                }  else if ($data_itemses[$i]['item_packge_id'] != $item_packge_id) {
+                    $data_input = [
+                        'item_packge_id'                    => $data_itemses[$i]['item_packge_id'],
+                        'item_id'                           => $data_itemses[$i]['item_id'],
+                        'item_name'                         => $data_itemses[$i]['item_name'],
+                        'item_unit_name'                    => $data_itemses[$i]['item_unit_name'],
+                        'item_category_id'                  => $data_itemses[$i]['item_category_id'],
+                        'item_unit_id'                      => $data_itemses[$i]['item_unit_id'],
+                        'item_unit_price'                   => $data_itemses[$i]['item_unit_price'],
+                        'quantity'                          => $data_itemses[$i]['quantity'],
+                        'subtotal_amount_after_discount'    => $data_itemses[$i]['subtotal_amount_after_discount']
+                    ];
+                    array_push($array, $data_input);
+                }
+                $i++;
             }
-        } else {
-            Session::push('data_input',(int)$item_packge_id);
-        }
-        $data_itemses = Session::get('data_itemses');
-        
-        return $data_itemses;
+            Session::put('data_itemses',$array);
+    
+            $data_itemses = Session::get('data_itemses');
+    
+            return $data_itemses;
+        // }
     }
 
     public function addElementsSalesInvoice(Request $request) 
@@ -759,56 +803,84 @@ class SalesInvoiceController extends Controller
 
     public function selectItemNameSalesInvoice($item_id, $unit_id) 
     {
-        $data_item = InvtItemPackge::where('data_state',0)
-        ->where('company_id', Auth::user()->company_id)
-        ->where('item_id',$item_id)
-        ->where('item_unit_id',$unit_id)
+        $data = InvtItemPackge::where('invt_item_packge.data_state',0)
+        ->join('invt_item', 'invt_item_packge.item_id','=','invt_item.item_id')
+        ->join('invt_item_unit','invt_item_packge.item_unit_id','=','invt_item_unit.item_unit_id')
+        ->where('invt_item_packge.company_id', Auth::user()->company_id)
+        ->where('invt_item_packge.item_id', $item_id)
+        ->where('invt_item_packge.item_unit_id', $unit_id)
+        ->where('invt_item_packge.item_unit_id', '!=', null)
         ->first();
 
-        $data_session = Session::get('data_input');
-        if ($data_item != null) {
-
-            if($data_session !== null){
-                array_push($data_session, $data_item['item_packge_id']);
-                Session::put('data_input', $data_session);
+        if ($data != null) {
+            $data_itemses = Session::get('data_itemses');
+            if ($data_itemses != null) {
+                $array = array();
+                $i=0;
+                while ( $i < count($data_itemses)) {
+                    if ($data_itemses[$i]['item_packge_id'] == $data['item_packge_id']) {
+                        $data_input = [
+                            'item_packge_id'                    => $data_itemses[$i]['item_packge_id'],
+                            'item_id'                           => $data_itemses[$i]['item_id'],
+                            'item_name'                         => $data_itemses[$i]['item_name'],
+                            'item_unit_name'                    => $data_itemses[$i]['item_unit_name'],
+                            'item_category_id'                  => $data_itemses[$i]['item_category_id'],
+                            'item_unit_id'                      => $data_itemses[$i]['item_unit_id'],
+                            'item_unit_price'                   => $data_itemses[$i]['item_unit_price'],
+                            'quantity'                          => $data_itemses[$i]['quantity'] + 1,
+                            'subtotal_amount_after_discount'    => $data_itemses[$i]['item_unit_price'] * ($data_itemses[$i]['quantity'] + 1)
+                        ];
+                        array_push($array, $data_input);
+                    }  else if ($data_itemses[$i]['item_packge_id'] != $data['item_packge_id']) {
+                        $data_input = [
+                            'item_packge_id'                    => $data_itemses[$i]['item_packge_id'],
+                            'item_id'                           => $data_itemses[$i]['item_id'],
+                            'item_name'                         => $data_itemses[$i]['item_name'],
+                            'item_unit_name'                    => $data_itemses[$i]['item_unit_name'],
+                            'item_category_id'                  => $data_itemses[$i]['item_category_id'],
+                            'item_unit_id'                      => $data_itemses[$i]['item_unit_id'],
+                            'item_unit_price'                   => $data_itemses[$i]['item_unit_price'],
+                            'quantity'                          => $data_itemses[$i]['quantity'],
+                            'subtotal_amount_after_discount'    => $data_itemses[$i]['subtotal_amount_after_discount']
+                        ];
+                        array_push($array, $data_input);
+                    }
+                    $i++;
+                }
+                if (array_search($data['item_packge_id'], array_column($data_itemses, 'item_packge_id')) === false) {
+                    $data_input = [
+                        'item_packge_id'                    => $data['item_packge_id'],
+                        'item_id'                           => $data['item_id'],
+                        'item_name'                         => $data['item_name'],
+                        'item_unit_name'                    => $data['item_unit_name'],
+                        'item_category_id'                  => $data['item_category_id'],
+                        'item_unit_id'                      => $data['item_unit_id'],
+                        'item_unit_price'                   => $data['item_unit_price'],
+                        'quantity'                          => 1,
+                        'subtotal_amount_after_discount'    => $data['item_unit_price']
+                    ];
+                    array_push($array, $data_input);
+                }
+                Session::put('data_itemses',$array);
             } else {
-                $data_session = [];
-                array_push($data_session, $data_item['item_packge_id']);
-                Session::push('data_input', $data_item['item_packge_id']);
+                $data_input = [
+                    'item_packge_id'                    => $data['item_packge_id'],
+                    'item_id'                           => $data['item_id'],
+                    'item_name'                         => $data['item_name'],
+                    'item_unit_name'                    => $data['item_unit_name'],
+                    'item_category_id'                  => $data['item_category_id'],
+                    'item_unit_id'                      => $data['item_unit_id'],
+                    'item_unit_price'                   => $data['item_unit_price'],
+                    'quantity'                          => 1,
+                    'subtotal_amount_after_discount'    => $data['item_unit_price']
+                ];
+                Session::push('data_itemses', $data_input);
             }
+    
+            $data_itemses = Session::get('data_itemses');
+    
+            return $data_itemses;
         }
-
-        $data_input = Session::get('data_input');
-        if ($data_input != null) {
-            $count_values = array_count_values($data_input);
-            foreach ($count_values as $key => $val) {
-                $data_items[$key] = InvtItemPackge::where('invt_item_packge.data_state',0)
-                ->join('invt_item', 'invt_item_packge.item_id','=','invt_item.item_id')
-                ->join('invt_item_unit','invt_item_packge.item_unit_id','=','invt_item_unit.item_unit_id')
-                ->where('invt_item_packge.company_id', Auth::user()->company_id)
-                ->where('invt_item_packge.item_packge_id', $key)
-                ->first();
-            }
-            foreach ($data_items as $key => $val) {
-                $data_itemses[$key] = array(
-                    'item_packge_id'                    => $val['item_packge_id'],
-                    'item_id'                           => $val['item_id'],
-                    'item_name'                         => $val['item_name'],
-                    'item_unit_name'                    => $val['item_unit_name'],
-                    'item_category_id'                  => $val['item_category_id'],
-                    'item_unit_id'                      => $val['item_unit_id'],
-                    'item_unit_price'                   => $val['item_unit_price'],
-                    'quantity'                          => $count_values[$key],
-                    'subtotal_amount_after_discount'    => $count_values[$key] * $val['item_unit_price']
-                );
-            }
-        } else {
-            $data_itemses = null;
-        }
-        Session::put('data_itemses', $data_itemses);
-        $data = Session::get('data_itemses');
-
-        return $data;
     }
 
     public function printSalesInvoice()
