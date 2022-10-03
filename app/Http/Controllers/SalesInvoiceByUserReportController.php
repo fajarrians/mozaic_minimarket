@@ -165,16 +165,16 @@ class SalesInvoiceByUserReportController extends Controller
         $tblStock1 = "
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <td width=\"5%\"><div style=\"text-align: center;\">No</div></td>
-                <td width=\"9%\"><div style=\"text-align: center;\">Tanggal</div></td>
-                <td width=\"13%\"><div style=\"text-align: center;\">No. Invoice</div></td>
-                <td width=\"20%\"><div style=\"text-align: center;\">Nama Barang</div></td>
-                <td width=\"9%\"><div style=\"text-align: center;\">Satuan</div></td>
-                <td width=\"5%\"><div style=\"text-align: center;\">Qty</div></td>
-                <td width=\"10%\"><div style=\"text-align: center;\">Harga</div></td>
-                <td width=\"10%\" ><div style=\"text-align: center;\">Subtotal</div></td>
-                <td width=\"10%\"><div style=\"text-align: center;\">Diskon / Barang</div></td>
-                <td width=\"10%\"><div style=\"text-align: center;\">Subtotal St Diskon</div></td>
+                <td width=\"5%\"><div style=\"text-align: center; font-weight: bold\">No</div></td>
+                <td width=\"9%\"><div style=\"text-align: center; font-weight: bold\">Tanggal</div></td>
+                <td width=\"13%\"><div style=\"text-align: center; font-weight: bold\">No. Invoice</div></td>
+                <td width=\"20%\"><div style=\"text-align: center; font-weight: bold\">Nama Barang</div></td>
+                <td width=\"9%\"><div style=\"text-align: center; font-weight: bold\">Satuan</div></td>
+                <td width=\"5%\"><div style=\"text-align: center; font-weight: bold\">Qty</div></td>
+                <td width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Harga</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Subtotal</div></td>
+                <td width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Diskon / Barang</div></td>
+                <td width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Subtotal St Diskon</div></td>
             </tr>
         
              ";
@@ -193,7 +193,7 @@ class SalesInvoiceByUserReportController extends Controller
                     <td style=\"text-align:left\">".$val['sales_invoice_no']."</td>
                     <td style=\"text-align:left\">".$this->getItemName($val['item_id'])."</td>
                     <td style=\"text-align:left\">".$this->getItemUnitName($val['item_unit_id'])."</td>
-                    <td style=\"text-align:center\">".$val['quantity']."</td>
+                    <td style=\"text-align:right\">".$val['quantity']."</td>
                     <td style=\"text-align:right\">".number_format($val['item_unit_price'],2,'.',',')."</td>
                     <td style=\"text-align:right\">".number_format($val['subtotal_amount'],2,'.',',')."</td>
                     <td style=\"text-align:right\">".number_format($val['discount_amount'],2,'.',',')."</td>
@@ -210,13 +210,18 @@ class SalesInvoiceByUserReportController extends Controller
         $tblStock3 = " 
         <tr>
             <td colspan=\"5\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
-            <td style=\"text-align:center;\"><div style=\"font-weight: bold\">". $quantity ."</div></td>
+            <td style=\"text-align:right;\"><div style=\"font-weight: bold\">". $quantity ."</div></td>
             <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($subtotal_amount,2,'.',',') ."</div></td>
             <td></td>
             <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($discount_amount,2,'.',',') ."</div></td>
             <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($subtotal_amount_after_discount,2,'.',',') ."</div></td>
         </tr>
 
+        </table>
+        <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
+            <tr>
+                <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
+            </tr>
         </table>";
 
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');
@@ -268,7 +273,7 @@ class SalesInvoiceByUserReportController extends Controller
             $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(20);
             $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(20);
             $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(20);
-            $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+            $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(30);
             $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(20);
             $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(20);
             $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(20);
@@ -279,6 +284,7 @@ class SalesInvoiceByUserReportController extends Controller
             $spreadsheet->getActiveSheet()->mergeCells("B1:L1");
             $spreadsheet->getActiveSheet()->getStyle('B1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $spreadsheet->getActiveSheet()->getStyle('B1')->getFont()->setBold(true)->setSize(16);
+            $spreadsheet->getActiveSheet()->getStyle('B3:L3')->getFont()->setBold(true);
 
             $spreadsheet->getActiveSheet()->getStyle('B3:L3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $spreadsheet->getActiveSheet()->getStyle('B3:L3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -313,11 +319,11 @@ class SalesInvoiceByUserReportController extends Controller
                     $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                     $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                     $spreadsheet->getActiveSheet()->getStyle('G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('H'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('I'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('J'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('K'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('L'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+                    $spreadsheet->getActiveSheet()->getStyle('H'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                    $spreadsheet->getActiveSheet()->getStyle('I'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                    $spreadsheet->getActiveSheet()->getStyle('J'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                    $spreadsheet->getActiveSheet()->getStyle('K'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                    $spreadsheet->getActiveSheet()->getStyle('L'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
 
 
                         $no++;
@@ -336,6 +342,9 @@ class SalesInvoiceByUserReportController extends Controller
                 $j++;
         
             }
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':L'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
             
             $filename='Laporan_Penjualan_By_User_'.$start_date.'_s.d._'.$end_date.'.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

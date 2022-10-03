@@ -303,35 +303,6 @@ class AttendanceReportController extends Controller
                 $j++;
             }
             
-            // $j=4;
-            // $no=0;
-            
-            // foreach($data as $key=>$val){
-
-            //     if(is_numeric($key)){
-                    
-            //         $sheet = $spreadsheet->getActiveSheet(0);
-            //         $spreadsheet->getActiveSheet()->setTitle("Laporan Penerimaan Kas");
-            //         $spreadsheet->getActiveSheet()->getStyle('B'.$j.':E'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-
-            //         $spreadsheet->getActiveSheet()->getStyle('H'.$j.':E'.$j)->getNumberFormat()->setFormatCode('0.00');
-            
-            //         $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-            //         $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-            //         $spreadsheet->getActiveSheet()->getStyle('D'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-            //         $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
-
-
-
-            //         $no++;
-            //         $sheet->setCellValue('B'.$j, $no);
-            //         $sheet->setCellValue('C'.$j, 'Penjualan Produk');
-            //         $sheet->setCellValue('D'.$j, date('d-m-Y', strtotime($val['sales_invoice_date'])));
-            //         $sheet->setCellValue('E'.$j, number_format($val['total_amount'],2,'.',','));
-            //     }
-            //     $j++;
-        
-            // }
             
             $filename='Laporan_Absensi.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

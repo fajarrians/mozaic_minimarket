@@ -369,7 +369,7 @@ class InvtStockAdjustmentReportController extends Controller
             <tr>
                 <td width=\"8%\"><div style=\"\">Tanggal</div></td>
                 <td width=\"2%\"><div style=\"\">:</div></td>
-                <td width=\"50%\"><div style=\"\">".date('d-m-Y')."</div></td>
+                <td width=\"50%\"><div style=\"\">".date('d-m-Y')." ".date('H:i')."</div></td>
             </tr>
             <tr>
                 <td width=\"8%\"><div style=\"\">Dicetak</div></td>
@@ -388,14 +388,14 @@ class InvtStockAdjustmentReportController extends Controller
 
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <td width=\"5%\" ><div style=\"text-align: center;\">No</div></td>
-                <td width=\"12%\" ><div style=\"text-align: center;\">Nama Kategori</div></td>
-                <td width=\"26%\" ><div style=\"text-align: center;\">Nama Barang</div></td>
-                <td width=\"12%\" ><div style=\"text-align: center;\">Nama Satuan</div></td>
-                <td width=\"10%\" ><div style=\"text-align: center;\">Rak</div></td>
-                <td width=\"10%\" ><div style=\"text-align: center;\">Stok Sistem</div></td>
-                <td width=\"10%\" ><div style=\"text-align: center;\">Harga</div></td>
-                <td width=\"10%\" ><div style=\"text-align: center;\">Jumlah</div></td>
+                <td width=\"5%\" ><div style=\"text-align: center; font-weight: bold\">No</div></td>
+                <td width=\"12%\" ><div style=\"text-align: center; font-weight: bold\">Nama Kategori</div></td>
+                <td width=\"26%\" ><div style=\"text-align: center; font-weight: bold\">Nama Barang</div></td>
+                <td width=\"12%\" ><div style=\"text-align: center; font-weight: bold\">Nama Satuan</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Rak</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Stok Sistem</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Harga</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Jumlah</div></td>
             </tr>
         
              ";
@@ -519,14 +519,14 @@ class InvtStockAdjustmentReportController extends Controller
             $spreadsheet->getActiveSheet()->getStyle('B5')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
             $spreadsheet->getActiveSheet()->getStyle('B1')->getFont()->setBold(true)->setSize(16);
             $spreadsheet->getActiveSheet()->getStyle('B7:I7')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle('B7:I7')->getFill()
-            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-            ->getStartColor()->setARGB('FAFAFA');
+            // $spreadsheet->getActiveSheet()->getStyle('B7:I7')->getFill()
+            // ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            // ->getStartColor()->setARGB('FAFAFA');
             $spreadsheet->getActiveSheet()->getStyle('B7:I7')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $spreadsheet->getActiveSheet()->getStyle('B7:I7')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
             $sheet->setCellValue('B1',"Laporan Stok Barang");
-            $sheet->setCellValue('B3',"Tanggal  : ".date('d-m-Y'));
+            $sheet->setCellValue('B3',"Tanggal  : ".date('d-m-Y')." ".date('H:i'));
             $sheet->setCellValue('B4',"Dicetak  : ".Auth::user()->name);
             $sheet->setCellValue('B5',"Gudang   : ".$warehouse_id);
             $sheet->setCellValue('B7',"No");

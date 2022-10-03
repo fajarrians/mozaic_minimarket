@@ -464,7 +464,12 @@ class AcctProfitLossReportController extends Controller
 			    	</td>
 			    	<td width=\"10%\"></td>
 			    </tr>
-			</table>";
+			</table>
+            <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
+                <tr>
+                    <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
+                </tr>
+            </table>";
 
         $pdf::writeHTML($tblHeader.$tblheader_top.$tblitem_top.$tblfooter_top.$tblheader_bottom.$tblitem_bottom.$tblfooter_bottom.$tblFooter, true, false, false, false, '');
 
@@ -527,7 +532,7 @@ class AcctProfitLossReportController extends Controller
                     
                     $spreadsheet->setActiveSheetIndex(0);
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j.':C'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-            
+                    $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getNumberFormat()->setFormatCode('0.00');
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                     $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
                     
@@ -767,6 +772,10 @@ class AcctProfitLossReportController extends Controller
 
             $spreadsheet->getActiveSheet()->setCellValue('B'.($j), "RUGI / LABA");
             $spreadsheet->getActiveSheet()->setCellValue('C'.($j), $shu);
+            $j++;
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':C'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
 
             
             $filename='Laporan_Rugi_Laba_'.$start_date.'_s.d._'.$end_date.'.xls';

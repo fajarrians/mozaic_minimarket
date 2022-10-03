@@ -199,16 +199,16 @@ class SalesInvoiceReportController extends Controller
         $tblStock1 = "
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <th style=\"text-align:center; width: 5%\">No</th>
-                <th style=\"text-align:center; width: 12%\">Pelanggan</th>
-                <th style=\"text-align:center; width: 8%\">Metode</th>
-                <th style=\"text-align:center; width: 10%\">Tanggal</th>
-                <th style=\"text-align:center; width: 15%\">No. Penjulan</th>
-                <th style=\"text-align:center; width: 12%\">Jumlah Barang</th>
-                <th style=\"text-align:center; width: 10%\">Subtotal</th>
-                <th style=\"text-align:center; width: 8%\">Diskon (%)</th>
-                <th style=\"text-align:center; width: 10%\">Total Diskon</th>
-                <th style=\"text-align:center; width: 10%\">Total</th>
+                <th style=\"text-align:center; width: 5%;  font-weight: bold\">No</th>
+                <th style=\"text-align:center; width: 12%;  font-weight: bold\">Pelanggan</th>
+                <th style=\"text-align:center; width: 8%;  font-weight: bold\">Metode</th>
+                <th style=\"text-align:center; width: 10%;  font-weight: bold\">Tanggal</th>
+                <th style=\"text-align:center; width: 15%;  font-weight: bold\">No. Penjulan</th>
+                <th style=\"text-align:center; width: 12%;  font-weight: bold\">Jumlah Barang</th>
+                <th style=\"text-align:center; width: 10%;  font-weight: bold\">Subtotal</th>
+                <th style=\"text-align:center; width: 8%;  font-weight: bold\">Diskon (%)</th>
+                <th style=\"text-align:center; width: 10%;  font-weight: bold\">Total Diskon</th>
+                <th style=\"text-align:center; width: 10%;  font-weight: bold\">Total</th>
             </tr>
         
              ";
@@ -227,7 +227,7 @@ class SalesInvoiceReportController extends Controller
                 <td>". $this->getPaymentName($val['sales_payment_method']) ."</td>
                 <td>". date('d-m-Y', strtotime($val['sales_invoice_date'])) ."</td>
                 <td>". $val['sales_invoice_no'] ."</td>
-                <td style=\"text-align:center;\">". $val['subtotal_item'] ."</td>
+                <td style=\"text-align:right;\">". $val['subtotal_item'] ."</td>
                 <td style=\"text-align: right\">". number_format($val['subtotal_amount'],2,'.',',') ."</td>
                 <td style=\"text-align: right\">". $val['discount_percentage_total'] ."</td>
                 <td style=\"text-align: right\">". number_format($val['discount_amount_total'],2,'.',',') ."</td>
@@ -244,12 +244,17 @@ class SalesInvoiceReportController extends Controller
         $tblStock3 = " 
         <tr>
             <td colspan=\"5\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
-            <td style=\"text-align:center;\"><div style=\"font-weight: bold\">". $subtotal_item ."</div></td>
+            <td style=\"text-align:right;\"><div style=\"font-weight: bold\">". $subtotal_item ."</div></td>
             <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($subtotal_amount,2,'.',',') ."</div></td>
             <td colspan=\"2\" style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($discount_amount_total,2,'.',',') ."</div></td>
             <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($total_amount,2,'.',',') ."</div></td>
         </tr>
 
+        </table>
+        <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
+            <tr>
+                <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
+            </tr>
         </table>";
 
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');
@@ -323,6 +328,7 @@ class SalesInvoiceReportController extends Controller
             $spreadsheet->getActiveSheet()->mergeCells("B1:K1");
             $spreadsheet->getActiveSheet()->getStyle('B1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $spreadsheet->getActiveSheet()->getStyle('B1')->getFont()->setBold(true)->setSize(16);
+            $spreadsheet->getActiveSheet()->getStyle('B3:K3')->getFont()->setBold(true);
 
             $spreadsheet->getActiveSheet()->getStyle('B3:K3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $spreadsheet->getActiveSheet()->getStyle('B3:K3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -359,7 +365,7 @@ class SalesInvoiceReportController extends Controller
                     $spreadsheet->getActiveSheet()->getStyle('D'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                     $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                     $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                    $spreadsheet->getActiveSheet()->getStyle('G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
                     $spreadsheet->getActiveSheet()->getStyle('H'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
                     $spreadsheet->getActiveSheet()->getStyle('I'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
                     $spreadsheet->getActiveSheet()->getStyle('J'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
@@ -390,7 +396,7 @@ class SalesInvoiceReportController extends Controller
             $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':F'.$j);
             $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $spreadsheet->getActiveSheet()->getStyle('B'.$j.':K'.$j)->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->getStyle('G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->getStyle('G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $spreadsheet->getActiveSheet()->getStyle('H'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $spreadsheet->getActiveSheet()->getStyle('I'.$j.':J'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $spreadsheet->getActiveSheet()->mergeCells('I'.$j.':J'.$j);
@@ -402,6 +408,11 @@ class SalesInvoiceReportController extends Controller
             $sheet->setCellValue('H'.$j, number_format($subtotal_amount,2,'.',','));
             $sheet->setCellValue('I'.$j, number_format($discount_amount_total,2,'.',','));
             $sheet->setCellValue('K'.$j, number_format($total_amount,2,'.',','));
+
+            $j++;
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':K'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
             
             $filename='Laporan_Penjualan_'.$start_date.'_s.d._'.$end_date.'.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

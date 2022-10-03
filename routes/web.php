@@ -412,3 +412,7 @@ Route::get('/core-member-report/export', [CoreMemberReportController::class, 'ex
 Route::get('/data-table-item',[InvtItemController::class, 'dataTableItem']);
 Route::get('/table-sales-item',[SalesInvoiceController::class, 'tableSalesItem']);
 Route::get('/table-stock-item',[InvtStockAdjustmentReportController::class, 'tableStockItem']);
+Route::get('/table-purchase-item-report',[PurchaseInvoicebyItemReportController::class, 'tablePurchaseItemReport']);
+Route::get('/table-sales-invoice-by-item',[SalesInvoicebyItemReportController::class, 'tableSalesInvoiceByItem']);
+Route::get('/table-sales-invoice-by-item-not-sold',[SalesInvoicebyItemReportController::class, 'tableSalesInvoiceByItemNotSold']);
+Route::get('/table-sales-invoice-by-year',[SalesInvoiceByYearReportController::class, 'tableSalesInvoiceByYear']);

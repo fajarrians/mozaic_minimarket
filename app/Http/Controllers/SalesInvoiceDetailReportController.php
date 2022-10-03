@@ -196,20 +196,20 @@ class SalesInvoiceDetailReportController extends Controller
         $tblStock1 = "
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <td rowspan=\"2\" width=\"5%\" ><div style=\"text-align: center; vertical-align: middle;\">No</div></td>
-                <td rowspan=\"2\" width=\"15%\"><div style=\"text-align: center;\">Pelanggan</div></td>
-                <td rowspan=\"2\" width=\"10%\"><div style=\"text-align: center;\">Tanggal</div></td>
-                <td rowspan=\"2\" width=\"15%\"><div style=\"text-align: center;\">No. Invoice</div></td>
-                <td rowspan=\"2\" width=\"10%\"><div style=\"text-align: center;\">Total Diskon</div></td>
-                <td colspan=\"7\" width=\"45%\"><div style=\"text-align: center;\">Total</div></td>
+                <td rowspan=\"2\" width=\"5%\" ><div style=\"text-align: center; vertical-align: middle; font-weight: bold\">No</div></td>
+                <td rowspan=\"2\" width=\"15%\"><div style=\"text-align: center; font-weight: bold\">Pelanggan</div></td>
+                <td rowspan=\"2\" width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Tanggal</div></td>
+                <td rowspan=\"2\" width=\"15%\"><div style=\"text-align: center; font-weight: bold\">No. Invoice</div></td>
+                <td rowspan=\"2\" width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Total Diskon</div></td>
+                <td colspan=\"7\" width=\"45%\"><div style=\"text-align: center; font-weight: bold\">Total</div></td>
             </tr>
             
             <tr>
-                <td width=\"10%\"><div style=\"text-align: center;\">Nama Barang</div></td>
-                <td width=\"10%\"><div style=\"text-align: center;\">Satuan</div></td>
-                <td width=\"5%\"><div style=\"text-align: center;\">Qty</div></td>
-                <td width=\"10%\"><div style=\"text-align: center;\">Harga Satuan</div></td>
-                <td width=\"10%\" ><div style=\"text-align: center;\">Subtotal</div></td>
+                <td width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Nama Barang</div></td>
+                <td width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Satuan</div></td>
+                <td width=\"5%\"><div style=\"text-align: center; font-weight: bold\">Qty</div></td>
+                <td width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Harga Satuan</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Subtotal</div></td>
             </tr>
             
             ";
@@ -236,7 +236,7 @@ class SalesInvoiceDetailReportController extends Controller
                         <td width=\"55%\" rowspan=\"\"><div style=\"text-align: center;\"></div></td>
                         <td width=\"10%\"><div style=\"text-align: center;\">".$this->getItemName($val2['item_id'])."</div></td>
                         <td width=\"10%\"><div style=\"text-align: center;\">".$this->getItemUnitName($val2['item_unit_id'])."</div></td>
-                        <td width=\"5%\"><div style=\"text-align: center;\">".$val2['quantity']."</div></td>
+                        <td width=\"5%\"><div style=\"text-align: right;\">".$val2['quantity']."</div></td>
                         <td width=\"10%\"><div style=\"text-align: right;\">".number_format($val2['item_unit_price'],2,'.',',')."</div></td>
                         <td width=\"10%\" ><div style=\"text-align: right;\">".number_format($val2['subtotal_amount_after_discount'],2,'.',',')."</div></td>
                     </tr>
@@ -249,6 +249,11 @@ class SalesInvoiceDetailReportController extends Controller
         }
         $tblStock3 = " 
 
+        </table>
+        <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
+            <tr>
+                <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
+            </tr>
         </table>";
 
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');
@@ -326,6 +331,8 @@ class SalesInvoiceDetailReportController extends Controller
             $spreadsheet->getActiveSheet()->mergeCells("B1:K1");
             $spreadsheet->getActiveSheet()->getStyle('B1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $spreadsheet->getActiveSheet()->getStyle('B1')->getFont()->setBold(true)->setSize(16);
+            $spreadsheet->getActiveSheet()->getStyle('B3:K3')->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('B4:K4')->getFont()->setBold(true);
 
             $spreadsheet->getActiveSheet()->getStyle('B3:K3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $spreadsheet->getActiveSheet()->getStyle('B4:K4')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
@@ -391,6 +398,9 @@ class SalesInvoiceDetailReportController extends Controller
                 }
                 $j++;
             }
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':K'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
             
             $filename='Laporan_Penjualan_Terperinci_'.$start_date.'_s.d._'.$end_date.'.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

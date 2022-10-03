@@ -135,7 +135,7 @@
                     <td>{{ $SIRC->getPaymentName($row['sales_payment_method']) }}</td>
                     <td>{{ date('d-m-Y', strtotime($row['sales_invoice_date'])) }}</td>
                     <td>{{ $row['sales_invoice_no'] }}</td>
-                    <td style="text-align: center">{{ $row['subtotal_item'] }}</td>
+                    <td style="text-align: right">{{ $row['subtotal_item'] }}</td>
                     <td style="text-align: right">{{ number_format($row['subtotal_amount'],2,'.',',') }}</td>
                     <td style="text-align: right">{{ $row['discount_percentage_total'] }}</td>
                     <td style="text-align: right">{{ number_format($row['discount_amount_total'],2,'.',',') }}</td>

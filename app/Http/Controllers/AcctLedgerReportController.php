@@ -340,17 +340,17 @@ class AcctLedgerReportController extends Controller
         $tblStock1 = "
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <td width=\"5%\" rowspan=\"2\"><div style=\"text-align: center;\">No</div></td>
-                <td width=\"12%\" rowspan=\"2\"><div style=\"text-align: center;\">Tanggal</div></td>
-                <td width=\"25%\" rowspan=\"2\"><div style=\"text-align: center;\">Uraian</div></td>
-                <td width=\"15%\" rowspan=\"2\"><div style=\"text-align: center;\">Debet </div></td>
-                <td width=\"15%\" rowspan=\"2\"><div style=\"text-align: center;\">Kredit </div></td>
-                <td width=\"30%\" colspan=\"2\"><div style=\"text-align: center;\">Saldo </div></td>
+                <td width=\"5%\" rowspan=\"2\"><div style=\"text-align: center; font-weight: bold\">No</div></td>
+                <td width=\"12%\" rowspan=\"2\"><div style=\"text-align: center; font-weight: bold\">Tanggal</div></td>
+                <td width=\"25%\" rowspan=\"2\"><div style=\"text-align: center; font-weight: bold\">Uraian</div></td>
+                <td width=\"15%\" rowspan=\"2\"><div style=\"text-align: center; font-weight: bold\">Debet </div></td>
+                <td width=\"15%\" rowspan=\"2\"><div style=\"text-align: center; font-weight: bold\">Kredit </div></td>
+                <td width=\"30%\" colspan=\"2\"><div style=\"text-align: center; font-weight: bold\">Saldo </div></td>
             </tr>
             
             <tr>
-                <td width=\"15%\"><div style=\"text-align: center;\">Debet </div></td>
-                <td width=\"15%\"><div style=\"text-align: center;\">Kredit </div></td>
+                <td width=\"15%\"><div style=\"text-align: center; font-weight: bold\">Debet </div></td>
+                <td width=\"15%\"><div style=\"text-align: center; font-weight: bold\">Kredit </div></td>
             </tr>
         
              ";
@@ -372,7 +372,13 @@ class AcctLedgerReportController extends Controller
                 ";
             $no++;
         }
-        $tblStock4 = " </table>";
+        $tblStock4 = " 
+        </table>
+        <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
+            <tr>
+                <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
+            </tr>
+        </table>";
 
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock4, true, false, false, false, '');
 
@@ -586,6 +592,9 @@ class AcctLedgerReportController extends Controller
                 $j++;
         
             }
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':H'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
 
             $filename='Buku_Besar.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

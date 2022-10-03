@@ -177,18 +177,18 @@ class CoreMemberReportController extends Controller
             </tr>
         </table>
         ";
-        $pdf::SetMargins(30, 10, 10, 10);
+        $pdf::SetMargins(10, 10, 10, 10);
         $pdf::writeHTML($tbl, true, false, false, false, '');
         
         $no = 1;
         $tblStock1 = "
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <td width=\"5%\"><div style=\"text-align: center;\">No</div></td>
-                <td width=\"20%\"><div style=\"text-align: center;\">Nama Pelanggan</div></td>
-                <td width=\"20%\"><div style=\"text-align: center;\">Total Transaksi</div></td>
-                <td width=\"20%\"><div style=\"text-align: center;\">Total Barang</div></td>
-                <td width=\"20%\"><div style=\"text-align: center;\">Total Pembelian</div></td>
+                <td width=\"5%\"><div style=\"text-align: center; font-weight: bold\">No</div></td>
+                <td width=\"24%\"><div style=\"text-align: center; font-weight: bold\">Nama Pelanggan</div></td>
+                <td width=\"23%\"><div style=\"text-align: center; font-weight: bold\">Total Transaksi</div></td>
+                <td width=\"24%\"><div style=\"text-align: center; font-weight: bold\">Total Barang</div></td>
+                <td width=\"24%\"><div style=\"text-align: center; font-weight: bold\">Total Pembelian</div></td>
 
             </tr>
         
@@ -202,8 +202,8 @@ class CoreMemberReportController extends Controller
                 <tr>			
                     <td style=\"text-align:center\">$no.</td>
                     <td style=\"text-align:left\">".$val['member_name']."</td>
-                    <td style=\"text-align:center\">".$this->getTotalTransaction($val['member_id'])."</td>
-                    <td style=\"text-align:center\">".$this->getTotalItem($val['member_id'])."</td>
+                    <td style=\"text-align:right\">".$this->getTotalTransaction($val['member_id'])."</td>
+                    <td style=\"text-align:right\">".$this->getTotalItem($val['member_id'])."</td>
                     <td style=\"text-align:right\">".number_format($this->getTotalAmount($val['member_id']),2,'.',',')."</td>
                 </tr>
                 
@@ -212,6 +212,11 @@ class CoreMemberReportController extends Controller
         }
         $tblStock3 = " 
 
+        </table>
+        <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
+            <tr>
+                <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
+            </tr>
         </table>";
 
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');
@@ -251,7 +256,7 @@ class CoreMemberReportController extends Controller
             $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
             $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
             $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(5);
-            $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(20);
+            $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(30);
             $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(20);
             $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(20);
             $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(20);
@@ -260,6 +265,7 @@ class CoreMemberReportController extends Controller
             $spreadsheet->getActiveSheet()->mergeCells("B1:F1");
             $spreadsheet->getActiveSheet()->getStyle('B1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $spreadsheet->getActiveSheet()->getStyle('B1')->getFont()->setBold(true)->setSize(16);
+            $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getFont()->setBold(true);
 
             $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -286,8 +292,8 @@ class CoreMemberReportController extends Controller
             
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('D'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                    $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                    $spreadsheet->getActiveSheet()->getStyle('D'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                    $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
                     $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
 
 
@@ -304,6 +310,9 @@ class CoreMemberReportController extends Controller
                 $j++;
         
             }
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':F'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
             
             $filename='Laporan_Pembelian_Pelanggan_'.$start_date.'_s.d._'.$end_date.'.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

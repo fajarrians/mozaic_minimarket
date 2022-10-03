@@ -508,7 +508,12 @@ class AcctProfitLossYearReportController extends Controller
 			    	</td>
 			    	<td width=\"10%\"></td>
 			    </tr>
-			</table>";
+			</table>
+            <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
+                <tr>
+                    <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
+                </tr>
+            </table>";
 
         $pdf::writeHTML($tblHeader.$tblheader_top.$tblitem_top.$tblfooter_top.$tblheader_bottom.$tblitem_bottom.$tblfooter_bottom.$tblFooter, true, false, false, false, '');
 
@@ -819,6 +824,10 @@ class AcctProfitLossYearReportController extends Controller
 
         $spreadsheet->getActiveSheet()->setCellValue('B'.($j), "RUGI / LABA");
         $spreadsheet->getActiveSheet()->setCellValue('C'.($j), $shu);
+        $j++;
+        $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':C'.$j);
+        $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+        $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
 
         
         $filename='Laporan_Rugi_Laba_01_'.$month.'_'.$year.'.xls';

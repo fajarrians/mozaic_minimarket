@@ -114,9 +114,7 @@
                     <div class = "col-md-6">
                         <div class="form-group form-md-line-input">
                             <section class="control-label">Nama Gudang
-                                <span class="required text-danger">
-                                    *
-                                </span>
+                                
                             </section>
                             {!! Form::select('warehouse_id',  $warehouse, $warehouse_id, ['class' => 'selection-search-clear select-form', 'id' => 'warehouse_id', 'name' => 'warehouse_id']) !!}
                         </div>
@@ -124,9 +122,7 @@
                     <div class = "col-md-6">
                         <div class="form-group form-md-line-input">
                             <section class="control-label">Nama Kategori Barang
-                                <span class="required text-danger">
-                                    *
-                                </span>
+                                
                             </section>
                             {!! Form::select('item_category_id',  $category, $category_id, ['class' => 'selection-search-clear select-form', 'id' => 'category_id', 'name' => 'category_id']) !!}
                         </div>

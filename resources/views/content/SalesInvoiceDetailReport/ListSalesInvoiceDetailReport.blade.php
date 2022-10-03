@@ -137,7 +137,7 @@
                     <td>{{ $row['sales_invoice_no'] }}</td>
                     <td>{{ $SIDRC->getItemName($row['item_id']) }}</td>
                     <td>{{ $SIDRC->getItemUnitName($row['item_unit_id']) }}</td>
-                    <td class="text-center">{{ $row['quantity'] }}</td>
+                    <td class="text-right">{{ $row['quantity'] }}</td>
                     <td style="text-align: right">{{ number_format($row['item_unit_price'],2,'.',',') }}</td>
                     <td style="text-align: right">{{ number_format($row['subtotal_amount'],2,'.',',') }}</td>
                     <td style="text-align: right">{{ number_format($row['discount_amount'],2,'.',',') }}</td>

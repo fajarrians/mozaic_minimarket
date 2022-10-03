@@ -132,7 +132,7 @@
                             <td>{{ date('d-m-Y', strtotime($row['sales_invoice_date'])) }}</td>
                             <td>{{ $SIBURC->getItemName($row['item_id']) }}</td>
                             <td>{{ $SIBURC->getItemUnitName($row['item_unit_id']) }}</td>
-                            <td>{{ $row['quantity'] }}</td>
+                            <td style="text-align: right">{{ $row['quantity'] }}</td>
                             <td style="text-align: right">{{ number_format($row['item_unit_price'],2,'.',',') }}</td>
                             <td style="text-align: right">{{ number_format($row['subtotal_amount'],2,'.',',') }}</td>
                             <td style="text-align: right">{{ number_format($row['discount_amount'],2,'.',',') }}</td>

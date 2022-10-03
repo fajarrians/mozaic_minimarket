@@ -3,7 +3,29 @@
 @extends('adminlte::page')
 
 @section('title', 'MOZAIC Minimarket')
-
+@section('js')
+    <script>
+        var table;
+        $(document).ready(function(){
+            table =  $('#myDataTable').DataTable({
+     
+             "processing": true,
+             "serverSide": true,
+             "pageLength": 5,
+             "lengthMenu": [ [5, 15, 20, -1], [5, 15, 20, "All"] ],
+             "order": [[2, 'asc']],
+             "ajax": "{{ url('table-sales-invoice-by-year') }}",
+             "columns":[
+                {data: 'no'},
+                {data: 'item_category_name'},
+                {data: 'item_name'},
+                {data: 'total_item'},
+                {data: 'total_amount'},
+             ],
+             });
+        });
+    </script>
+@endsection
 @section('content_header')
 
 <nav aria-label="breadcrumb">
@@ -40,7 +62,7 @@
   </form>
     <div class="card-body">
         <div class="table-responsive">
-            <table id="example" style="width:100%" class="table table-striped table-bordered table-hover table-full-width">
+            <table id="myDataTable" style="width:100%" class="table table-striped table-bordered table-hover table-full-width">
                 <thead>
                     <tr>
                         <th style='text-align:center; width: 5%'>No</th>
@@ -51,16 +73,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                  <?php $no=1; ?>
-                    @foreach ($data as $val)
-                        <tr>
-                            <td class="text-center">{{ $no++ }}.</td>
-                            <td>{{ $SIBYRC->getCategoryName($val['item_category_id']) }}</td>
-                            <td>{{ $SIBYRC->getItemName($val['item_id']) }}</td>
-                            <td style="text-align: right">{{ $SIBYRC->getTotalItem($val['item_id']) }}</td>
-                            <td style="text-align: right">{{ number_format($SIBYRC->getTotalAmount($val['item_id']),2,'.',',') }}</td>
-                        </tr>
-                    @endforeach
                 </tbody>
             </table>
         </div>

@@ -15,6 +15,23 @@
 
 		});
 	}
+    var table;
+        $(document).ready(function(){
+            table =  $('#myDataTable').DataTable({
+     
+             "processing": true,
+             "serverSide": true,
+             "pageLength": 5,
+             "lengthMenu": [ [5, 15, 20, -1], [5, 15, 20, "All"] ],
+             "order": [[2, 'asc']],
+             "ajax": "{{ url('table-sales-invoice-by-item-not-sold') }}",
+             "columns":[
+                {data: 'no'},
+                {data: 'item_category_name'},
+                {data: 'item_name'},
+             ],
+             });
+        });
 </script>
 @stop
 @section('content_header')
@@ -96,7 +113,7 @@
 
     <div class="card-body">
         <div class="table-responsive">
-            <table id="example" style="width:100%" class="table table-striped table-bordered table-hover table-full-width">
+            <table id="myDataTable" style="width:100%" class="table table-striped table-bordered table-hover table-full-width">
                 <thead>
                     <tr>
                         <th style='text-align:center; width: 5%'>No</th>
@@ -106,27 +123,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $no=1; ?>
-                    <?php
-                        if (empty($data)) {
-                            echo "";
-                        }else {
-                           foreach ($data as $key => $row) {
-                            echo "<tr>
-                                    <td class='text-center'>". $no++.".</td>
-                                    <td>". $SIBIRC->getCategoryName($row['item_category_id'])."</td>
-                                    <td>". $SIBIRC->getItemName($row['item_id'])."</td>
-                                </tr>";
-                           }
-                        }
-                        ?>
-                  {{-- @foreach ($data as $row)
-                    <tr>
-                        <td>{{ $no++ }}</td>
-                        <td>{{ $SIBIRC->getCategoryName($row['item_category_id']) }}</td>
-                        <td>{{ $SIBIRC->getItemName($row['item_id']) }}</td>
-                    </tr>
-                  @endforeach --}}
                 </tbody>
             </table>
         </div>

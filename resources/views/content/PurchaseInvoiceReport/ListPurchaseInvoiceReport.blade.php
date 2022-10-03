@@ -118,8 +118,8 @@
                         <th  style='text-align:center'>Nama Gudang</th>
                         <th  style='text-align:center'>Nama Barang</th>
                         <th  style='text-align:center'>Tanggal Pembelian</th>
-                        <th  style='text-align:center'>Quantity</th>
                         <th  style='text-align:center'>Satuan</th>
+                        <th  style='text-align:center'>Quantity</th>
                         <th  style='text-align:center'>Harga / Satuan</th>
                         <th style='text-align:center'>Jumlah Total</th>
                     </tr>
@@ -133,8 +133,8 @@
                             <td>{{ $PIRC->getWarehouseName($row['warehouse_id']) }}</td>
                             <td>{{ $PIRC->getItemName($row['item_id']) }}</td>
                             <td>{{ date('d-m-Y', strtotime($row['purchase_invoice_date'])) }}</td>
-                            <td>{{ $row['quantity'] }}</td>
                             <td>{{ $PIRC->getUnitName($row['item_unit_id']) }}</td>
+                            <td style="text-align: right">{{ $row['quantity'] }}</td>
                             <td style="text-align: right">{{ number_format($row['item_unit_cost'],2,'.',',') }}</td>
                             <td style="text-align: right">{{ number_format($row['subtotal_amount_after_discount'],2,'.',',') }}</td>
                         </tr>

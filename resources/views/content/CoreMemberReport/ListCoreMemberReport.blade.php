@@ -111,8 +111,8 @@
                   <tr>
                     <td class="text-center">{{ $no++ }}.</td>
                     <td>{{ $row['member_name'] }}</td>
-                    <td>{{ $CMRC->getTotalTransaction($row['member_id']) }}</td>
-                    <td>{{ $CMRC->getTotalItem($row['member_id']) }}</td>
+                    <td style="text-align: right">{{ $CMRC->getTotalTransaction($row['member_id']) }}</td>
+                    <td style="text-align: right">{{ $CMRC->getTotalItem($row['member_id']) }}</td>
                     <td style="text-align: right">{{ number_format($CMRC->getTotalAmount($row['member_id']),2,'.',',') }}</td>
                   </tr> 
                   @endforeach

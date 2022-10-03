@@ -158,11 +158,11 @@ class PurchaseReturnReportController extends Controller
         $tblStock1 = "
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <td width=\"5%\" ><div style=\"text-align: center;\">No</div></td>
-                <td width=\"20%\" ><div style=\"text-align: center;\">Nama Pemasok</div></td>
-                <td width=\"20%\" ><div style=\"text-align: center;\">Nama Gudang</div></td>
-                <td width=\"20%\" ><div style=\"text-align: center;\">Tanggal Retur Pembelian</div></td>
-                <td width=\"20%\" ><div style=\"text-align: center;\">Jumlah Total</div></td>
+                <td width=\"4%\" ><div style=\"text-align: center; font-weight: bold\">No</div></td>
+                <td width=\"24%\" ><div style=\"text-align: center; font-weight: bold\">Nama Pemasok</div></td>
+                <td width=\"24%\" ><div style=\"text-align: center; font-weight: bold\">Nama Gudang</div></td>
+                <td width=\"24%\" ><div style=\"text-align: center; font-weight: bold\">Tanggal Retur Pembelian</div></td>
+                <td width=\"24%\" ><div style=\"text-align: center; font-weight: bold\">Jumlah Total</div></td>
             </tr>
         
              ";
@@ -172,7 +172,7 @@ class PurchaseReturnReportController extends Controller
         foreach ($data as $key => $val) {
             $tblStock2 .="
                 <tr>			
-                    <td style=\"text-align:left\">$no.</td>
+                    <td style=\"text-align:center\">$no.</td>
                     <td style=\"text-align:left\">".$val['purchase_return_supplier']."</td>
                     <td style=\"text-align:left\">".$this->getWarehouseName($val['warehouse_id'])."</td>
                     <td style=\"text-align:left\">".date('d-m-Y', strtotime($val['purchase_return_date']))."</td>
@@ -184,6 +184,11 @@ class PurchaseReturnReportController extends Controller
         }
         $tblStock3 = " 
 
+        </table>
+        <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
+            <tr>
+                <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
+            </tr>
         </table>";
 
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');
@@ -249,6 +254,7 @@ class PurchaseReturnReportController extends Controller
             $spreadsheet->getActiveSheet()->mergeCells("B1:F1");
             $spreadsheet->getActiveSheet()->getStyle('B1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $spreadsheet->getActiveSheet()->getStyle('B1')->getFont()->setBold(true)->setSize(16);
+            $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getFont()->setBold(true);
 
             $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -292,6 +298,9 @@ class PurchaseReturnReportController extends Controller
                 $j++;
         
             }
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':F'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
             
             $filename='Laporan_Retur_Pembelian_'.$start_date.'_s.d._'.$end_date.'.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
