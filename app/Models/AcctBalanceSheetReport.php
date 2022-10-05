@@ -7,5 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class AcctBalanceSheetReport extends Model
 {
-    use HasFactory;
+    // use HasFactory;
+    protected $table        = 'acct_balance_sheet_report';
+    protected $primaryKey   = 'balance_sheet_report_id';
+    protected $guarded = [
+        'last_update',
+    ];
 }
