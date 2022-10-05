@@ -12,8 +12,6 @@ MySQL - 10.4.19-MariaDB : Database - ciptapro_mozaic_minimarket
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`ciptapro_mozaic_minimarket` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
-
 USE `ciptapro_mozaic_minimarket`;
 
 /*Table structure for table `acct_account` */
@@ -38,19 +36,81 @@ CREATE TABLE `acct_account` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`account_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=71 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `acct_account` */
 
 insert  into `acct_account`(`account_id`,`company_id`,`account_code`,`account_name`,`account_group`,`account_suspended`,`account_default_status`,`account_remark`,`account_status`,`account_token`,`account_type_id`,`data_state`,`created_id`,`updated_id`,`created_at`,`updated_at`) values 
-(10,1,'100.1','KAS BESAR','100',0,0,NULL,0,NULL,1,0,55,55,'2022-07-23 09:08:01','2022-09-22 16:17:29'),
-(11,1,'100.2','KAS KECIL','100',0,0,NULL,0,NULL,1,0,55,55,'2022-07-23 09:08:29','2022-07-23 09:08:29'),
-(12,1,'200.1','PEMBELIAN','200',0,1,NULL,1,NULL,3,0,55,55,'2022-07-23 09:09:04','2022-08-02 14:05:55'),
-(14,1,'300.1','PENJUALAN','300',0,0,NULL,0,NULL,2,0,55,55,'2022-07-23 09:11:21','2022-08-02 14:05:37'),
-(15,1,'400.1','PENGELUARAN','400',0,1,NULL,1,NULL,3,0,55,55,'2022-07-23 09:11:45','2022-08-02 14:06:06'),
-(16,1,'100.3','HUTANG PEMASOK','100',0,1,NULL,1,NULL,0,0,55,55,'2022-09-07 13:44:52','2022-09-07 14:00:39'),
-(18,1,'100.4','BANK BRI','100',0,0,NULL,0,NULL,0,0,55,55,'2022-09-08 10:27:23','2022-09-08 10:27:23'),
-(19,1,'100.5','PIUTANG PEGAWAI','100',0,0,NULL,0,NULL,0,0,55,55,'2022-09-13 14:13:17','2022-09-13 14:13:17');
+(1,1,'100','ASET','100',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:06','2022-10-05 10:36:06'),
+(2,1,'101.00','ASET LANCAR','101',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:06','2022-10-05 10:36:06'),
+(3,1,'101.00.1','Kas Besar','101.00',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:06','2022-10-05 10:36:06'),
+(4,1,'101.00.2','Kas Kecil','101.00',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:06','2022-10-05 10:36:06'),
+(5,1,'101.01','KAS DI BANK','101',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:06','2022-10-05 10:36:06'),
+(6,1,'101.01.1','Bank Jateng/2-002-23282-3 K','101.01',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:06','2022-10-05 10:36:06'),
+(7,1,'101.02','PINJAMAN YANG DIBERIKAN','101',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:06','2022-10-05 10:36:06'),
+(8,1,'101.02.1','Pinjaman','101.02',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:06','2022-10-05 10:36:06'),
+(9,1,'101.02.2','Pinjaman Kavling','101.02',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:06','2022-10-05 10:36:06'),
+(10,1,'101.02.3','Pinjaman USP','101.02',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:06','2022-10-05 10:36:06'),
+(11,1,'101.02.4','Pinjaman Pulsa','101.02',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:06','2022-10-05 10:36:06'),
+(12,1,'101.02.5','Pinjaman Lain-lain/RSKI','101.02',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:06','2022-10-05 10:36:06'),
+(13,1,'102.00','ASET TETAP','102',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(14,1,'102.01','Aset Tetap','102',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(15,1,'102.02','Akumulasi Penyusutan','102',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(16,1,'103','ASET LAINYA','103',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(17,1,'103.01','Persediaan Barang','103',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(18,1,'103.02','Biaya Dibayar Dimuka','103',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(19,1,'103.03','Pendapatan Yang Akan Diterima','103',0,0,NULL,0,NULL,0,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(20,1,'200','KEWAJIBAN','200',0,1,NULL,1,NULL,1,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(21,1,'200.01','KEWAJIBAN LANCAR','200',0,1,NULL,1,NULL,1,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(22,1,'200.01.1','Deposito','200.01',0,1,NULL,1,NULL,1,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(23,1,'200.02','KEWAJIBAN JANGKA PANJANG','200',0,1,NULL,1,NULL,1,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(24,1,'200.02.1','Hutang Dagang','200.02',0,1,NULL,1,NULL,1,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(25,1,'200.02.2','Hutang JMA','200.02',0,1,NULL,1,NULL,1,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(26,1,'200.02.3','Hutang Pajak','200.02',0,1,NULL,1,NULL,1,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(27,1,'200.02.4','Hutang Lain-lain/USP','200.02',0,1,NULL,1,NULL,1,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(28,1,'200.02.5','Hutang Lain-lain/Kavling','200.02',0,1,NULL,1,NULL,1,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(29,1,'201.00','MODAL/EKUITAS','201',0,1,NULL,1,NULL,1,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(30,1,'201.01','Cadangan','201',0,1,NULL,1,NULL,1,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(31,1,'201.02','SHU Tahun Berjalan','201',0,1,NULL,1,NULL,1,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(32,1,'300.01','PENDAPATAN  OPERASIONAL','300.01',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:47:07'),
+(33,1,'300.01.1','Penjualan','300.01',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(34,1,'300.01.2','Partisipasi Pinjaman Lain','300.01',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(35,1,'300.01.3','Foto Copy','300.01',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(36,1,'300.01.4','Paket','300.01',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(37,1,'300.01.5','Pulsa','300.01',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(38,1,'300.01.6','Outsourcing','300.01',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(39,1,'300.01.7','Seragam','300.01',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(40,1,'300.01.8','Kavling','300.01',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(41,1,'300.01.9','Parkir','300.01',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(42,1,'300.01.10','Parcel','300.01',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(43,1,'300.02','PENDAPATAN NON OPERASIONAL','300.02',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:46:42'),
+(44,1,'300.02.1','Pendapatan Bunga Deposito','300.02',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(45,1,'300.02.2','Pendapatan Bunga Tabungan','300.02',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(46,1,'300.02.3','Biaya Adm Bank','300.02',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(47,1,'300.02.4','Pendapatan Lain-lain','300.02',0,1,NULL,1,NULL,2,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(48,1,'400.01','BEBAN OPERASIONAL','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(49,1,'400.01.1','Pembelian','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(50,1,'400.01.2','HPP Outsourcing','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(51,1,'400.01.3','HPP Seragam','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(52,1,'400.01.4','HPP Parcel','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(53,1,'400.01.5','Potongan Pembelian','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(54,1,'400.01.6','Retur Pembelian','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(55,1,'400.01.7','Biaya Karyawan','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(56,1,'400.01.8','Makan','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(57,1,'400.01.9','Cetakan & Alat Adm','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(58,1,'400.01.10','Kebersihan','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(59,1,'400.01.11','Bahan Habis Pakai','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(60,1,'400.01.12','Pemeliharaan Inventaris','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(61,1,'400.01.13','Pemeliharaan Kendaraan','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(62,1,'400.01.14','Seragam Kary Kopkar','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(63,1,'400.01.15','Komputerisasi','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(64,1,'400.01.16','Pajak','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(65,1,'400.01.17','Perjalanan','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(66,1,'400.01.18','Pihak Ketiga','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(67,1,'400.01.19','Telpon','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(68,1,'400.01.20','Perlengkapan','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(69,1,'400.01.21','Biaya Penyusutan','400.01',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07'),
+(70,1,'400.02','BEBAN NON OPERASIONAL','400.02',0,0,NULL,0,NULL,3,0,55,55,'2022-10-05 10:36:07','2022-10-05 10:36:07');
 
 /*Table structure for table `acct_account_balance` */
 
@@ -64,9 +124,16 @@ CREATE TABLE `acct_account_balance` (
   `created_id` int(10) DEFAULT NULL,
   `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`account_balance_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=86 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=96 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `acct_account_balance` */
+
+insert  into `acct_account_balance`(`account_balance_id`,`company_id`,`account_id`,`last_balance`,`created_id`,`last_update`) values 
+(91,1,67,'-100000',55,'2022-10-05 11:58:07'),
+(92,1,4,'15000',55,'2022-10-05 15:41:41'),
+(93,1,31,'3000',55,'2022-10-05 13:11:11'),
+(94,1,33,'7000',55,'2022-10-05 15:43:20'),
+(95,1,10,'-5000',55,'2022-10-05 15:37:38');
 
 /*Table structure for table `acct_account_balance_detail` */
 
@@ -88,9 +155,21 @@ CREATE TABLE `acct_account_balance_detail` (
   `data_state` int(1) DEFAULT 0,
   `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`account_balance_detail_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=294 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=314 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `acct_account_balance_detail` */
+
+insert  into `acct_account_balance_detail`(`account_balance_detail_id`,`company_id`,`account_id`,`transaction_id`,`transaction_type`,`transaction_code`,`transaction_date`,`opening_balance`,`account_in`,`account_out`,`last_balance`,`created_id`,`data_state`,`last_update`) values 
+(304,1,67,170,'1','JU','2022-10-05','0','0','100000','-100000',55,0,'2022-10-05 11:58:07'),
+(305,1,4,171,'4','PJL','2022-10-05','0','3000','0','3000',55,0,'2022-10-05 13:11:11'),
+(306,1,31,171,'4','PJL','2022-10-05','0','3000','0','3000',55,0,'2022-10-05 13:11:11'),
+(307,1,4,172,'4','PJL','2022-10-05','3000','6000','0','9000',55,0,'2022-10-05 13:18:15'),
+(308,1,33,172,'4','PJL','2022-10-05','0','6000','0','6000',55,0,'2022-10-05 13:18:15'),
+(309,1,10,173,'1','JU','2022-09-05','0','0','10000','-10000',55,0,'2022-10-05 15:33:39'),
+(310,1,10,174,'1','JU','2022-09-05','-10000','5000','0','-5000',55,0,'2022-10-05 15:37:38'),
+(311,1,4,175,'4','PJL','2022-09-05','9000','6000','0','15000',55,0,'2022-10-05 15:41:41'),
+(312,1,33,175,'4','PJL','2022-09-05','6000','6000','0','12000',55,0,'2022-10-05 15:41:41'),
+(313,1,33,176,'1','JU','2022-09-07','12000','0','5000','7000',55,0,'2022-10-05 15:43:20');
 
 /*Table structure for table `acct_account_setting` */
 
@@ -112,20 +191,80 @@ CREATE TABLE `acct_account_setting` (
 /*Data for the table `acct_account_setting` */
 
 insert  into `acct_account_setting`(`account_setting_id`,`company_id`,`account_id`,`account_setting_name`,`account_setting_status`,`created_at`,`updated_at`) values 
-(424,1,12,'purchase_account',0,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(425,1,11,'purchase_cash_account',1,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(426,1,12,'purchase_payment_account',0,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(427,1,11,'purchase_cash_payment_account',1,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(428,1,16,'purchase_payable_account',1,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(429,1,16,'purchase_cash_payable_account',0,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(430,1,12,'purchase_return_account',1,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(431,1,11,'purchase_return_cash_account',0,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(432,1,14,'sales_account',1,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(433,1,11,'sales_cash_account',0,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(434,1,19,'sales_receivable_account',0,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(435,1,14,'sales_cash_receivable_account',1,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(436,1,15,'expenditure_account',0,'2022-09-13 14:44:38','2022-09-20 11:35:03'),
-(437,1,11,'expenditure_cash_account',1,'2022-09-13 14:44:38','2022-09-20 11:35:03');
+(424,1,49,'purchase_account',0,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(425,1,4,'purchase_cash_account',1,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(426,1,64,'purchase_payment_account',0,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(427,1,4,'purchase_cash_payment_account',1,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(428,1,24,'purchase_payable_account',1,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(429,1,24,'purchase_cash_payable_account',0,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(430,1,49,'purchase_return_account',1,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(431,1,4,'purchase_return_cash_account',0,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(432,1,33,'sales_account',1,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(433,1,4,'sales_cash_account',0,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(434,1,8,'sales_receivable_account',0,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(435,1,4,'sales_cash_receivable_account',1,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(436,1,68,'expenditure_account',0,'2022-09-13 14:44:38','2022-10-05 13:14:35'),
+(437,1,4,'expenditure_cash_account',1,'2022-09-13 14:44:38','2022-10-05 13:14:35');
+
+/*Table structure for table `acct_balance_sheet_report` */
+
+DROP TABLE IF EXISTS `acct_balance_sheet_report`;
+
+CREATE TABLE `acct_balance_sheet_report` (
+  `balance_sheet_report_id` bigint(22) NOT NULL AUTO_INCREMENT,
+  `report_no` int(10) DEFAULT 0,
+  `account_id1` int(10) DEFAULT 0,
+  `account_code1` varchar(20) DEFAULT '',
+  `account_name1` varchar(100) DEFAULT '',
+  `account_id2` int(10) DEFAULT 0,
+  `account_code2` varchar(20) DEFAULT '',
+  `account_name2` varchar(100) DEFAULT '',
+  `report_formula1` varchar(255) DEFAULT '',
+  `report_operator1` varchar(255) DEFAULT '',
+  `report_type1` int(11) DEFAULT 0,
+  `report_tab1` int(11) DEFAULT 0,
+  `report_bold1` int(11) DEFAULT 0,
+  `report_formula2` varchar(255) DEFAULT '',
+  `report_operator2` varchar(255) DEFAULT '',
+  `report_type2` int(11) DEFAULT 0,
+  `report_tab2` int(11) DEFAULT 0,
+  `report_bold2` int(11) DEFAULT 0,
+  `report_formula3` varchar(255) DEFAULT '',
+  `report_operator3` varchar(255) DEFAULT '',
+  `balance_report_type` decimal(1,0) NOT NULL,
+  `balance_report_type1` decimal(1,0) NOT NULL,
+  `data_state` int(10) DEFAULT 0,
+  `created_id` int(10) DEFAULT 0,
+  `created_on` datetime DEFAULT NULL,
+  `last_update` time DEFAULT '00:00:00',
+  PRIMARY KEY (`balance_sheet_report_id`),
+  KEY `account_id1` (`account_id1`),
+  KEY `account_id2` (`account_id2`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8;
+
+/*Data for the table `acct_balance_sheet_report` */
+
+insert  into `acct_balance_sheet_report`(`balance_sheet_report_id`,`report_no`,`account_id1`,`account_code1`,`account_name1`,`account_id2`,`account_code2`,`account_name2`,`report_formula1`,`report_operator1`,`report_type1`,`report_tab1`,`report_bold1`,`report_formula2`,`report_operator2`,`report_type2`,`report_tab2`,`report_bold2`,`report_formula3`,`report_operator3`,`balance_report_type`,`balance_report_type1`,`data_state`,`created_id`,`created_on`,`last_update`) values 
+(1,1,1,'100','ASET',20,'200','KEWAJIBAN','','',1,0,1,'','',1,0,1,'','',0,0,0,55,NULL,'00:00:00'),
+(2,2,2,'101.00','ASET LANCAR',21,'200.01','KEWAJIBAN LANCAR','','',2,1,1,'','',2,1,1,'','',0,0,0,55,NULL,'00:00:00'),
+(3,3,3,'101.00.1','Kas Besar',22,'200.01.1','Deposito','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(4,4,4,'101.00.2','Kas Kecil',23,'200.02','KEWAJIBAN JANGKA PANJANG','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(5,5,5,'	101.01','KAS DI BANK',24,'200.02.1','Hutang Dagang','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(6,6,6,'101.01.1','Bank Jateng/2-002-23282-3 K',25,'200.02.2','Hutang JMA','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(7,7,7,'101.02','PINJAMAN YANG DIBERIKAN',26,'	200.02.3','Hutang Pajak','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(8,8,8,'101.02.1','Pinjaman',27,'	200.02.4','Hutang Lain-lain/USP','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(9,9,9,'101.02.2','	Pinjaman Kavling',28,'200.02.5','Hutang Lain-lain/Kavling','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(10,10,10,'101.02.3','Pinjaman USP',29,'	201.00','MODAL/EKUITAS','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(11,11,11,'101.02.4','	Pinjaman Pulsa',30,'	201.01','Cadangan','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(12,12,12,'	101.02.5','Pinjaman Lain-lain/RSKI',31,'201.02','SHU Tahun Berjalan','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(13,13,13,'102.00','ASET TETAP',0,'0','JUMLAH KEWAJIBAN','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(14,14,14,'	102.01','Aset Tetap',0,'','','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(15,15,15,'	102.02','	Akumulasi Penyusutan',0,'','','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(16,16,16,'103','	ASET LAINYA',0,'','','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(17,17,17,'103.01','Persediaan Barang',0,'','','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(18,18,18,'103.02','	Biaya Dibayar Dimuka',0,'','','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(19,19,19,'103.03','	Pendapatan Yang Akan Diterima',0,'','','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00'),
+(20,0,0,'0','JUMLAH ASET',0,'','','','',0,0,0,'','',0,0,0,'','',0,0,0,0,NULL,'00:00:00');
 
 /*Table structure for table `acct_journal_voucher` */
 
@@ -153,9 +292,18 @@ CREATE TABLE `acct_journal_voucher` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`journal_voucher_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=165 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=177 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `acct_journal_voucher` */
+
+insert  into `acct_journal_voucher`(`journal_voucher_id`,`company_id`,`transaction_module_id`,`journal_voucher_status`,`transaction_journal_no`,`transaction_module_code`,`journal_voucher_date`,`journal_voucher_description`,`journal_voucher_period`,`journal_voucher_no`,`journal_voucher_title`,`voided`,`voided_id`,`voided_on`,`voided_remark`,`data_state`,`created_id`,`updated_id`,`created_at`,`updated_at`) values 
+(170,1,1,0,NULL,'JU','2022-10-05',NULL,'202210','0001/JV/X/2022',NULL,0,NULL,NULL,NULL,0,55,55,'2022-10-05 11:58:07','2022-10-05 11:58:07'),
+(171,1,4,1,'0003/SI/X/2022','PJL','2022-10-05','Penjualan','202210','0002/JV/X/2022','Penjualan',0,NULL,NULL,NULL,0,55,55,'2022-10-05 13:11:11','2022-10-05 13:11:11'),
+(172,1,4,1,'0004/SI/X/2022','PJL','2022-10-05','Penjualan','202210','0003/JV/X/2022','Penjualan',0,NULL,NULL,NULL,0,55,55,'2022-10-05 13:18:15','2022-10-05 13:18:15'),
+(173,1,1,0,NULL,'JU','2022-09-05',NULL,'202210','0004/JV/IX/2022',NULL,0,NULL,NULL,NULL,0,55,55,'2022-10-05 15:33:39','2022-10-05 15:33:39'),
+(174,1,1,0,NULL,'JU','2022-09-05',NULL,'202210','0005/JV/IX/2022',NULL,0,NULL,NULL,NULL,0,55,55,'2022-10-05 15:37:38','2022-10-05 15:37:38'),
+(175,1,4,1,'0005/SI/IX/2022','PJL','2022-09-05','Penjualan','202210','0006/JV/IX/2022','Penjualan',0,NULL,NULL,NULL,0,55,55,'2022-10-05 15:41:41','2022-10-05 15:41:41'),
+(176,1,1,0,NULL,'JU','2022-09-07',NULL,'202210','0007/JV/IX/2022',NULL,0,NULL,NULL,NULL,0,55,55,'2022-10-05 15:43:20','2022-10-05 15:43:20');
 
 /*Table structure for table `acct_journal_voucher_item` */
 
@@ -179,9 +327,21 @@ CREATE TABLE `acct_journal_voucher_item` (
   PRIMARY KEY (`journal_voucher_item_id`),
   KEY `Fk_journal_voucher` (`journal_voucher_id`),
   CONSTRAINT `Fk_journal_voucher` FOREIGN KEY (`journal_voucher_id`) REFERENCES `acct_journal_voucher` (`journal_voucher_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=306 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=326 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `acct_journal_voucher_item` */
+
+insert  into `acct_journal_voucher_item`(`journal_voucher_item_id`,`company_id`,`journal_voucher_id`,`account_id`,`journal_voucher_amount`,`account_id_status`,`account_id_default_status`,`journal_voucher_debit_amount`,`journal_voucher_credit_amount`,`data_state`,`created_id`,`updated_id`,`created_at`,`updated_at`) values 
+(316,1,170,67,'100000',1,NULL,'0','100000',0,55,55,'2022-10-05 11:58:07','2022-10-05 11:58:07'),
+(317,1,171,4,'3000',0,0,'3000','0',0,55,55,'2022-10-05 13:11:11','2022-10-05 13:11:11'),
+(318,1,171,31,'3000',1,1,'0','3000',0,55,55,'2022-10-05 13:11:11','2022-10-05 13:11:11'),
+(319,1,172,4,'6000',0,0,'6000','0',0,55,55,'2022-10-05 13:18:15','2022-10-05 13:18:15'),
+(320,1,172,33,'6000',1,1,'0','6000',0,55,55,'2022-10-05 13:18:15','2022-10-05 13:18:15'),
+(321,1,173,10,'10000',1,NULL,'0','10000',0,55,55,'2022-10-05 15:33:39','2022-10-05 15:33:39'),
+(322,1,174,10,'5000',0,NULL,'5000','0',0,55,55,'2022-10-05 15:37:38','2022-10-05 15:37:38'),
+(323,1,175,4,'6000',0,0,'6000','0',0,55,55,'2022-10-05 15:41:41','2022-10-05 15:41:41'),
+(324,1,175,33,'6000',1,1,'0','6000',0,55,55,'2022-10-05 15:41:41','2022-10-05 15:41:41'),
+(325,1,176,33,'5000',0,NULL,'5000','0',0,55,55,'2022-10-05 15:43:20','2022-10-05 15:43:20');
 
 /*Table structure for table `acct_profit_loss_report` */
 
@@ -206,18 +366,56 @@ CREATE TABLE `acct_profit_loss_report` (
   `created_on` datetime DEFAULT NULL,
   `last_update` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`profit_loss_report_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=46 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `acct_profit_loss_report` */
 
 insert  into `acct_profit_loss_report`(`profit_loss_report_id`,`company_id`,`format_id`,`report_no`,`account_type_id`,`account_id`,`account_code`,`account_name`,`report_formula`,`report_operator`,`report_type`,`report_tab`,`report_bold`,`data_state`,`created_id`,`created_on`,`last_update`) values 
-(1,1,3,1,2,0,'','PENDAPATAN','','',1,0,1,0,NULL,NULL,'2022-08-31 11:42:41'),
-(2,1,3,2,2,14,'300.1','PENJUALAN','','',3,1,0,0,NULL,NULL,'2022-08-31 11:57:49'),
-(3,1,3,3,2,0,'','TOTAL PENDAPATAN','2#2#2#','+#+#-#',6,0,1,0,NULL,NULL,'2022-08-31 12:05:32'),
-(4,1,3,4,3,0,'','PENGELUARAN','','',1,0,1,0,NULL,NULL,'2022-08-31 11:42:43'),
-(5,1,3,5,3,12,'200.1','PEMBELIAN','','',3,1,0,0,NULL,NULL,'2022-08-31 11:57:46'),
-(6,1,3,6,3,15,'400.1','PENGELUARAN','','',3,1,0,0,NULL,NULL,'2022-08-31 11:57:47'),
-(7,1,3,7,3,0,'','TOTAL PENGELUARAN','5#6#','+#+#',6,0,1,0,NULL,NULL,'2022-08-31 12:10:36');
+(1,1,3,1,2,0,'','RINCIAN PENDAPATAN','','',1,0,1,0,55,NULL,'2022-10-05 10:51:13'),
+(2,1,3,2,2,32,'','PENDAPATAN OPERASIONAL','','',1,1,1,0,55,NULL,'2022-10-05 10:52:49'),
+(3,1,3,3,2,33,'300.01.1','Penjualan','','',3,2,0,0,55,NULL,'2022-10-05 10:54:11'),
+(4,1,3,4,2,34,'300.01.2','Partisipasi Pinjaman Lain','','',3,2,0,0,55,NULL,'2022-10-05 10:54:55'),
+(5,1,3,5,2,35,'300.01.3','Foto Copy','','',3,2,0,0,55,NULL,'2022-10-05 10:57:51'),
+(6,1,3,6,2,36,'300.01.4','Paket','','',3,2,0,0,55,NULL,'2022-10-05 10:58:23'),
+(7,1,3,7,2,37,'300.01.5','Pulsa','','',3,2,0,0,55,NULL,'2022-10-05 10:58:24'),
+(8,1,3,8,2,38,'300.01.6','Outsourcing','','',3,2,0,0,55,NULL,'2022-10-05 10:58:25'),
+(9,1,3,9,2,39,'300.01.7','Seragam','','',3,2,0,0,55,NULL,'2022-10-05 10:58:25'),
+(10,1,3,10,2,40,'300.01.8','Kavling','','',3,2,0,0,55,NULL,'2022-10-05 10:58:26'),
+(11,1,3,11,2,41,'300.01.9','Parkir','','',3,2,0,0,55,NULL,'2022-10-05 10:58:26'),
+(12,1,3,12,2,42,'300.01.10','Parcel','','',3,2,0,0,55,NULL,'2022-10-05 10:58:54'),
+(13,1,3,13,2,0,'','','','',0,0,0,0,55,NULL,'2022-10-05 11:00:57'),
+(14,1,3,14,2,43,'','PENDAPATAN NON OPERASIONAL','','',1,1,1,0,55,NULL,'2022-10-05 11:02:01'),
+(15,1,3,15,2,44,'	300.02.1','Pendapatan Bunga Deposito','','',3,2,0,0,55,NULL,'2022-10-05 11:03:37'),
+(16,1,3,16,2,45,'300.02.2','Pendapatan Bunga Tabungan','','',3,2,0,0,55,NULL,'2022-10-05 11:04:08'),
+(17,1,3,17,2,46,'300.02.3','	Biaya Adm Bank','','',3,2,0,0,55,NULL,'2022-10-05 11:04:09'),
+(18,1,3,18,2,47,'300.02.4','	Pendapatan Lain-lain','','',3,2,0,0,55,NULL,'2022-10-05 11:04:40'),
+(19,1,3,19,2,0,'','TOTAL PENDAPATAN','3#4#5#6#7#8#9#10#11#12#15#16#17#18','+#+#+#+#+#+#+#+#+#+#+#+#+#+#',6,0,1,0,55,NULL,'2022-10-05 11:49:27'),
+(20,1,3,20,3,0,'','','','',0,0,0,0,55,NULL,'2022-10-05 11:09:16'),
+(21,1,3,21,3,0,'','RINCIAN BIAYA','','',1,0,1,0,55,NULL,'2022-10-05 11:10:25'),
+(22,1,3,22,3,48,'400.01','BEBAN OPERASIONAL','','',1,1,1,0,55,NULL,'2022-10-05 11:11:34'),
+(23,1,3,23,3,49,'400.01.1','Pembelian','','',3,2,0,0,55,NULL,'2022-10-05 11:19:02'),
+(24,1,3,24,3,50,'400.01.2','HPP Outsourcing','','',3,2,0,0,55,NULL,'2022-10-05 11:19:15'),
+(25,1,3,25,3,51,'400.01.3','	HPP Seragam','','',3,2,0,0,55,NULL,'2022-10-05 11:19:36'),
+(26,1,3,26,3,52,'400.01.4','HPP Parcel','','',3,2,0,0,55,NULL,'2022-10-05 11:19:38'),
+(27,1,3,27,3,53,'400.01.5','Potongan Pembelian','','',3,2,0,0,55,NULL,'2022-10-05 11:19:40'),
+(28,1,3,28,3,54,'400.01.6','	Retur Pembelian','','',3,2,0,0,55,NULL,'2022-10-05 11:19:43'),
+(29,1,3,29,3,55,'400.01.7','	Biaya Karyawan','','',3,2,0,0,55,NULL,'2022-10-05 11:19:45'),
+(30,1,3,30,3,56,'400.01.8','Makan','','',3,2,0,0,55,NULL,'2022-10-05 11:19:47'),
+(31,1,3,31,3,57,'400.01.9','Cetakan & Alat Adm','','',3,2,0,0,55,NULL,'2022-10-05 11:19:49'),
+(32,1,3,32,3,58,'400.01.10','	Kebersihan','','',3,2,0,0,55,NULL,'2022-10-05 11:19:52'),
+(33,1,3,33,3,59,'400.01.11','	Bahan Habis Pakai','','',3,2,0,0,55,NULL,'2022-10-05 11:19:55'),
+(34,1,3,34,3,60,'400.01.12','	Pemeliharaan Inventaris','','',3,2,0,0,55,NULL,'2022-10-05 11:20:00'),
+(35,1,3,35,3,61,'400.01.13','Pemeliharaan Kendaraan','','',3,2,0,0,55,NULL,'2022-10-05 11:20:02'),
+(36,1,3,36,3,62,'400.01.14','Seragam Kary Kopkar','','',3,2,0,0,55,NULL,'2022-10-05 11:20:04'),
+(37,1,3,37,3,63,'400.01.15','	Komputerisasi','','',3,2,0,0,55,NULL,'2022-10-05 11:20:05'),
+(38,1,3,38,3,64,'400.01.16','	Pajak','','',3,2,0,0,55,NULL,'2022-10-05 11:20:07'),
+(39,1,3,39,3,65,'400.01.17','Perjalanan','','',3,2,0,0,55,NULL,'2022-10-05 11:20:09'),
+(40,1,3,40,3,66,'400.01.18','Pihak Ketiga','','',3,2,0,0,55,NULL,'2022-10-05 11:20:11'),
+(41,1,3,41,3,67,'400.01.19','Telpon','','',3,2,0,0,55,NULL,'2022-10-05 11:20:13'),
+(42,1,3,42,3,68,'400.01.20','	Perlengkapan','','',3,2,0,0,55,NULL,'2022-10-05 11:20:15'),
+(43,1,3,43,3,69,'400.01.21','	Biaya Penyusutan','','',3,2,0,0,55,NULL,'2022-10-05 11:20:22'),
+(44,1,3,44,3,70,'','BEBAN NON OPERASIONAL','','',0,0,0,0,55,NULL,'2022-10-05 11:21:37'),
+(45,1,3,45,3,0,'','TOTAL BIAYA','23#24#25#26#27#28#29#30#31#32#33#34#35#36#37#38#39#40#41#42#43','+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#+#',6,0,1,0,55,NULL,'2022-10-05 11:49:49');
 
 /*Table structure for table `capital_money` */
 
@@ -5120,7 +5318,7 @@ insert  into `invt_item_packge`(`item_packge_id`,`company_id`,`item_id`,`item_un
 (36,1,36,13,3,'1','500','0',1,0,55,55,'2022-09-22 10:28:06','2022-09-22 10:28:06'),
 (37,1,37,13,3,'1','100','0',1,0,55,55,'2022-09-22 10:28:06','2022-09-22 10:28:06'),
 (38,1,38,13,3,'1','200','0',1,0,55,55,'2022-09-22 10:28:06','2022-09-22 10:28:06'),
-(39,1,39,13,1,'1','5500','0',1,0,55,55,'2022-09-22 10:28:06','2022-09-22 10:28:06'),
+(39,1,39,13,1,'1','5500','5000',1,0,55,55,'2022-09-22 10:28:06','2022-09-22 10:28:06'),
 (40,1,40,13,2,'1','14400','0',1,0,55,55,'2022-09-22 10:28:06','2022-09-22 10:28:06'),
 (41,1,41,13,2,'1','37100','0',1,0,55,55,'2022-09-22 10:28:06','2022-09-22 10:28:06'),
 (42,1,42,13,2,'1','42400','0',1,0,55,55,'2022-09-22 10:28:06','2022-09-22 10:28:06'),
@@ -23514,8 +23712,8 @@ CREATE TABLE `invt_item_stock` (
 /*Data for the table `invt_item_stock` */
 
 insert  into `invt_item_stock`(`item_stock_id`,`company_id`,`warehouse_id`,`item_id`,`item_unit_id`,`item_category_id`,`rack_line`,`rack_column`,`last_balance`,`last_update`,`data_state`,`updated_at`,`updated_id`,`created_at`,`created_id`) values 
-(1,1,1,1,13,2,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-09-21 16:29:50',55,'2022-09-21 16:29:50',55),
-(2,1,1,2,13,2,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-09-21 16:29:50',55,'2022-09-21 16:29:50',55),
+(1,1,1,1,13,2,NULL,NULL,'-5','2022-10-05 13:11:11',0,'2022-10-05 13:11:11',55,'2022-09-21 16:29:50',55),
+(2,1,1,2,13,2,NULL,NULL,'-5','2022-10-05 15:41:41',0,'2022-10-05 15:41:41',55,'2022-09-21 16:29:50',55),
 (3,1,1,3,3,2,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-09-21 16:29:50',55,'2022-09-21 16:29:50',55),
 (4,1,1,4,13,2,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-09-21 16:29:50',55,'2022-09-21 16:29:50',55),
 (5,1,1,5,13,2,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-09-21 16:29:50',55,'2022-09-21 16:29:50',55),
@@ -23552,7 +23750,7 @@ insert  into `invt_item_stock`(`item_stock_id`,`company_id`,`warehouse_id`,`item
 (36,1,1,36,13,3,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-09-21 16:29:50',55,'2022-09-21 16:29:50',55),
 (37,1,1,37,13,3,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-09-21 16:29:50',55,'2022-09-21 16:29:50',55),
 (38,1,1,38,13,3,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-09-21 16:29:50',55,'2022-09-21 16:29:50',55),
-(39,1,1,39,13,1,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-09-21 16:29:50',55,'2022-09-21 16:29:50',55),
+(39,1,1,39,13,1,NULL,NULL,'1','2022-10-03 10:55:29',0,'2022-10-03 10:55:29',55,'2022-09-21 16:29:50',55),
 (40,1,1,40,13,2,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-09-21 16:29:50',55,'2022-09-21 16:29:50',55),
 (41,1,1,41,13,2,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-09-21 16:29:50',55,'2022-09-21 16:29:50',55),
 (42,1,1,42,13,2,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-09-21 16:29:50',55,'2022-09-21 16:29:50',55),
@@ -28309,7 +28507,7 @@ CREATE TABLE `preference_company` (
 /*Data for the table `preference_company` */
 
 insert  into `preference_company`(`company_id`,`company_name`,`company_address`,`company_phone_number`,`company_mobile_number`,`company_email`,`company_website`,`company_logo`,`account_payable_id`,`account_shortover_id`,`printer_address`,`receipt_bottom_text`,`data_state`,`created_at`,`updated_at`) values 
-(1,'TOKO JAYA','Jl. Raya Solo-Tawangmangu, Dusun I, Jaten, Kec. Jaten, Kabupaten Karanganyar, Jawa Tengah 57731','081122223333','0125321','tokojaya@gmail.com','tokojaya.com',NULL,'16','11','66:12:0D:33:A8:D3',':::::Terima Kasih:::::',0,'2022-07-04 16:39:34','2022-07-19 11:12:24'),
+(1,'TOKO JAYA','Jl. Raya Solo-Tawangmangu, Dusun I, Jaten, Kec. Jaten, Kabupaten Karanganyar, Jawa Tengah 57731','081122223333','0125321','tokojaya@gmail.com','tokojaya.com',NULL,'22','4','66:12:0D:33:A8:D3',':::::Terima Kasih:::::',0,'2022-07-04 16:39:34','2022-07-19 11:12:24'),
 (2,'TOKO MAJU MAKMUR','Jl.Solo, Jawa Tengah, Indonesia','082190908989','0123910',NULL,'tokomajumakmur.com',NULL,NULL,NULL,NULL,':::::Terima Kasih:::::',0,'2022-07-05 09:09:27','2022-07-05 09:09:30');
 
 /*Table structure for table `preference_transaction_module` */
@@ -28373,9 +28571,12 @@ CREATE TABLE `purchase_invoice` (
   PRIMARY KEY (`purchase_invoice_id`),
   KEY `FK_warehouse_id_purchase_invoice` (`warehouse_id`),
   CONSTRAINT `FK_warehouse_id_purchase_invoice` FOREIGN KEY (`warehouse_id`) REFERENCES `invt_warehouse` (`warehouse_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=100 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `purchase_invoice` */
+
+insert  into `purchase_invoice`(`purchase_invoice_id`,`company_id`,`purchase_payment_method`,`purchase_invoice_no`,`warehouse_id`,`subtotal_item`,`purchase_invoice_remark`,`purchase_invoice_date`,`supplier_id`,`subtotal_amount_total`,`discount_percentage_total`,`discount_amount_total`,`tax_ppn_percentage`,`tax_ppn_amount`,`total_amount`,`paid_amount`,`owing_amount`,`shortover_amount`,`data_state`,`created_id`,`updated_id`,`created_at`,`updated_at`) values 
+(100,1,0,'0001/PI/X/2022',1,'2',NULL,'2022-10-03',1,'10000','0','0',NULL,NULL,'10000','0','10000',NULL,0,55,55,'2022-10-03 09:40:49','2022-10-03 09:40:49');
 
 /*Table structure for table `purchase_invoice_item` */
 
@@ -28409,9 +28610,12 @@ CREATE TABLE `purchase_invoice_item` (
   CONSTRAINT `Fk_item_purchase_invoice` FOREIGN KEY (`item_id`) REFERENCES `invt_item` (`item_id`),
   CONSTRAINT `Fk_item_unit_purchase_invoice` FOREIGN KEY (`item_unit_id`) REFERENCES `invt_item_unit` (`item_unit_id`),
   CONSTRAINT `Fk_purchase_invoice_id` FOREIGN KEY (`purchase_invoice_id`) REFERENCES `purchase_invoice` (`purchase_invoice_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=109 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=110 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `purchase_invoice_item` */
+
+insert  into `purchase_invoice_item`(`purchase_invoice_item_id`,`company_id`,`purchase_invoice_id`,`item_category_id`,`item_unit_id`,`item_id`,`item_unit_cost`,`quantity`,`subtotal_amount`,`discount_percentage`,`discount_amount`,`subtotal_amount_after_discount`,`item_expired_date`,`data_state`,`created_id`,`updated_id`,`created_at`,`updated_at`) values 
+(109,1,100,1,13,39,'5000','2','10000','0','0','10000','2022-10-03',0,55,55,'2022-10-03 09:40:49','2022-10-03 09:40:49');
 
 /*Table structure for table `purchase_payment` */
 
@@ -28525,9 +28729,12 @@ CREATE TABLE `purchase_return` (
   PRIMARY KEY (`purchase_return_id`),
   KEY `Fk_warehouse_id` (`warehouse_id`),
   CONSTRAINT `Fk_warehouse_id` FOREIGN KEY (`warehouse_id`) REFERENCES `invt_warehouse` (`warehouse_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `purchase_return` */
+
+insert  into `purchase_return`(`purchase_return_id`,`company_id`,`purchase_return_no`,`warehouse_id`,`purchase_return_date`,`purchase_return_supplier`,`purchase_return_quantity`,`purchase_return_subtotal`,`purchase_return_remark`,`data_state`,`updated_at`,`created_at`,`updated_id`,`created_id`) values 
+(23,1,'0001/PR/X/2022',1,'2022-10-03','AHMAD','1','5000',NULL,0,'2022-10-03 10:55:29','2022-10-03 10:55:29',55,55);
 
 /*Table structure for table `purchase_return_item` */
 
@@ -28551,9 +28758,12 @@ CREATE TABLE `purchase_return_item` (
   PRIMARY KEY (`purchase_item_id`),
   KEY `FK_Purchase_return_id` (`purchase_return_id`),
   CONSTRAINT `FK_Purchase_return_id` FOREIGN KEY (`purchase_return_id`) REFERENCES `purchase_return` (`purchase_return_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `purchase_return_item` */
+
+insert  into `purchase_return_item`(`purchase_item_id`,`company_id`,`purchase_return_id`,`item_category_id`,`item_id`,`item_unit_id`,`purchase_item_cost`,`purchase_item_quantity`,`purchase_item_subtotal`,`data_state`,`created_id`,`updated_id`,`created_at`,`updated_at`) values 
+(20,1,23,1,39,13,'5000','1','5000',0,55,55,'2022-10-03 10:55:29','2022-10-03 10:55:29');
 
 /*Table structure for table `sales_customer` */
 
@@ -28606,9 +28816,16 @@ CREATE TABLE `sales_invoice` (
   `created_id` int(10) DEFAULT NULL,
   `updated_id` int(10) DEFAULT NULL,
   PRIMARY KEY (`sales_invoice_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=89 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=95 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `sales_invoice` */
+
+insert  into `sales_invoice`(`sales_invoice_id`,`company_id`,`customer_id`,`sales_invoice_no`,`sales_invoice_date`,`sales_payment_method`,`subtotal_item`,`subtotal_amount`,`discount_percentage_total`,`discount_amount_total`,`total_amount`,`paid_amount`,`change_amount`,`table_no`,`payment_method`,`status_upload`,`data_state`,`created_at`,`updated_at`,`created_id`,`updated_id`) values 
+(90,1,NULL,'0001/SI/IX/2022','2022-09-30',1,'1','3000','1','30','2970','3000','30',NULL,NULL,0,0,'2022-09-30 15:29:18','2022-09-30 15:29:18',55,55),
+(91,1,NULL,'0002/SI/IX/2022','2022-09-30',1,'3','9000','50','4500','4500','4500','0',NULL,NULL,0,0,'2022-09-30 15:30:42','2022-09-30 15:30:42',55,55),
+(92,1,NULL,'0003/SI/X/2022','2022-10-05',1,'1','3000','0','0','3000','3000','0',NULL,NULL,0,0,'2022-10-05 13:11:11','2022-10-05 13:11:11',55,55),
+(93,1,NULL,'0004/SI/X/2022','2022-10-05',1,'2','6000','0','0','6000','6000','0',NULL,NULL,0,0,'2022-10-05 13:18:15','2022-10-05 13:18:15',55,55),
+(94,1,NULL,'0005/SI/IX/2022','2022-09-05',1,'2','6000','0','0','6000','6000','0',NULL,NULL,0,0,'2022-10-05 15:41:41','2022-10-05 15:41:41',55,55);
 
 /*Table structure for table `sales_invoice_item` */
 
@@ -28643,9 +28860,17 @@ CREATE TABLE `sales_invoice_item` (
   CONSTRAINT `FK_sales_invoice_id` FOREIGN KEY (`sales_invoice_id`) REFERENCES `sales_invoice` (`sales_invoice_id`),
   CONSTRAINT `FK_sales_invoice_item` FOREIGN KEY (`item_id`) REFERENCES `invt_item` (`item_id`),
   CONSTRAINT `FK_sales_invoice_unit` FOREIGN KEY (`item_unit_id`) REFERENCES `invt_item_unit` (`item_unit_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=118 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `sales_invoice_item` */
+
+insert  into `sales_invoice_item`(`sales_invoice_item_id`,`company_id`,`sales_invoice_id`,`item_category_id`,`item_unit_id`,`item_id`,`quantity`,`item_unit_price`,`subtotal_amount`,`discount_percentage`,`discount_amount`,`subtotal_amount_after_discount`,`item_remark`,`status_upload`,`data_state`,`created_id`,`updated_id`,`created_at`,`updated_at`) values 
+(112,1,90,2,13,1,'1','3000','3000',NULL,NULL,'3000',NULL,0,0,55,55,'2022-09-30 15:29:18','2022-09-30 15:29:18'),
+(113,1,91,2,13,2,'1','3000','3000',NULL,NULL,'3000',NULL,0,0,55,55,'2022-09-30 15:30:42','2022-09-30 15:30:42'),
+(114,1,91,2,13,1,'2','3000','6000',NULL,NULL,'6000',NULL,0,0,55,55,'2022-09-30 15:30:42','2022-09-30 15:30:42'),
+(115,1,92,2,13,1,'1','3000','3000',NULL,NULL,'3000',NULL,0,0,55,55,'2022-10-05 13:11:11','2022-10-05 13:11:11'),
+(116,1,93,2,13,2,'2','3000','6000',NULL,NULL,'6000',NULL,0,0,55,55,'2022-10-05 13:18:15','2022-10-05 13:18:15'),
+(117,1,94,2,13,2,'2','3000','6000',NULL,NULL,'6000',NULL,0,0,55,55,'2022-10-05 15:41:41','2022-10-05 15:41:41');
 
 /*Table structure for table `sessions` */
 
@@ -28699,7 +28924,7 @@ CREATE TABLE `system_login_log` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`login_log_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=92 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=104 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `system_login_log` */
 
@@ -28794,7 +29019,19 @@ insert  into `system_login_log`(`login_log_id`,`user_id`,`company_id`,`log_time`
 (88,55,1,'2022-09-26 09:06:55',0,'2022-09-26 09:06:55','2022-09-26 09:06:55'),
 (89,55,1,'2022-09-27 09:14:51',0,'2022-09-27 09:14:51','2022-09-27 09:14:51'),
 (90,55,1,'2022-09-28 09:17:10',0,'2022-09-28 09:17:10','2022-09-28 09:17:10'),
-(91,55,1,'2022-09-29 09:03:10',0,'2022-09-29 09:03:10','2022-09-29 09:03:10');
+(91,55,1,'2022-09-29 09:03:10',0,'2022-09-29 09:03:10','2022-09-29 09:03:10'),
+(92,55,1,'2022-09-30 10:20:37',0,'2022-09-30 10:20:37','2022-09-30 10:20:37'),
+(93,55,1,'2022-09-30 17:06:26',1,'2022-09-30 17:06:26','2022-09-30 17:06:26'),
+(94,55,1,'2022-10-01 09:15:43',0,'2022-10-01 09:15:43','2022-10-01 09:15:43'),
+(95,55,1,'2022-10-03 09:11:07',0,'2022-10-03 09:11:07','2022-10-03 09:11:07'),
+(96,55,1,'2022-10-03 10:26:38',1,'2022-10-03 10:26:38','2022-10-03 10:26:38'),
+(97,55,1,'2022-10-03 10:27:04',0,'2022-10-03 10:27:04','2022-10-03 10:27:04'),
+(98,55,1,'2022-10-03 15:39:35',0,'2022-10-03 15:39:35','2022-10-03 15:39:35'),
+(99,55,1,'2022-10-04 09:09:27',0,'2022-10-04 09:09:27','2022-10-04 09:09:27'),
+(100,55,1,'2022-10-04 13:28:39',0,'2022-10-04 13:28:39','2022-10-04 13:28:39'),
+(101,55,1,'2022-10-05 10:38:08',0,'2022-10-05 10:38:08','2022-10-05 10:38:08'),
+(102,55,1,'2022-10-05 13:23:49',1,'2022-10-05 13:23:49','2022-10-05 13:23:49'),
+(103,55,1,'2022-10-05 15:06:28',0,'2022-10-05 15:06:28','2022-10-05 15:06:28');
 
 /*Table structure for table `system_menu` */
 
@@ -28845,6 +29082,7 @@ insert  into `system_menu`(`id_menu`,`id`,`type`,`indent_level`,`text`,`image`,`
 ('48','cash-disbursement-report','file',3,'Laporan Pengeluaran Kas',NULL,NULL,'2022-07-22 09:05:44'),
 ('49','profit-loss-report','file',3,'Laporan Keuangan',NULL,NULL,'2022-07-18 10:11:51'),
 ('490','profit-loss-year-report','file',3,'Laporan Keuangan Tahunan',NULL,NULL,'2022-07-22 09:06:58'),
+('491','balance-sheet-report','file',3,'Laporan Neraca',NULL,NULL,'2022-10-05 15:45:55'),
 ('5','#','folder',1,'Akuntansi',NULL,NULL,'2022-07-25 10:01:22'),
 ('50','#','file',2,'Preferensi',NULL,NULL,'2022-07-25 10:01:58'),
 ('51','acct-account','file',3,'No. Perkiraan',NULL,NULL,'2022-07-25 10:02:05'),
@@ -28888,7 +29126,7 @@ CREATE TABLE `system_menu_mapping` (
   PRIMARY KEY (`menu_mapping_id`),
   KEY `FK_system_menu_mapping_id_menu` (`id_menu`),
   CONSTRAINT `FK_system_menu_mapping_id_menu` FOREIGN KEY (`id_menu`) REFERENCES `system_menu` (`id_menu`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=98 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `system_menu_mapping` */
 
@@ -28948,7 +29186,8 @@ insert  into `system_menu_mapping`(`menu_mapping_id`,`company_id`,`user_group_le
 (93,1,1,'41',0,NULL,'2022-09-07 15:09:04'),
 (94,1,1,'752',0,NULL,'2022-09-08 09:25:44'),
 (95,1,1,'341',0,NULL,'2022-09-10 12:34:48'),
-(96,1,1,'321',0,NULL,'2022-09-12 15:36:20');
+(96,1,1,'321',0,NULL,'2022-09-12 15:36:20'),
+(97,1,1,'491',0,NULL,'2022-10-05 15:46:07');
 
 /*Table structure for table `system_user` */
 

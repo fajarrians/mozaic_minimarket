@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AcctAccountController;
 use App\Http\Controllers\AcctAccountSettingController;
+use App\Http\Controllers\AcctBalanceSheetReportController;
 use App\Http\Controllers\AcctDisbursementReportController;
 use App\Http\Controllers\AcctJournalMemorialController;
 use App\Http\Controllers\AcctLedgerReportController;
@@ -409,6 +410,7 @@ Route::get('/core-member-report/reset-filter', [CoreMemberReportController::clas
 Route::get('/core-member-report/print', [CoreMemberReportController::class, 'printCoreMemberReport'])->name('print-core-member-report');
 Route::get('/core-member-report/export', [CoreMemberReportController::class, 'exportCoreMemberReport'])->name('export-core-member-report');
 
+//data table
 Route::get('/data-table-item',[InvtItemController::class, 'dataTableItem']);
 Route::get('/table-sales-item',[SalesInvoiceController::class, 'tableSalesItem']);
 Route::get('/table-stock-item',[InvtStockAdjustmentReportController::class, 'tableStockItem']);
@@ -416,3 +418,10 @@ Route::get('/table-purchase-item-report',[PurchaseInvoicebyItemReportController:
 Route::get('/table-sales-invoice-by-item',[SalesInvoicebyItemReportController::class, 'tableSalesInvoiceByItem']);
 Route::get('/table-sales-invoice-by-item-not-sold',[SalesInvoicebyItemReportController::class, 'tableSalesInvoiceByItemNotSold']);
 Route::get('/table-sales-invoice-by-year',[SalesInvoiceByYearReportController::class, 'tableSalesInvoiceByYear']);
+//end data table
+
+Route::get('balance-sheet-report',[AcctBalanceSheetReportController::class, 'index'])->name('balance-sheet-report');
+Route::post('balance-sheet-report/filter',[AcctBalanceSheetReportController::class, 'filterAcctBalanceSheetReport'])->name('filter-balance-sheet-report');
+Route::get('balance-sheet-report/reset-filter',[AcctBalanceSheetReportController::class, 'resetFilterAcctBalanceSheetReport'])->name('reset-filter-balance-sheet-report');
+Route::get('balance-sheet-report/print',[AcctBalanceSheetReportController::class, 'printAcctBalanceSheetReport'])->name('print-balance-sheet-report');
+Route::get('balance-sheet-report/export',[AcctBalanceSheetReportController::class, 'exportAcctBalanceSheetReport'])->name('export-balance-sheet-report');
