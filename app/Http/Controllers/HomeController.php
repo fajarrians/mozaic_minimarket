@@ -175,6 +175,7 @@ class HomeController extends Controller
     public function selectItemCategory()
     {
         $category = InvtItemCategory::where('data_state',0)
+        ->select('item_category_id','item_category_name')
         ->where('company_id', Auth::user()->company_id)
         ->get();
         
@@ -190,6 +191,7 @@ class HomeController extends Controller
     public function selectItem($id)
     {
         $item = InvtItem::where('data_state',0)
+        ->select('item_id','item_name')
         ->where('company_id', Auth::user()->company_id)
         ->where('item_category_id', $id)
         ->get();
@@ -206,6 +208,7 @@ class HomeController extends Controller
     public function selectItemUnit($id)
     {
         $unit = InvtItemPackge::join('invt_item_unit','invt_item_unit.item_unit_id','=','invt_item_packge.item_unit_id')
+        ->select('invt_item_packge.item_unit_id','invt_item_unit.item_unit_name')
         ->where('invt_item_unit.data_state',0)
         ->where('invt_item_packge.data_state',0)
         ->where('invt_item_packge.item_id', $id)
@@ -224,6 +227,7 @@ class HomeController extends Controller
     public function selectItemCost($unit_id, $item_id)
     {
         $unit = InvtItemPackge::join('invt_item_unit','invt_item_unit.item_unit_id','=','invt_item_packge.item_unit_id')
+        ->select('invt_item_packge.item_unit_cost')
         ->where('invt_item_unit.data_state',0)
         ->where('invt_item_packge.data_state',0)
         ->where('invt_item_packge.item_unit_id', $unit_id)

@@ -159,7 +159,7 @@ class AcctBalanceSheetReportController extends Controller
         $pdf::SetPrintHeader(false);
         $pdf::SetPrintFooter(false);
 
-        $pdf::SetMargins(6, 6, 6, 6); // put space of 10 on top
+        $pdf::SetMargins(10, 10, 10, 10); // put space of 10 on top
 
         $pdf::setImageScale(PDF_IMAGE_SCALE_RATIO);
 
@@ -183,16 +183,7 @@ class AcctBalanceSheetReportController extends Controller
         ";
 
         $pdf::writeHTML($tbl, true, false, false, false, '');
-
-        // $minus_month= mktime(0, 0, 0, date($data['month_period'])-1);
-        // $month = date('m', $minus_month);
-
-        // if($month == 12){
-        // 	$year = $data['year_period'] - 1;
-        // } else {
-        // 	$year = $data['year_period'];
-        // }
-
+        
         $tblHeader = "
         <table id=\"items\" width=\"100%\" cellspacing=\"1\" cellpadding=\"2\" border=\"1\">			        
             <tr>";
@@ -567,16 +558,16 @@ class AcctBalanceSheetReportController extends Controller
 
                                         $grand_total_account_amount2 = $grand_total_account_amount2 + $total_account_amount2;
 
-                                        // $tblitem_right5 = "
-                                        //     <tr>
-                                        //         <td><div style=\"font-weight:".$report_bold2."\">".$report_tab2."".$valRight['account_name2']."</div></td>
-                                        //         <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold2."\">".number_format($total_account_amount2+$total_account_amount210, 2)."</div></td>
-                                        //     </tr>";
                                         $tblitem_right5 = "
                                             <tr>
                                                 <td><div style=\"font-weight:".$report_bold2."\">".$report_tab2."".$valRight['account_name2']."</div></td>
-                                                <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold2."\">".number_format($total_account_amount2, 2)."</div></td>
+                                                <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold2."\">".number_format($total_account_amount2+$total_account_amount210, 2)."</div></td>
                                             </tr>";
+                                        // $tblitem_right5 = "
+                                        //     <tr>
+                                        //         <td><div style=\"font-weight:".$report_bold2."\">".$report_tab2."".$valRight['account_name2']."</div></td>
+                                        //         <td style=\"text-align:right;\"><div style=\"font-weight:".$report_bold2."\">".number_format($total_account_amount2, 2)."</div></td>
+                                        //     </tr>";
                                     } else {
                                         $tblitem_right5 = "";
                                     }
