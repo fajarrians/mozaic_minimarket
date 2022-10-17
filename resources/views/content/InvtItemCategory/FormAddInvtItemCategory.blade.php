@@ -29,6 +29,13 @@
 
 		});
 	}
+
+    function margin_limit(value) {
+        if (value > 100) {
+            alert('Margin Tidak Boleh Melebihi 100%');
+            $('#margin_percentage').val('');
+        }
+    }
 </script>
 @stop
 @section('content_header')
@@ -76,17 +83,22 @@
         @csrf
         <div class="card-body">
             <div class="row form-group">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
                         <a class="text-dark">Kode Kategori Barang<a class='red'> *</a></a>
                         <input class="form-control input-bb" name="item_category_code" id="category_code" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value);" value="{{ $datacategory['item_category_code'] }}"/>
-
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
                         <a class="text-dark">Nama Kategori Barang<a class='red'> *</a></a>
                         <input class="form-control input-bb" name="item_category_name" id="category_name" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value);" value="{{ $datacategory['item_category_name'] }}"/>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <a class="text-dark">Margin Kategori Barang (%)</a>
+                        <input class="form-control input-bb" name="margin_percentage" id="margin_percentage" type="number" autocomplete="off" onchange="function_elements_add(this.name, this.value);" value="{{ $datacategory['margin_percentage'] }}" oninput="margin_limit(this.value)"/>
                     </div>
                 </div>
                 <div class="col-md-8 mt-3">

@@ -79,17 +79,23 @@
         @csrf
         <div class="card-body">
             <div class="row form-group">
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
                         <a class="text-dark">Kode Barang Satuan<a class='red'> *</a></a>
                         <input class="form-control input-bb" name="category_code" id="category_code" type="text" autocomplete="off" value="{{ $data['item_category_code'] }}{{ old('category_code') }}"/>
                         <input class="form-control input-bb" name="category_id" id="category_id" type="text" autocomplete="off" value="{{ $data['item_category_id'] }}" hidden/>
                     </div>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <div class="form-group">
                         <a class="text-dark">Nama Barang Satuan<a class='red'> *</a></a>
                         <input class="form-control input-bb" name="category_name" id="category_name" type="text" autocomplete="off" value="{{ $data['item_category_name'] }}{{ old('category_name') }}"/>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <a class="text-dark">Margin Kategori Barang (%)</a>
+                        <input class="form-control input-bb" name="margin_percentage" id="margin_percentage" type="text" autocomplete="off" value="{{ $data['margin_percentage'] }}{{ old('margin_percentage') }}"/>
                     </div>
                 </div>
                 <div class="col-md-8 mt-3">

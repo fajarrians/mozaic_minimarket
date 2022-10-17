@@ -167,9 +167,5 @@ class SystemUserController extends Controller
             return redirect()->back()->with('msg',$msg);
         }
         
-        
-
-
-            
     }
 }

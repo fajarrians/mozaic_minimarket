@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\AcctAccount;
 use App\Models\AcctAccountSetting;
+use App\Models\CoreSupplier;
 use App\Models\InvtItem;
 use App\Models\InvtItemCategory;
 use App\Models\InvtItemPackge;
@@ -86,7 +87,11 @@ class PurchaseReturnController extends Controller
         ->pluck('item_name','item_id');
         $datases   = Session::get('datases');
         $arraydatases = Session::get('arraydatases');
-        return view('content.PurchaseReturn.FormAddPurchaseReturn', compact('items', 'units', 'categorys', 'warehouses','datases','arraydatases'));
+        $suppliers = CoreSupplier::where('data_state',0)
+        ->where('company_id', Auth::user()->company_id)
+        ->get()
+        ->pluck('supplier_name','supplier_id');
+        return view('content.PurchaseReturn.FormAddPurchaseReturn', compact('items', 'units', 'categorys', 'warehouses','datases','arraydatases','suppliers'));
     }
 
     public function addResetPurchaseReturn()
@@ -100,7 +105,7 @@ class PurchaseReturnController extends Controller
     {
         $datases = Session::get('datases');
         if(!$datases || $datases == ''){
-            $datases['purchase_return_supplier']    = '';
+            $datases['supplier_id']    = '';
             $datases['warehouse_id']                = '';
             $datases['purchase_return_date']        = '';
             $datases['purchase_return_remark']      = '';
@@ -114,7 +119,7 @@ class PurchaseReturnController extends Controller
         $transaction_module_code = 'RPBL';
         $transaction_module_id  = $this->getTransactionModuleID($transaction_module_code);
         $fields = $request->validate([
-            'purchase_return_supplier' => 'required',
+            'supplier_id'              => 'required',
             'warehouse_id'             => 'required',
             'purchase_return_date'     => 'required',
             'purchase_return_remark'   => '',
@@ -123,7 +128,7 @@ class PurchaseReturnController extends Controller
         ]);
 
         $datases = array(
-            'purchase_return_supplier'  => $fields['purchase_return_supplier'],
+            'supplier_id'               => $fields['supplier_id'],
             'warehouse_id'              => $fields['warehouse_id'],
             'purchase_return_date'      => $fields['purchase_return_date'],
             'purchase_return_remark'    => $fields['purchase_return_remark'],
@@ -323,8 +328,11 @@ class PurchaseReturnController extends Controller
         ->where('data_state',0)
         ->first();
         $purchasereturnitem = PurchaseReturnItem::where('purchase_return_id', $purchase_return_id)->get();
-
-        return view('content.PurchaseReturn.FormDetailPurchaseReturn',compact('purchasereturn','categorys','warehouses','units','items', 'purchasereturnitem'));
+        $suppliers = CoreSupplier::where('data_state',0)
+        ->where('company_id', Auth::user()->company_id)
+        ->get()
+        ->pluck('supplier_name','supplier_id');
+        return view('content.PurchaseReturn.FormDetailPurchaseReturn',compact('purchasereturn','categorys','warehouses','units','items', 'purchasereturnitem','suppliers'));
     }
 
     public function filterResetPurchaseReturn()
@@ -371,5 +379,13 @@ class PurchaseReturnController extends Controller
         $data = AcctAccount::where('account_id',$account_id)->first();
 
         return $data['account_default_status'];
+    }
+
+    public function getSupplierName($supplier_id)
+    {
+        $data = CoreSupplier::where('supplier_id', $supplier_id)
+        ->first();
+
+        return $data['supplier_name'];
     }
 }

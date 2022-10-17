@@ -61,21 +61,27 @@ class AcctJournalMemorialController extends Controller
 
     public function getMinID($journal_voucher_id)
     {
-        $data = JournalVoucherItem::where('journal_voucher_id', $journal_voucher_id)->first();
+        $data = JournalVoucherItem::select('journal_voucher_item_id')
+        ->where('journal_voucher_id', $journal_voucher_id)
+        ->first();
 
         return $data['journal_voucher_item_id'];
     }
 
     public function getAccountCode($account_id)
     {
-        $data = AcctAccount::where('account_id', $account_id)->first();
+        $data = AcctAccount::select('account_code')
+        ->where('account_id', $account_id)
+        ->first();
 
         return $data['account_code'];
     }
 
     public function getAccountName($account_id)
     {
-        $data = AcctAccount::where('account_id', $account_id)->first();
+        $data = AcctAccount::select('account_name')
+        ->where('account_id', $account_id)
+        ->first();
 
         return $data['account_name'];
     }

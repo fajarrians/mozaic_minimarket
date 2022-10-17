@@ -75,6 +75,7 @@ class AcctLedgerReportController extends Controller
         ->first();
         
         $accountbalancedetail = AcctAccountBalanceDetail::join('acct_account', 'acct_account.account_id','=','acct_account_balance_detail.account_id')
+        ->select('acct_account_balance_detail.transaction_id','acct_account_balance_detail.last_balance','acct_account_balance_detail.account_in','acct_account_balance_detail.account_out','acct_account_balance_detail.transaction_date','acct_account_balance_detail.account_id')
         ->where('acct_account_balance_detail.account_id' ,$account_id)
         ->whereMonth('acct_account_balance_detail.transaction_date','>=',$start_month)
         ->whereMonth('acct_account_balance_detail.transaction_date','<=',$end_month)
@@ -84,6 +85,7 @@ class AcctLedgerReportController extends Controller
         ->orderBy('acct_account_balance_detail.account_balance_detail_id', 'ASC')
         ->get();
         $accountbalancedetail_old = AcctAccountBalanceDetail::join('acct_account', 'acct_account.account_id','=','acct_account_balance_detail.account_id')
+        ->select('acct_account_balance_detail.last_balance')
         ->where('acct_account_balance_detail.account_id' ,$account_id)
         ->whereMonth('acct_account_balance_detail.transaction_date',$start_month-1)
         ->whereYear('acct_account_balance_detail.transaction_date',$year)
@@ -176,7 +178,9 @@ class AcctLedgerReportController extends Controller
 
     public function getAccountStatus($account_id)
     {
-        $data = AcctAccount::where('account_id', $account_id)->first();
+        $data = AcctAccount::select('account_default_status')
+        ->where('account_id', $account_id)
+        ->first();
         $account_status = array(
             '0' => 'Debit',
             '1' => 'Kredit',
@@ -237,6 +241,7 @@ class AcctLedgerReportController extends Controller
         ->first();
         
         $accountbalancedetail = AcctAccountBalanceDetail::join('acct_account', 'acct_account.account_id','=','acct_account_balance_detail.account_id')
+        ->select('acct_account_balance_detail.transaction_id','acct_account_balance_detail.last_balance','acct_account_balance_detail.account_in','acct_account_balance_detail.account_out','acct_account_balance_detail.transaction_date','acct_account_balance_detail.account_id')
         ->where('acct_account_balance_detail.account_id' ,$account_id)
         ->whereMonth('acct_account_balance_detail.transaction_date','>=',$start_month)
         ->whereMonth('acct_account_balance_detail.transaction_date','<=',$end_month)
@@ -246,6 +251,7 @@ class AcctLedgerReportController extends Controller
         ->orderBy('acct_account_balance_detail.account_balance_detail_id', 'ASC')
         ->get();
         $accountbalancedetail_old = AcctAccountBalanceDetail::join('acct_account', 'acct_account.account_id','=','acct_account_balance_detail.account_id')
+        ->select('acct_account_balance_detail.last_balance')
         ->where('acct_account_balance_detail.account_id' ,$account_id)
         ->whereMonth('acct_account_balance_detail.transaction_date',$start_month-1)
         ->whereYear('acct_account_balance_detail.transaction_date',$year)
@@ -437,6 +443,7 @@ class AcctLedgerReportController extends Controller
         ->first();
         
         $accountbalancedetail = AcctAccountBalanceDetail::join('acct_account', 'acct_account.account_id','=','acct_account_balance_detail.account_id')
+        ->select('acct_account_balance_detail.transaction_id','acct_account_balance_detail.last_balance','acct_account_balance_detail.account_in','acct_account_balance_detail.account_out','acct_account_balance_detail.transaction_date','acct_account_balance_detail.account_id')
         ->where('acct_account_balance_detail.account_id' ,$account_id)
         ->whereMonth('acct_account_balance_detail.transaction_date','>=',$start_month)
         ->whereMonth('acct_account_balance_detail.transaction_date','<=',$end_month)
@@ -446,6 +453,7 @@ class AcctLedgerReportController extends Controller
         ->orderBy('acct_account_balance_detail.account_balance_detail_id', 'ASC')
         ->get();
         $accountbalancedetail_old = AcctAccountBalanceDetail::join('acct_account', 'acct_account.account_id','=','acct_account_balance_detail.account_id')
+        ->select('acct_account_balance_detail.last_balance')
         ->where('acct_account_balance_detail.account_id' ,$account_id)
         ->whereMonth('acct_account_balance_detail.transaction_date',$start_month-1)
         ->whereYear('acct_account_balance_detail.transaction_date',$year)

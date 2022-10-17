@@ -157,10 +157,10 @@
                                 <tr>";
 
                                 if($val['report_type']	== 3){
-                                    $income_subtotal 	= $CPLR->getAmountAccount($val['account_id']);
+                                    $income_subtotal 	= $CPLR->getAmountAccount($val['account_id1'], $val['account_id2']);
 
                                     echo "
-                                        <td><div style='font-weight:".$report_bold."'>".$report_tab."(".$val['account_code'].") ".$val['account_name']."</div> </td>
+                                        <td><div style='font-weight:".$report_bold."'>".$report_tab."(".$val['account_code1'].") ".$val['account_name']."</div> </td>
                                         <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($income_subtotal, 2)."</div></td>
                                     ";
 
@@ -303,10 +303,10 @@
                                 <tr>";
 
                                 if($val['report_type']	== 3){
-                                    $expenditure_subtotal 	= $CPLR->getAmountAccount($val['account_id']);
+                                    $expenditure_subtotal 	= $CPLR->getAmountAccount($val['account_id1'], $val['account_id2']);
 
                                     echo "
-                                        <td><div style='font-weight:".$report_bold."'>".$report_tab."(".$val['account_code'].") ".$val['account_name']."</div> </td>
+                                        <td><div style='font-weight:".$report_bold."'>".$report_tab."(".$val['account_code1'].") ".$val['account_name']."</div> </td>
                                         <td style='text-align:right'><div style='font-weight:".$report_bold."'>".number_format($expenditure_subtotal, 2)."</div></td>
                                     ";
 

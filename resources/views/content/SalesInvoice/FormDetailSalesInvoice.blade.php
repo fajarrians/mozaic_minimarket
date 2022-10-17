@@ -103,6 +103,10 @@
                                 <td style="text-align: right ">{{ number_format($salesinvoice['subtotal_amount'],2,'.',',') }}</td>
                             </tr>
                             <tr>
+                                <td colspan="5">Potongan</td>
+                                <td style="text-align: right ">{{ number_format($salesinvoice['voucher_amount'],2,'.',',') }}</td>
+                            </tr>
+                            <tr>
                                 <td colspan="4">Diskon</td>
                                 <td style="text-align: right ">{{ $salesinvoice['discount_percentage_total'] }}</td>
                                 <td style="text-align: right ">{{ number_format($salesinvoice['discount_amount_total'],2,'.',',') }}</td>
@@ -115,10 +119,17 @@
                                 <td colspan="5">Bayar</td>
                                 <td style="text-align: right ">{{ number_format($salesinvoice['paid_amount'],2,'.',',') }}</td>
                             </tr>
-                            <tr>
-                                <td colspan="5">Kembalian</td>
-                                <td style="text-align: right ">{{ number_format($salesinvoice['change_amount'],2,'.',',') }}</td>
-                            </tr>
+                            @if ($salesinvoice['sales_payment_method'] == 2)
+                                <tr>
+                                    <td colspan="5">Piutang</td>
+                                    <td style="text-align: right ">{{ number_format($salesinvoice['change_amount'],2,'.',',') }}</td>
+                                </tr>
+                            @else
+                                <tr>
+                                    <td colspan="5">Kembalian</td>
+                                    <td style="text-align: right ">{{ number_format($salesinvoice['change_amount'],2,'.',',') }}</td>
+                                </tr>
+                            @endif
                             <tr>
                                 <td colspan="5">Tanggal Pembayaran</td>
                                 <td style="text-align: right " >{{ date('d-m-Y', strtotime($salesinvoice['sales_invoice_date'])) }}</td>

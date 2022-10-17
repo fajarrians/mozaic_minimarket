@@ -136,6 +136,17 @@
                 }
             });
 		});
+
+        $("#purchase_return_cost_view").change(function(){
+            var quantity = $("#purchase_return_quantity").val();
+            var cost     = $("#purchase_return_cost_view").val();
+            var subtotal = quantity * cost;
+
+            $("#purchase_return_subtotal").val(subtotal);
+            $("#purchase_return_subtotal_view").val(toRp(subtotal));
+            $("#purchase_return_cost_view").val(toRp(cost));
+            $("#purchase_return_cost").val(cost);
+        });
 	});
 </script>
 @stop
@@ -197,7 +208,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <a class="text-dark">Nama Pemasok<a class='red'> *</a></a>
-                            <input class="form-control input-bb" name="purchase_return_supplier" id="purchase_return_supplier" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $datases['purchase_return_supplier'] }}"/>
+                            {!! Form::select('supplier_id', $suppliers, $datases['supplier_id'], ['class' => 'form-control selection-search-clear select-form', 'id' => 'supplier_id', 'name' => 'supplier_id', 'onchange' => 'function_elements_add(this.name, this.value)']) !!}
                         </div>
                     </div>
                     <div class="col-md-6">

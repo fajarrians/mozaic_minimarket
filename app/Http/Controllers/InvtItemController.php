@@ -12,6 +12,7 @@ use App\Models\InvtWarehouse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Yajra\DataTables\Facades\DataTables;
 
 class InvtItemController extends Controller
@@ -52,11 +53,11 @@ class InvtItemController extends Controller
     {
         $items = Session::get('items');
         if(!$items || $items == ''){
-            $items['item_code']         = '';
-            $items['item_category_id']  = '';
-            $items['item_name']         = '';
+            $items['item_code']           = '';
+            $items['item_category_id']    = '';
+            $items['item_name']           = '';
             // $items['item_barcode']      = '';
-            $items['item_remark']       = '';
+            $items['item_remark']         = '';
             $items['item_unit_id_1']      = '';
             $items['item_quantity_1']     = '';
             $items['item_price_1']        = '';
@@ -339,5 +340,14 @@ class InvtItemController extends Controller
         );
 
         return json_encode($response);
+    }
+
+    public function countMarginAddItem(Request $request)
+    {
+        $item_category = InvtItemCategory::where('item_category_id', $request->item_category_id)
+        ->first();
+        $data = (($request->item_unit_cost * $item_category['margin_percentage']) / 100) + $request->item_unit_cost;
+
+        return $data;
     }
 }

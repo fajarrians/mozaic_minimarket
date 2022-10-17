@@ -6,6 +6,7 @@ use App\Http\Controllers\AcctBalanceSheetReportController;
 use App\Http\Controllers\AcctDisbursementReportController;
 use App\Http\Controllers\AcctJournalMemorialController;
 use App\Http\Controllers\AcctLedgerReportController;
+use App\Http\Controllers\AcctMutationPayableReportController;
 use App\Http\Controllers\AcctProfitLossReportController;
 use App\Http\Controllers\AcctProfitLossYearReportController;
 use App\Http\Controllers\AcctReceiptsController;
@@ -36,6 +37,7 @@ use App\Http\Controllers\InvtStockAdjustmentController;
 use App\Http\Controllers\InvtStockAdjustmentReportController;
 use App\Http\Controllers\InvtWarehouseController;
 use App\Http\Controllers\JournalVoucherController;
+use App\Http\Controllers\PreferenceVoucherController;
 use App\Http\Controllers\PurchaseInvoicebyItemReportController;
 use App\Http\Controllers\PurchaseInvoiceController;
 use App\Http\Controllers\PurchaseInvoiceReportController;
@@ -105,6 +107,7 @@ Route::post('/item/process-add-item', [InvtItemController::class,'processAddItem
 Route::get('/item/edit-item/{item_id}', [InvtItemController::class, 'editItem'])->name('edit-item');
 Route::post('/item/process-edit-item', [InvtItemController::class, 'processEditItem'])->name('process-edit-item');
 Route::get('/item/delete-item/{item_id}', [InvtItemController::class, 'deleteItem'])->name('delete-item');
+Route::post('/item/count-margin',[InvtItemController::class, 'countMarginAddItem'])->name('count-margin-add-item');
 
 Route::get('/warehouse',[InvtWarehouseController::class, 'index'])->name('warehouse');
 Route::get('/warehouse/add-warehouse', [InvtWarehouseController::class, 'addWarehouse'])->name('add-warehouse');
@@ -144,6 +147,7 @@ Route::get('/sales-invoice/filter-reset',[SalesInvoiceController::class, 'filter
 Route::post('/sales-invoice/filter',[SalesInvoiceController::class, 'filterSalesInvoice'])->name('filter-sales-invoice');
 Route::get('/sales-invoice/print',[SalesInvoiceController::class, 'printSalesInvoice'])->name('print-sales-invoice');
 Route::post('/sales-invoice/check-customer',[SalesInvoiceController::class, 'checkCustomerSalesInvoice'])->name('check-customer-sales-invoice');
+Route::post('/sales-invoice/select-voucher',[SalesInvoiceController::class, 'selectVoucherSalesInvoice'])->name('select-voucher-sales-invoice');
 
 Route::get('/purchase-invoice', [PurchaseInvoiceController::class, 'index'])->name('purchase-invoice');
 Route::get('/purchase-invoice/add', [PurchaseInvoiceController::class, 'addPurchaseInvoice'])->name('add-purchase-invoice');
@@ -425,3 +429,18 @@ Route::post('balance-sheet-report/filter',[AcctBalanceSheetReportController::cla
 Route::get('balance-sheet-report/reset-filter',[AcctBalanceSheetReportController::class, 'resetFilterAcctBalanceSheetReport'])->name('reset-filter-balance-sheet-report');
 Route::get('balance-sheet-report/print',[AcctBalanceSheetReportController::class, 'printAcctBalanceSheetReport'])->name('print-balance-sheet-report');
 Route::get('balance-sheet-report/export',[AcctBalanceSheetReportController::class, 'exportAcctBalanceSheetReport'])->name('export-balance-sheet-report');
+
+Route::get('preference-voucher', [PreferenceVoucherController::class, 'index'])->name('preference-voucher');
+Route::get('preference-voucher/add', [PreferenceVoucherController::class, 'addPreferenceVoucher'])->name('add-preference-voucher');
+Route::post('preference-voucher/add-process', [PreferenceVoucherController::class, 'addProcessPreferenceVoucher'])->name('add-process-preference-voucher');
+Route::post('preference-voucher/add-elements', [PreferenceVoucherController::class, 'addElementsPreferenceVoucher'])->name('add-elements-preference-voucher');
+Route::get('preference-voucher/reset-elements', [PreferenceVoucherController::class, 'resetElementsPreferenceVoucher'])->name('reset-elements-preference-voucher');
+Route::get('preference-voucher/edit/{voucher_id}', [PreferenceVoucherController::class, 'editPreferenceVoucher'])->name('edit-preference-voucher');
+Route::post('preference-voucher/edit-process', [PreferenceVoucherController::class, 'editProcessPreferenceVoucher'])->name('edit-process-preference-voucher');
+Route::get('preference-voucher/delete/{voucher_id}', [PreferenceVoucherController::class, 'deletePreferenceVoucher'])->name('delete-preference-voucher');
+
+Route::get('mutation-payable-report', [AcctMutationPayableReportController::class, 'index'])->name('mutation-payable-report');
+Route::post('mutation-payable-report/filter', [AcctMutationPayableReportController::class, 'filterMutationPayableReport'])->name('filter-mutation-payable-report');
+Route::get('mutation-payable-report/reset-filter', [AcctMutationPayableReportController::class, 'resetFilterMutationPayableReport'])->name('reset-filter-mutation-payable-report');
+Route::get('mutation-payable-report/print', [AcctMutationPayableReportController::class, 'printMutationPayableReport'])->name('print-mutation-payable-report');
+Route::get('mutation-payable-report/export', [AcctMutationPayableReportController::class, 'exportMutationPayableReport'])->name('export-mutation-payable-report');

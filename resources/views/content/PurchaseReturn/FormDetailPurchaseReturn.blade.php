@@ -40,7 +40,7 @@
             <div class="col-md-6">
                 <div class="form-group">
                     <a class="text-dark">Nama Pemasok<a class='red'> *</a></a>
-                    <input class="form-control input-bb" name="purchase_return_supplier" id="purchase_return_supplier" type="text" autocomplete="off" value="{{ $purchasereturn['purchase_return_supplier'] }}" readonly/>
+                    {!! Form::select('supplier_id', $suppliers, $purchasereturn['supplier_id'], ['class' => 'form-control selection-search-clear select-form', 'id' => 'supplier_id', 'name' => 'supplier_id', 'onchange' => 'function_elements_add(this.name, this.value)', 'disabled']) !!}
                 </div>
             </div>
             <div class="col-md-6">

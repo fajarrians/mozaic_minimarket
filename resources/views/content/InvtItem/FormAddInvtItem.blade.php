@@ -4,14 +4,10 @@
 @section('js')
 <script>
     $(document).ready(function(){
-        // item_unit_id_1 = {!! json_encode($items['item_unit_id_1']) !!};
         item_unit_id_2 = {!! json_encode($items['item_unit_id_2']) !!};
         item_unit_id_3 = {!! json_encode($items['item_unit_id_3']) !!};
         item_unit_id_4 = {!! json_encode($items['item_unit_id_4']) !!};
 
-        // if (item_unit_id_1 == null) {
-        //     $('#item_unit_id_1').select2('val',0);
-        // }
         if (item_unit_id_2 == null) {
             $('#item_unit_id_2').select2('val','0');
         }
@@ -24,8 +20,7 @@
     });
 
     function function_elements_add(name, value){
-        console.log("name " + name);
-        console.log("value " + value);
+        var item_category_id = $('#item_category_id').val();
 		$.ajax({
 				type: "POST",
 				url : "{{route('add-item-elements')}}",
@@ -37,6 +32,64 @@
 				success: function(msg){
 			}
 		});
+
+        if (name == 'item_cost_1') {
+            $.ajax({
+                    type: "POST",
+                    url : "{{route('count-margin-add-item')}}",
+                    data : {
+                        'item_unit_cost'    : value,
+                        'item_category_id'  : item_category_id,
+                        '_token'            : '{{csrf_token()}}'
+                    },
+                    success: function(msg){
+                        $('#item_price_1').val(msg);
+                }
+            });
+
+        } else if (name == 'item_cost_2') {
+            $.ajax({
+                    type: "POST",
+                    url : "{{route('count-margin-add-item')}}",
+                    data : {
+                        'item_unit_cost'    : value,
+                        'item_category_id'  : item_category_id,
+                        '_token'            : '{{csrf_token()}}'
+                    },
+                    success: function(msg){
+                        $('#item_price_2').val(msg);
+                }
+            });
+
+        } else if (name == 'item_cost_3') {
+            $.ajax({
+                    type: "POST",
+                    url : "{{route('count-margin-add-item')}}",
+                    data : {
+                        'item_unit_cost'    : value,
+                        'item_category_id'  : item_category_id,
+                        '_token'            : '{{csrf_token()}}'
+                    },
+                    success: function(msg){
+                        $('#item_price_3').val(msg);
+                }
+            });
+            
+        } else if (name == 'item_cost_4') {
+            $.ajax({
+                    type: "POST",
+                    url : "{{route('count-margin-add-item')}}",
+                    data : {
+                        'item_unit_cost'    : value,
+                        'item_category_id'  : item_category_id,
+                        '_token'            : '{{csrf_token()}}'
+                    },
+                    success: function(msg){
+                        $('#item_price_4').val(msg);
+                }
+            });
+            
+        }
 	}
 
     function reset_add(){
@@ -91,12 +144,6 @@
             <button onclick="location.href='{{ url('item') }}'" name="Find" class="btn btn-sm btn-info" title="Back"><i class="fa fa-angle-left"></i>  Kembali</button>
         </div>
     </div>
-
-    <?php 
-            // if (empty($coresection)){
-            //     $coresection['section_name'] = '';
-            // }
-        ?>
 
     <form method="post" action="{{ route('process-add-item') }}" enctype="multipart/form-data">
         @csrf
@@ -171,14 +218,14 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <a class="text-dark">Harga Jual 1<a class='red'> *</a></a>
-                                    <input class="form-control input-bb" name="item_price_1" id="item_price_1" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_price_1'] }}"/>
+                                    <a class="text-dark">Harga Beli 1<a class='red'> *</a></a>
+                                    <input class="form-control input-bb" name="item_cost_1" id="item_cost_1" type="number" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_cost_1'] }}"/>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <a class="text-dark">Harga Beli 1<a class='red'> *</a></a>
-                                    <input class="form-control input-bb" name="item_cost_1" id="item_cost_1" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_cost_1'] }}"/>
+                                    <a class="text-dark">Harga Jual 1<a class='red'> *</a></a>
+                                    <input class="form-control input-bb" name="item_price_1" id="item_price_1" type="number" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_price_1'] }}"/>
                                 </div>
                             </div>
                         </div>
@@ -200,14 +247,14 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <a class="text-dark">Harga Jual 2</a>
-                                    <input class="form-control input-bb" name="item_price_2" id="item_price_2" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_price_2'] }}"/>
+                                    <a class="text-dark">Harga Beli 2</a>
+                                    <input class="form-control input-bb" name="item_cost_2" id="item_cost_2" type="number" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_cost_2'] }}"/>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <a class="text-dark">Harga Beli 2</a>
-                                    <input class="form-control input-bb" name="item_cost_2" id="item_cost_2" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_cost_2'] }}"/>
+                                    <a class="text-dark">Harga Jual 2</a>
+                                    <input class="form-control input-bb" name="item_price_2" id="item_price_2" type="number" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_price_2'] }}"/>
                                 </div>
                             </div>
                         </div>
@@ -229,14 +276,14 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <a class="text-dark">Harga Jual 3</a>
-                                    <input class="form-control input-bb" name="item_price_3" id="item_price_3" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_price_3'] }}"/>
+                                    <a class="text-dark">Harga Beli 3</a>
+                                    <input class="form-control input-bb" name="item_cost_3" id="item_cost_3" type="number" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_cost_3'] }}"/>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <a class="text-dark">Harga Beli 3</a>
-                                    <input class="form-control input-bb" name="item_cost_3" id="item_cost_3" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_cost_3'] }}"/>
+                                    <a class="text-dark">Harga Jual 3</a>
+                                    <input class="form-control input-bb" name="item_price_3" id="item_price_3" type="number" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_price_3'] }}"/>
                                 </div>
                             </div>
                         </div>
@@ -258,14 +305,14 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <a class="text-dark">Harga Jual 4</a>
-                                    <input class="form-control input-bb" name="item_price_4" id="item_price_4" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_price_4'] }}"/>
+                                    <a class="text-dark">Harga Beli 4</a>
+                                    <input class="form-control input-bb" name="item_cost_4" id="item_cost_4" type="number" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_cost_4'] }}"/>
                                 </div>
                             </div>
                             <div class="col-md-3">
                                 <div class="form-group">
-                                    <a class="text-dark">Harga Beli 4</a>
-                                    <input class="form-control input-bb" name="item_cost_4" id="item_cost_4" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_cost_4'] }}"/>
+                                    <a class="text-dark">Harga Jual 4</a>
+                                    <input class="form-control input-bb" name="item_price_4" id="item_price_4" type="number" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $items['item_price_4'] }}"/>
                                 </div>
                             </div>
                         </div>

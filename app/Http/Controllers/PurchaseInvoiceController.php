@@ -14,6 +14,7 @@ use App\Models\InvtItemUnit;
 use App\Models\InvtWarehouse;
 use App\Models\JournalVoucher;
 use App\Models\JournalVoucherItem;
+use App\Models\PreferenceCompany;
 use App\Models\PreferenceTransactionModule;
 use App\Models\PurchaseInvoice;
 use App\Models\PurchaseInvoiceItem;
@@ -81,8 +82,10 @@ class PurchaseInvoiceController extends Controller
             0 => 'Tunai',
             1 => 'Hutang Pemasok'
         );
-        // dd($purchase_payment_method);
-        return view('content.PurchaseInvoice.FormAddPurchaseInvoice', compact('categorys', 'items', 'units','warehouses','datases','arraydatases','suppliers','purchase_payment_method'));
+        $ppn_percentage = PreferenceCompany::where('company_id', Auth::user()->company_id)
+        ->first();
+        // dd($ppn_percentage);
+        return view('content.PurchaseInvoice.FormAddPurchaseInvoice', compact('categorys', 'items', 'units','warehouses','datases','arraydatases','suppliers','purchase_payment_method','ppn_percentage'));
     }
 
     public function detailPurchaseInvoice($purchase_invoice_id)
@@ -192,7 +195,7 @@ class PurchaseInvoiceController extends Controller
         $datases = array(
             'supplier_id'               => $fields['supplier_id'],
             'warehouse_id'              => $fields['warehouse_id'],
-            'purchase_payment_method'           => $fields['purchase_payment_method'],
+            'purchase_payment_method'   => $fields['purchase_payment_method'],
             'purchase_invoice_date'     => $fields['purchase_invoice_date'],
             'purchase_invoice_remark'   => $fields['purchase_invoice_remark'],
             'subtotal_item'             => $fields['subtotal_item'],
@@ -278,6 +281,34 @@ class PurchaseInvoiceController extends Controller
             }
 
             if ($fields['purchase_payment_method'] == 1) {
+                // if ($fields['paid_amount'] != 0) {
+                //     $account_setting_name = 'purchase_cash_account';
+                //     $account_id = $this->getAccountId($account_setting_name);
+                //     $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                //     $account_default_status = $this->getAccountDefaultStatus($account_id);
+                //     $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                //     if ($account_setting_status == 0){
+                //         $debit_amount = $fields['paid_amount'];
+                //         $credit_amount = 0;
+                //     } else {
+                //         $debit_amount = 0;
+                //         $credit_amount = $fields['paid_amount'];
+                //     }
+                //     $journal_debit = array(
+                //         'company_id'                    => Auth::user()->company_id,
+                //         'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                //         'account_id'                    => $account_id,
+                //         'journal_voucher_amount'        => $fields['paid_amount'],
+                //         'account_id_default_status'     => $account_default_status,
+                //         'account_id_status'             => $account_setting_status,
+                //         'journal_voucher_debit_amount'  => $debit_amount,
+                //         'journal_voucher_credit_amount' => $credit_amount,
+                //         'created_id'                    => Auth::id(),
+                //         'updated_id'                    => Auth::id()
+                //     );
+                //     JournalVoucherItem::create($journal_debit);
+                // }
+
                 $account_setting_name = 'purchase_cash_payable_account';
                 $account_id = $this->getAccountId($account_setting_name);
                 $account_setting_status = $this->getAccountSettingStatus($account_setting_name);

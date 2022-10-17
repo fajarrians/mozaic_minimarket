@@ -34,7 +34,7 @@
 
         $("#item_unit_cost_view").change(function(){
             var quantity = $("#quantity").val();
-            var cost     = $("#item_unit_cost").val();
+            var cost     = $("#item_unit_cost_view").val();
             var subtotal = quantity * cost;
 
             $("#subtotal_amount").val(subtotal);
@@ -42,6 +42,7 @@
             $("#subtotal_amount_after_discount_view").val(toRp(subtotal));
             $("#subtotal_amount_after_discount").val(subtotal);
             $("#item_unit_cost_view").val(toRp(cost));
+            $("#item_unit_cost").val(cost);
         });
 
         $("#discount_percentage").change(function(){
@@ -105,18 +106,18 @@
             $("#owing_amount_view").val(toRp(Math.abs(owing_amount)));
         });
 
-        if ($("#paid_amount_view").val() == '') {
-            var paid_amount = 0;
-        } else {
-            var paid_amount = parseInt($("#paid_amount_view").val());
-        }
-        var total_amount = parseInt($("#total_amount").val());
-        var owing_amount = paid_amount - total_amount;
-        
-        $('#paid_amount_view').val(toRp(paid_amount));
-        $('#paid_amount').val(paid_amount);
-        $("#owing_amount").val(Math.abs(owing_amount));
-        $("#owing_amount_view").val(toRp(Math.abs(owing_amount)));
+        // if ($("#paid_amount_view").val() == '') {
+        //     var paid_amount = 0;
+        // } else {
+        //     var paid_amount = parseInt($("#paid_amount_view").val());
+        // }
+        // var total_amount = parseInt($("#total_amount").val());
+        // var owing_amount = paid_amount - total_amount;
+
+        // $('#paid_amount_view').val(toRp(paid_amount));
+        // $('#paid_amount').val(paid_amount);
+        // $("#owing_amount").val(Math.abs(owing_amount));
+        // $("#owing_amount_view").val(toRp(Math.abs(owing_amount)));
 
         // $("#tax_ppn_percentage").change(function(){
         //     var subtotal_amount_total = $("#subtotal_amount_total").val();
@@ -255,40 +256,75 @@
             var discount_percentage_total = parseInt(value);
             var tax_ppn_amount = parseInt($('#tax_ppn_amount').val()) || 0;
             var shortover_amount = parseInt($('#shortover_amount').val()) || 0;
+            var paid_amount = parseInt($("#paid_amount").val()) || 0;
             var discount_amount_total = (total_amount * discount_percentage_total) / 100;
             var final_total_amount = total_amount + shortover_amount - discount_amount_total - tax_ppn_amount;
+            var owing_amount = paid_amount - final_total_amount
 
             $('#discount_amount_total').val(discount_amount_total);
             $('#discount_amount_total_view').val(toRp(discount_amount_total));
             $('#total_amount_view').val(toRp(final_total_amount));
             $('#total_amount').val(final_total_amount);
+            $("#owing_amount").val(Math.abs(owing_amount));
+            $("#owing_amount_view").val(toRp(Math.abs(owing_amount)));
 
         } else if (name == 'tax_ppn_percentage') {
             var tax_ppn_percentage = parseInt(value);
             var discount_amount_total = parseInt($('#discount_amount_total').val()) || 0;
             var shortover_amount = parseInt($('#shortover_amount').val()) || 0;
+            var paid_amount = parseInt($("#paid_amount").val()) || 0;
             var tax_ppn_amount = (total_amount * tax_ppn_percentage) / 100;
             var final_total_amount = total_amount + shortover_amount - discount_amount_total - tax_ppn_amount;
+            var owing_amount = paid_amount - final_total_amount
 
             $('#tax_ppn_amount').val(tax_ppn_amount);
             $('#tax_ppn_amount_view').val(toRp(tax_ppn_amount));
             $('#total_amount_view').val(toRp(final_total_amount));
             $('#total_amount').val(final_total_amount);
+            $("#owing_amount").val(Math.abs(owing_amount));
+            $("#owing_amount_view").val(toRp(Math.abs(owing_amount)));
 
         } else if (name == 'shortover_amount_view') {
             var shortover_amount_view = parseInt(value);
             var tax_ppn_amount = parseInt($('#tax_ppn_amount').val()) || 0;
             var discount_amount_total = parseInt($('#discount_amount_total').val()) || 0;
+            var paid_amount = parseInt($("#paid_amount").val()) || 0;
             var final_total_amount = (total_amount - discount_amount_total - tax_ppn_amount) + shortover_amount_view ;
+            var owing_amount = paid_amount - final_total_amount
 
             $('#shortover_amount_view').val(toRp(shortover_amount_view));
             $('#shortover_amount').val(shortover_amount_view);
             $('#total_amount_view').val(toRp(final_total_amount));
             $('#total_amount').val(final_total_amount);
+            $("#owing_amount").val(Math.abs(owing_amount));
+            $("#owing_amount_view").val(toRp(Math.abs(owing_amount)));
 
         }
         // console.log(name,value);
     }
+
+    $(document).ready(function(){
+        var total_amount = parseInt($('#subtotal_amount_total').val());
+        var tax_ppn_percentage = parseInt($('#tax_ppn_percentage').val());
+        var discount_amount_total = parseInt($('#discount_amount_total').val()) || 0;
+        var shortover_amount = parseInt($('#shortover_amount').val()) || 0;
+        var tax_ppn_amount = (total_amount * tax_ppn_percentage) / 100;
+        var final_total_amount = total_amount + shortover_amount - discount_amount_total - tax_ppn_amount;
+
+        $('#tax_ppn_amount').val(tax_ppn_amount);
+        $('#tax_ppn_amount_view').val(toRp(tax_ppn_amount));
+        $('#total_amount_view').val(toRp(final_total_amount));
+        $('#total_amount').val(final_total_amount);
+
+        var paid_amount = parseInt($("#paid_amount_view").val()) || 0;
+        var total_amount = parseInt($("#total_amount").val());
+        var owing_amount = paid_amount - total_amount;
+
+        $('#paid_amount_view').val(toRp(paid_amount));
+        $('#paid_amount').val(paid_amount);
+        $("#owing_amount").val(Math.abs(owing_amount));
+        $("#owing_amount_view").val(toRp(Math.abs(owing_amount)));
+    });
 </script>
 @stop
 @section('content_header')
@@ -531,7 +567,7 @@
                                 <tr>
                                     <td colspan="2">PPN (%)</td>
                                     <td style='text-align  : right !important;'>
-                                        <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="tax_ppn_percentage" id="tax_ppn_percentage" value="" autocomplete="off" onchange="final_total(this.name, this.value)"/>
+                                        <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="tax_ppn_percentage" id="tax_ppn_percentage" value="{{ $ppn_percentage['ppn_percentage'] }}" autocomplete="off" onchange="final_total(this.name, this.value)"/>
                                     </td>
                                     <td style='text-align  : right !important;'>
                                         <input type="text" style="text-align  : right !important;" class="form-control input-bb" name="tax_ppn_amount_view" id="tax_ppn_amount_view" value="" readonly/>

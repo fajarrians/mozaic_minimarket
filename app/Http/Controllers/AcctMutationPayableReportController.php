@@ -3,133 +3,208 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\AcctSupplierBalance;
 use App\Models\CoreSupplier;
-use App\Models\InvtWarehouse;
-use App\Models\PurchaseReturn;
 use Elibyy\TCPDF\Facades\TCPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
-class PurchaseReturnReportController extends Controller
+class AcctMutationPayableReportController extends Controller
 {
     public function __construct()
     {
         $this->middleware('auth');
-        
     }
 
     public function index()
     {
-        if(!$start_date = Session::get('start_date')){
-            $start_date = date('Y-m-d');
-        } else {
-            $start_date = Session::get('start_date');
+        if(!$month = Session::get('month')){
+            $month = date('m');
+        }else{
+            $month = Session::get('month');
         }
-        if(!$end_date = Session::get('end_date')){
-            $end_date = date('Y-m-d');
-        } else {
-            $end_date = Session::get('end_date');
+        if(!$year = Session::get('year')){
+            $year = date('Y');
+        }else{
+            $year = Session::get('year');
         }
-        if(!$warehouse_id = Session::get('warehouse_id')){
-            $warehouse_id = '';
-        } else {
-            $warehouse_id = Session::get('warehouse_id');
-        }
-        $warehouse = InvtWarehouse::where('data_state',0)
+        $monthlist = array(
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember'
+        );
+        $year_now 	=	date('Y');
+        for($i=($year_now-2); $i<($year_now+2); $i++){
+            $yearlist[$i] = $i;
+        } 
+
+        $data_supplier = CoreSupplier::select('supplier_name', 'supplier_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
-        ->get()
-        ->pluck('warehouse_name','warehouse_id');
-        if ($warehouse_id == '') {
-            $data = PurchaseReturn::join('purchase_return_item','purchase_return.purchase_return_id','=','purchase_return_item.purchase_return_id')
-            ->where('purchase_return.purchase_return_date','>=',$start_date)
-            ->where('purchase_return.purchase_return_date','<=',$end_date)
-            ->where('purchase_return.company_id', Auth::user()->company_id)
-            ->where('purchase_return.data_state',0)
-            ->get();
-        } else {
-            $data = PurchaseReturn::join('purchase_return_item','purchase_return.purchase_return_id','=','purchase_return_item.purchase_return_id')
-            ->where('purchase_return.warehouse_id', $warehouse_id)
-            ->where('purchase_return.purchase_return_date','>=',$start_date)
-            ->where('purchase_return.purchase_return_date','<=',$end_date)
-            ->where('purchase_return.company_id', Auth::user()->company_id)
-            ->where('purchase_return.data_state',0)
-            ->get();
+        ->get();
+
+        return view('content.AcctMutationPayableReport.ListAcctMutationPayableReport',compact('monthlist','yearlist','month','year','data_supplier'));
+    }
+
+    public function filterMutationPayableReport(Request $request)
+    {
+        $month = $request->month;
+        $year = $request->year;
+
+        Session::put('month', $month);
+        Session::put('year', $year);
+
+        return redirect('/mutation-payable-report');
+    }
+
+    public function resetFilterMutationPayableReport()
+    {
+        Session::forget('month');
+        Session::forget('year');
+
+        return redirect('/mutation-payable-report');
+    }
+
+    public function getOpeningBalance($supplier_id)
+    {
+        if(!$month = Session::get('month')){
+            $month = date('m');
+        }else{
+            $month = Session::get('month');
         }
-        
-        return view('content.PurchaseReturnReport.ListPurchaseReturnReport', compact('warehouse', 'data', 'start_date', 'end_date','warehouse_id'));
-    }
+        if(!$year = Session::get('year')){
+            $year = date('Y');
+        }else{
+            $year = Session::get('year');
+        }
 
-    public function filterPurchaseReturnReport(Request $request)
-    {
-        $start_date     = $request->start_date;
-        $end_date       = $request->end_date;
-        $warehouse_id   = $request->warehouse_id;
-
-        Session::put('start_date', $start_date);
-        Session::put('end_date', $end_date);
-        Session::put('warehouse_id', $warehouse_id);
-
-        return redirect('/purchase-return-report');
-    }
-
-    public function getWarehouseName($warehouse_id)
-    {
-        $data   = InvtWarehouse::where('warehouse_id', $warehouse_id)->first();
-
-        return $data['warehouse_name'];
-    }
-
-    public function filterResetPurchaseReturnReport()
-    {
-        Session::forget('start_date');
-        Session::forget('end_date');
-        Session::forget('warehouse_id');
-        return redirect('/purchase-return-report');
-    }
-
-    public function getSupplierName($supplier_id)
-    {
-        $data = CoreSupplier::where('supplier_id', $supplier_id)
+        $data = AcctSupplierBalance::select('last_balance')
+        ->where('data_state',0)
+        ->where('supplier_id', $supplier_id)
+        ->where('company_id', Auth::user()->company_id)
+        ->whereMonth('supplier_balance_date', $month-1)
+        ->whereYear('supplier_balance_date', $year)
+        ->orderBy('supplier_balance_id', 'DESC')
         ->first();
 
-        return $data['supplier_name'];
+        if (!empty($data)) {
+            return $data['last_balance'];
+        } else {
+            return 0;
+        }
+    }
+    
+    public function getPayableAmount($supplier_id)
+    {
+        if(!$month = Session::get('month')){
+            $month = date('m');
+        }else{
+            $month = Session::get('month');
+        }
+        if(!$year = Session::get('year')){
+            $year = date('Y');
+        }else{
+            $year = Session::get('year');
+        }
+
+        $data = AcctSupplierBalance::select('payable_amount')
+        ->where('data_state',0)
+        ->where('supplier_id', $supplier_id)
+        ->where('company_id', Auth::user()->company_id)
+        ->whereMonth('supplier_balance_date', $month)
+        ->whereYear('supplier_balance_date', $year)
+        ->get();
+
+        $payable_amount = 0; 
+        foreach ($data as $key => $val) {
+            $payable_amount += $val['payable_amount'];
+        }
+
+        return $payable_amount;
     }
 
-    public function printPurchaseReturnReport()
+    public function getPaymentAmount($supplier_id)
     {
-        if(!$start_date = Session::get('start_date')){
-            $start_date = date('Y-m-d');
-        } else {
-            $start_date = Session::get('start_date');
+        if(!$month = Session::get('month')){
+            $month = date('m');
+        }else{
+            $month = Session::get('month');
         }
-        if(!$end_date = Session::get('end_date')){
-            $end_date = date('Y-m-d');
-        } else {
-            $end_date = Session::get('end_date');
+        if(!$year = Session::get('year')){
+            $year = date('Y');
+        }else{
+            $year = Session::get('year');
         }
-        if(!$warehouse_id = Session::get('warehouse_id')){
-            $warehouse_id = '';
-        } else {
-            $warehouse_id = Session::get('warehouse_id');
+
+        $data = AcctSupplierBalance::select('payment_amount')
+        ->where('data_state',0)
+        ->where('supplier_id', $supplier_id)
+        ->where('company_id', Auth::user()->company_id)
+        ->whereMonth('supplier_balance_date', $month)
+        ->whereYear('supplier_balance_date', $year)
+        ->get();
+
+        $payment_amount = 0; 
+        foreach ($data as $key => $val) {
+            $payment_amount += $val['payment_amount'];
         }
-        if ($warehouse_id == '') {
-            $data = PurchaseReturn::join('purchase_return_item','purchase_return.purchase_return_id','=','purchase_return_item.purchase_return_id')
-            ->where('purchase_return.purchase_return_date','>=',$start_date)
-            ->where('purchase_return.purchase_return_date','<=',$end_date)
-            ->where('purchase_return.company_id', Auth::user()->company_id)
-            ->where('purchase_return.data_state',0)
-            ->get();
-        } else {
-            $data = PurchaseReturn::join('purchase_return_item','purchase_return.purchase_return_id','=','purchase_return_item.purchase_return_id')
-            ->where('purchase_return.warehouse_id', $warehouse_id)
-            ->where('purchase_return.purchase_return_date','>=',$start_date)
-            ->where('purchase_return.purchase_return_date','<=',$end_date)
-            ->where('purchase_return.company_id', Auth::user()->company_id)
-            ->where('purchase_return.data_state',0)
-            ->get();
+
+        return $payment_amount;
+    }
+
+    public function getLastBalance($supplier_id)
+    {
+        if(!$month = Session::get('month')){
+            $month = date('m');
+        }else{
+            $month = Session::get('month');
         }
+        if(!$year = Session::get('year')){
+            $year = date('Y');
+        }else{
+            $year = Session::get('year');
+        }
+
+        $data = AcctSupplierBalance::select('last_balance')
+        ->where('data_state',0)
+        ->where('supplier_id', $supplier_id)
+        ->where('company_id', Auth::user()->company_id)
+        ->whereMonth('supplier_balance_date', $month)
+        ->whereYear('supplier_balance_date', $year)
+        ->orderBy('supplier_balance_id', 'DESC')
+        ->first();
+
+        return $data['last_balance'];
+    }
+    
+    public function printMutationPayableReport()
+    {
+        if(!$month = Session::get('month')){
+            $month = date('m');
+        }else{
+            $month = Session::get('month');
+        }
+        if(!$year = Session::get('year')){
+            $year = date('Y');
+        }else{
+            $year = Session::get('year');
+        }
+
+        $data_supplier = CoreSupplier::select('supplier_name', 'supplier_id')
+        ->where('data_state',0)
+        ->where('company_id', Auth::user()->company_id)
+        ->get();
 
         $pdf = new TCPDF('P', PDF_UNIT, 'F4', true, 'UTF-8', false);
 
@@ -167,25 +242,27 @@ class PurchaseReturnReportController extends Controller
         $tblStock1 = "
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <td width=\"4%\" ><div style=\"text-align: center; font-weight: bold\">No</div></td>
-                <td width=\"24%\" ><div style=\"text-align: center; font-weight: bold\">Nama Pemasok</div></td>
-                <td width=\"24%\" ><div style=\"text-align: center; font-weight: bold\">Nama Gudang</div></td>
-                <td width=\"24%\" ><div style=\"text-align: center; font-weight: bold\">Tanggal Retur Pembelian</div></td>
-                <td width=\"24%\" ><div style=\"text-align: center; font-weight: bold\">Jumlah Total</div></td>
+                <td width=\"5%\" ><div style=\"text-align: center; font-weight: bold\">No</div></td>
+                <td width=\"19%\" ><div style=\"text-align: center; font-weight: bold\">Nama Pemasok</div></td>
+                <td width=\"19%\" ><div style=\"text-align: center; font-weight: bold\">Saldo Awal</div></td>
+                <td width=\"19%\" ><div style=\"text-align: center; font-weight: bold\">Hutang Baru</div></td>
+                <td width=\"19%\" ><div style=\"text-align: center; font-weight: bold\">Pembayaran</div></td>
+                <td width=\"19%\" ><div style=\"text-align: center; font-weight: bold\">Saldo Akhir</div></td>
             </tr>
         
              ";
 
         $no = 1;
         $tblStock2 =" ";
-        foreach ($data as $key => $val) {
+        foreach ($data_supplier as $key => $val) {
             $tblStock2 .="
                 <tr>			
                     <td style=\"text-align:center\">$no.</td>
-                    <td style=\"text-align:left\">".$this->getSupplierName($val['supplier_id'])."</td>
-                    <td style=\"text-align:left\">".$this->getWarehouseName($val['warehouse_id'])."</td>
-                    <td style=\"text-align:left\">".date('d-m-Y', strtotime($val['purchase_return_date']))."</td>
-                    <td style=\"text-align:right\">".number_format($val['purchase_return_subtotal'],2,'.',',')."</td>
+                    <td style=\"text-align:left\">".$val['supplier_name']."</td>
+                    <td style=\"text-align:left\">".number_format($this->getOpeningBalance($val['warehouse_id']),2,'.',',')."</td>
+                    <td style=\"text-align:left\">".number_format($this->getPayableAmount($val['warehouse_id']),2,'.',',')."</td>
+                    <td style=\"text-align:left\">".number_format($this->getPaymentAmount($val['warehouse_id']),2,'.',',')."</td>
+                    <td style=\"text-align:right\">".number_format($this->getLastBalance($val['warehouse_id']),2,'.',',')."</td>
                 </tr>
                 
             ";
@@ -206,43 +283,27 @@ class PurchaseReturnReportController extends Controller
         $pdf::Output($filename, 'I');
     }
 
-    public function exportPurchaseReturnReport()
+    public function exportMutationPayableReport()
     {
-        if(!$start_date = Session::get('start_date')){
-            $start_date = date('Y-m-d');
-        } else {
-            $start_date = Session::get('start_date');
+        if(!$month = Session::get('month')){
+            $month = date('m');
+        }else{
+            $month = Session::get('month');
         }
-        if(!$end_date = Session::get('end_date')){
-            $end_date = date('Y-m-d');
-        } else {
-            $end_date = Session::get('end_date');
+        if(!$year = Session::get('year')){
+            $year = date('Y');
+        }else{
+            $year = Session::get('year');
         }
-        if(!$warehouse_id = Session::get('warehouse_id')){
-            $warehouse_id = '';
-        } else {
-            $warehouse_id = Session::get('warehouse_id');
-        }
-        if ($warehouse_id == '') {
-            $data = PurchaseReturn::join('purchase_return_item','purchase_return.purchase_return_id','=','purchase_return_item.purchase_return_id')
-            ->where('purchase_return.purchase_return_date','>=',$start_date)
-            ->where('purchase_return.purchase_return_date','<=',$end_date)
-            ->where('purchase_return.company_id', Auth::user()->company_id)
-            ->where('purchase_return.data_state',0)
-            ->get();
-        } else {
-            $data = PurchaseReturn::join('purchase_return_item','purchase_return.purchase_return_id','=','purchase_return_item.purchase_return_id')
-            ->where('purchase_return.warehouse_id', $warehouse_id)
-            ->where('purchase_return.purchase_return_date','>=',$start_date)
-            ->where('purchase_return.purchase_return_date','<=',$end_date)
-            ->where('purchase_return.company_id', Auth::user()->company_id)
-            ->where('purchase_return.data_state',0)
-            ->get();
-        }
+
+        $data_supplier = CoreSupplier::select('supplier_name', 'supplier_id')
+        ->where('data_state',0)
+        ->where('company_id', Auth::user()->company_id)
+        ->get();
 
         $spreadsheet = new Spreadsheet();
 
-        if(count($data)>=0){
+        if(count($data_supplier)>=0){
             $spreadsheet->getProperties()->setCreator("IBS CJDW")
                                         ->setLastModifiedBy("IBS CJDW")
                                         ->setTitle("Purchase Return Report")
@@ -278,7 +339,7 @@ class PurchaseReturnReportController extends Controller
             $j=4;
             $no=0;
             
-            foreach($data as $key=>$val){
+            foreach($data_supplier as $key=>$val){
 
                 if(is_numeric($key)){
                     

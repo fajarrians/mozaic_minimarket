@@ -123,7 +123,7 @@
                    @foreach ($data as $row)
                    <tr>
                         <td class="text-center">{{ $no++ }}.</td>
-                        <td>{{ $row['purchase_return_supplier'] }}</td>
+                        <td>{{ $PRRC->getSupplierName($row['supplier_id']) }}</td>
                         <td>{{ $PRRC->getWarehouseName($row['warehouse_id']) }}</td>
                         <td>{{ date('d-m-Y', strtotime($row['purchase_return_date'])) }}</td>
                         <td style="text-align: right">{{ number_format($row['purchase_item_subtotal'],2,'.',',') }}</td>

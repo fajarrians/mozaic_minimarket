@@ -50,8 +50,16 @@ class AcctBalanceSheetReportController extends Controller
             $yearlist[$i] = $i;
         } 
 
-        $acctbalancesheetreport_left = AcctBalanceSheetReport::get();
-        $acctbalancesheetreport_right = AcctBalanceSheetReport::get();
+        $acctbalancesheetreport_left = AcctBalanceSheetReport::select('report_tab1','report_bold1','report_type1','account_name1','account_code1','report_no','report_formula1','report_operator1','account_id1')
+        ->where('data_state', 0)
+        ->where('company_id', Auth::user()->company_id)
+        ->get();
+
+        $acctbalancesheetreport_right = AcctBalanceSheetReport::select('report_tab2','report_bold2','report_type2','account_name2','account_code2','report_no','report_formula2','report_operator2','account_id2')
+        ->where('data_state', 0)
+        ->where('company_id', Auth::user()->company_id)
+        ->get();
+
         return view('content.AcctBalanceSheetReport.ListAcctBalanceSheetReport', compact('monthlist','yearlist','month','year','acctbalancesheetreport_left','acctbalancesheetreport_right'));
     }
 
@@ -107,14 +115,16 @@ class AcctBalanceSheetReportController extends Controller
             $year = Session::get('year');
         }
 
-        $data = JournalVoucher::join('acct_journal_voucher_item','acct_journal_voucher_item.journal_voucher_id','acct_journal_voucher.journal_voucher_id')
+        $data = JournalVoucher::select('acct_journal_voucher_item.account_id_status','acct_journal_voucher_item.journal_voucher_amount')
+        ->join('acct_journal_voucher_item','acct_journal_voucher_item.journal_voucher_id','acct_journal_voucher.journal_voucher_id')
         ->whereMonth('acct_journal_voucher.journal_voucher_date', $month)
         ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
         ->where('acct_journal_voucher.data_state',0)
         ->where('acct_journal_voucher_item.account_id', $account_id)
         ->where('acct_journal_voucher.company_id', Auth::user()->company_id)
         ->get();
-        $data_first = JournalVoucher::join('acct_journal_voucher_item','acct_journal_voucher_item.journal_voucher_id','acct_journal_voucher.journal_voucher_id')
+        $data_first = JournalVoucher::select('acct_journal_voucher_item.account_id_status')
+        ->join('acct_journal_voucher_item','acct_journal_voucher_item.journal_voucher_id','acct_journal_voucher.journal_voucher_id')
         ->whereMonth('acct_journal_voucher.journal_voucher_date', $month)
         ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
         ->where('acct_journal_voucher.data_state',0)
@@ -152,8 +162,16 @@ class AcctBalanceSheetReportController extends Controller
             $year = Session::get('year');
         }
 
-        $acctbalancesheetreport_left = AcctBalanceSheetReport::get();
-        $acctbalancesheetreport_right = AcctBalanceSheetReport::get();
+        $acctbalancesheetreport_left = AcctBalanceSheetReport::select('report_tab1','report_bold1','report_type1','account_name1','account_code1','report_no','report_formula1','report_operator1','account_id1')
+        ->where('data_state', 0)
+        ->where('company_id', Auth::user()->company_id)
+        ->get();
+
+        $acctbalancesheetreport_right = AcctBalanceSheetReport::select('report_tab2','report_bold2','report_type2','account_name2','account_code2','report_no','report_formula2','report_operator2','account_id2')
+        ->where('data_state', 0)
+        ->where('company_id', Auth::user()->company_id)
+        ->get();
+
         $pdf = new TCPDF('P', PDF_UNIT, 'F4', true, 'UTF-8', false);
 
         $pdf::SetPrintHeader(false);
@@ -634,10 +652,15 @@ class AcctBalanceSheetReportController extends Controller
             $year = Session::get('year');
         }
 
-        $acctbalancesheetreport_left = AcctBalanceSheetReport::get();
-        $acctbalancesheetreport_right = AcctBalanceSheetReport::get();
+        $acctbalancesheetreport_left = AcctBalanceSheetReport::select('report_tab1','report_bold1','report_type1','account_name1','account_code1','report_no','report_formula1','report_operator1','account_id1')
+        ->where('data_state', 0)
+        ->where('company_id', Auth::user()->company_id)
+        ->get();
 
-        
+        $acctbalancesheetreport_right = AcctBalanceSheetReport::select('report_tab2','report_bold2','report_type2','account_name2','account_code2','report_no','report_formula2','report_operator2','account_id2')
+        ->where('data_state', 0)
+        ->where('company_id', Auth::user()->company_id)
+        ->get();
 
         if(!empty($acctbalancesheetreport_left && $acctbalancesheetreport_right)){
             $spreadsheet = new Spreadsheet();

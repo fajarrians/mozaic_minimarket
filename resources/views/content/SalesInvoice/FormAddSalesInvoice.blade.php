@@ -175,13 +175,6 @@
         }
     });
 
-    var payment = {!! json_encode($datases['sales_payment_method']) !!};
-    if (payment == '1') {
-        $('#label-payment').text('Kembalian');
-    } else if (payment == '2') {
-        $('#label-payment').text('Piutang');
-    }
-
     function function_change_quantity(item_packge_id, value){
         if (value != '') {
             $.ajax({
@@ -235,14 +228,43 @@
     }
 
     function count_total(){
+        var voucher_id  = $('#voucher_id').val();
         var discount_percentage_total = $('#discount_percentage_total').val() || 0;
         var subtotal_amount = $('#subtotal_amount').val() || 0;
         var paid_amount = $('#paid_amount').val() || 0;
-        discount_amount = (subtotal_amount * discount_percentage_total) / 100;
-        total_amount_af_discount = subtotal_amount - discount_amount;
-        change_amount = paid_amount - total_amount_af_discount;
-        
-        if (discount_percentage_total <= 100) {
+
+        if (voucher_id == null) {
+            $('#voucher_amount').val('');
+        }
+
+        if ((voucher_id != null) && (discount_percentage_total == 0)) {
+            $.ajax({
+                    type: "POST",
+                    url : "{{route('select-voucher-sales-invoice')}}",
+                    data : {
+                        'voucher_id'    : voucher_id, 
+                        '_token'        : '{{csrf_token()}}'
+                    },
+                    success: function(msg){
+                        if (msg != '') {
+                            voucher_amount = (subtotal_amount * msg) / 100;
+                            total_amount_af_voucher_amount = subtotal_amount - voucher_amount;
+                            change_amount = paid_amount - total_amount_af_voucher_amount;
+                            $('#voucher_amount').val(voucher_amount);
+                            $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_voucher_amount));
+                            $('#subtotal_amount_change').val(total_amount_af_voucher_amount);
+                            if (paid_amount != '') {
+                                $('#change_amount_view').val(toRp(Math.abs(change_amount)));
+                                $('#change_amount').val(Math.abs(change_amount));
+                            }
+                        }
+                }
+            });
+        } else if ((voucher_id == null) && ((discount_percentage_total != 0) && (discount_percentage_total <= 100))) {
+            discount_amount = (subtotal_amount * discount_percentage_total) / 100;
+            total_amount_af_discount = subtotal_amount - discount_amount;
+            change_amount = paid_amount - total_amount_af_discount;
+            
             $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
             $('#subtotal_amount_change').val(total_amount_af_discount);
             $('#discount_amount_total').val(discount_amount);
@@ -250,12 +272,58 @@
                 $('#change_amount_view').val(toRp(Math.abs(change_amount)));
                 $('#change_amount').val(Math.abs(change_amount));
             }
-        } else {
-            alert('Diskon Melebihi 100%');
-            $('#discount_percentage_total').val('');
+        } else if ((voucher_id != null) && ((discount_percentage_total != 0) && (discount_percentage_total <= 100))) {
+            $.ajax({
+                    type: "POST",
+                    url : "{{route('select-voucher-sales-invoice')}}",
+                    data : {
+                        'voucher_id'    : voucher_id, 
+                        '_token'        : '{{csrf_token()}}'
+                    },
+                    success: function(msg){
+                        if (msg != '') {
+                            voucher_amount = (subtotal_amount * msg) / 100;
+                            total_amount_af_voucher_amount = subtotal_amount - voucher_amount;
+                            $('#voucher_amount').val(voucher_amount);
+
+                            discount_amount = (total_amount_af_voucher_amount * discount_percentage_total) / 100;
+                            total_amount_af_discount = total_amount_af_voucher_amount - discount_amount;
+                            change_amount = paid_amount - total_amount_af_discount;
+                            
+                            $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
+                            $('#subtotal_amount_change').val(total_amount_af_discount);
+                            $('#discount_amount_total').val(discount_amount);
+                            if (paid_amount != '') {
+                                $('#change_amount_view').val(toRp(Math.abs(change_amount)));
+                                $('#change_amount').val(Math.abs(change_amount));
+                            }
+                        }
+                }
+            });
+        } else if ((voucher_id == null) && (discount_percentage_total == 0)) {
             $('#subtotal_amount_view').text('Rp '+toRp(subtotal_amount));
             $('#subtotal_amount_change').val(subtotal_amount);
+
+            if (paid_amount != '') {
+                change_amount = paid_amount - subtotal_amount;
+                $('#change_amount_view').val(toRp(Math.abs(change_amount)));
+                $('#change_amount').val(Math.abs(change_amount));
+            }
+        } else if (discount_percentage_total > 100) {
+            alert('Diskon Tidak Boleh Melebihi 100%');
+            var voucher_amount = $('#voucher_amount').val() || 0;
+            subtotal_amount_af_voucher_amount = subtotal_amount - voucher_amount;
+
+            $('#discount_percentage_total').val('');
+            $('#subtotal_amount_view').text('Rp '+toRp(subtotal_amount_af_voucher_amount));
+            $('#subtotal_amount_change').val(subtotal_amount_af_voucher_amount);
+            if (paid_amount != '') {
+                change_amount = paid_amount - subtotal_amount_af_voucher_amount;
+                $('#change_amount_view').val(toRp(Math.abs(change_amount)));
+                $('#change_amount').val(Math.abs(change_amount));
+            }
         }
+
     }
     
     function function_elements_add(name, value){
@@ -290,10 +358,14 @@
                     if (msg == '1') {
                         alert('Pelanggan telah diblokir');
                         $('#customer_id').select2('val','0');
-                    } else if (msg == '2') {
-                        alert('Pelanggan telah melebihi limit');
-                        $('#customer_id').select2('val','0');
                     }
+                    // if (msg == '1') {
+                    //     alert('Pelanggan telah diblokir');
+                    //     $('#customer_id').select2('val','0');
+                    // } else if (msg == '2') {
+                    //     alert('Pelanggan telah melebihi limit');
+                    //     $('#customer_id').select2('val','0');
+                    // }
 			}
 		});
         }
@@ -301,8 +373,45 @@
 
     $(document).ready(function(){
         var customer_id = {!! json_encode($datases['customer_id']) !!}
+        var sales_payment_method = {!! json_encode($datases['sales_payment_method']) !!};
+        console.log(customer_id);
+        console.log(sales_payment_method);
         if (customer_id == null) {
             $('#customer_id').select2('val','0');
+        }
+        
+        if (sales_payment_method == '1') {
+            $('#label-payment').text('Kembalian');
+        } else if (sales_payment_method == '2') {
+            $('#label-payment').text('Piutang');
+        }
+
+        if ((customer_id != null) && ((sales_payment_method == 1) || (sales_payment_method == ''))) {
+            $('#label_voucher').removeClass('d-none');
+        } else {
+            $('#label_voucher').addClass('d-none');
+        }
+
+        $('#voucher_id').select2('val','0');
+    });
+    
+    $('#customer_id').change(function(){
+        var customer_id = $('#customer_id').val();
+        var sales_payment_method = $('#sales_payment_method').val();
+        if ((customer_id != null) && (sales_payment_method == 1)) {
+            $('#label_voucher').removeClass('d-none');
+        } else {
+            $('#label_voucher').addClass('d-none');
+        }
+    });
+
+    $('#sales_payment_method').change(function(){
+        var customer_id = $('#customer_id').val();
+        var sales_payment_method = $('#sales_payment_method').val();
+        if ((customer_id != null) && (sales_payment_method == 1)) {
+            $('#label_voucher').removeClass('d-none');
+        } else {
+            $('#label_voucher').addClass('d-none');
         }
     });
 
@@ -414,7 +523,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-sm-4">
-                            <a class="text-dark col-form-label">Barcode</a><a class='red'> *</a></a>
+                            <a class="text-dark col-form-label">Barcode</a>
                         </div>
                         <div class="col-sm-8">
                             <input class="form-control input-bb" id="item_code" autocomplete="off" autofocus />
@@ -505,12 +614,23 @@
     <div class="col-md-4 mt-4">
         <div class="card border border-dark h-100">
             <div class="card-body">
+                <div class="row mb-3 d-none" id="label_voucher">
+                    <div class="col-sm-4">
+                        <a class="text-dark col-form-label">Voucher</a>
+                    </div>
+                    <div class="col-sm-4">
+                        {!! Form::select('voucher_id', $vouchers, 0, ['class' => 'form-control selection-search-clear select-form', 'id' => 'voucher_id','name' => 'voucher_id', 'onchange' => 'count_total()']) !!}
+                    </div>
+                    <div class="col-sm-4">
+                        <input class="form-control input-bb text-right" type="text" value="" id="voucher_amount" name="voucher_amount" readonly>
+                    </div>
+                </div>
                 <div class="row mb-3">
                     <div class="col-sm-4">
                         <a class="text-dark col-form-label">Diskon (%)</a>
                     </div>
                     <div class="col-sm-8">
-                        <input class="form-control input-bb" id="discount_percentage_total" name="discount_percentage_total" autocomplete="off" oninput="count_total()"/>
+                        <input class="form-control input-bb" id="discount_percentage_total" name="discount_percentage_total" autocomplete="off" onchange="count_total()"/>
                         <input id="discount_amount_total" name="discount_amount_total" autocomplete="off" hidden/>
                         <input type="text" value="" id="total_item" name="total_item" hidden>
                     </div>
@@ -520,7 +640,7 @@
                         <a class="text-dark col-form-label">Bayar</a><a class='red'> *</a></a>
                     </div>
                     <div class="col-sm-8">
-                        <input class="form-control input-bb text-right" id="paid_amount" name="paid_amount" autocomplete="off" oninput="count_total()"/>
+                        <input class="form-control input-bb text-right" id="paid_amount" name="paid_amount" autocomplete="off" onchange="count_total()"/>
                     </div>
                 </div>
                 <div class="row mb-3">
