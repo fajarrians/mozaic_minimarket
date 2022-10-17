@@ -53,12 +53,14 @@ class AcctProfitLossYearReportController extends Controller
             $yearlist[$i] = $i;
         } 
 
-        $income = AcctProfitLossReport::where('data_state',0)
+        $income = AcctProfitLossReport::select('report_tab','report_bold','report_type','account_name','account_id','account_code','report_no','report_formula','report_operator')
+        ->where('data_state',0)
         ->where('account_type_id',2)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
-        $expenditure = AcctProfitLossReport::where('data_state',0)
+        $expenditure = AcctProfitLossReport::select('report_tab','report_bold','report_type','account_name','account_id','account_code','report_no','report_formula','report_operator')
+        ->where('data_state',0)
         ->where('account_type_id',3)
         ->where('company_id', Auth::user()->company_id)
         ->get();
@@ -79,6 +81,7 @@ class AcctProfitLossYearReportController extends Controller
         }
 
         $data = JournalVoucher::join('acct_journal_voucher_item','acct_journal_voucher_item.journal_voucher_id','acct_journal_voucher.journal_voucher_id')
+        ->select('acct_journal_voucher_item.journal_voucher_amount','acct_journal_voucher_item.account_id_status')
         ->whereMonth('acct_journal_voucher.journal_voucher_date', '>=', 01)
         ->whereMonth('acct_journal_voucher.journal_voucher_date', '<=', $month)
         ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
@@ -87,6 +90,7 @@ class AcctProfitLossYearReportController extends Controller
         ->where('acct_journal_voucher.company_id', Auth::user()->company_id)
         ->get();
         $data_first = JournalVoucher::join('acct_journal_voucher_item','acct_journal_voucher_item.journal_voucher_id','acct_journal_voucher.journal_voucher_id')
+        ->select('acct_journal_voucher_item.account_id_status')
         ->whereMonth('acct_journal_voucher.journal_voucher_date', '>=', 01)
         ->whereMonth('acct_journal_voucher.journal_voucher_date', '<=', $month)
         ->whereYear('acct_journal_voucher.journal_voucher_date', $year)
@@ -169,12 +173,14 @@ class AcctProfitLossYearReportController extends Controller
             $yearlist[$i] = $i;
         } 
 
-        $income = AcctProfitLossReport::where('data_state',0)
+        $income = AcctProfitLossReport::select('report_tab','report_bold','report_type','account_name','account_id','account_code','report_no','report_formula','report_operator')
+        ->where('data_state',0)
         ->where('account_type_id',2)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
-        $expenditure = AcctProfitLossReport::where('data_state',0)
+        $expenditure = AcctProfitLossReport::select('report_tab','report_bold','report_type','account_name','account_id','account_code','report_no','report_formula','report_operator')
+        ->where('data_state',0)
         ->where('account_type_id',3)
         ->where('company_id', Auth::user()->company_id)
         ->get();
@@ -541,12 +547,14 @@ class AcctProfitLossYearReportController extends Controller
         } 
 
         
-        $income = AcctProfitLossReport::where('data_state',0)
+        $income = AcctProfitLossReport::select('report_tab','report_bold','report_type','account_name','account_id','account_code','report_no','report_formula','report_operator')
+        ->where('data_state',0)
         ->where('account_type_id',2)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
-        $expenditure = AcctProfitLossReport::where('data_state',0)
+        $expenditure = AcctProfitLossReport::select('report_tab','report_bold','report_type','account_name','account_id','account_code','report_no','report_formula','report_operator')
+        ->where('data_state',0)
         ->where('account_type_id',3)
         ->where('company_id', Auth::user()->company_id)
         ->get();

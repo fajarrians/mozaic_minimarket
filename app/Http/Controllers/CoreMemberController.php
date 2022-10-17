@@ -16,7 +16,8 @@ class CoreMemberController extends Controller
     
     public function index()
     {
-        $data = CoreMember::where('data_state',0)
+        $data = CoreMember::select('member_name','member_mandatory_savings','member_account_receivable_amount')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
         return view('content.CoreMember.ListCoreMember', compact('data'));

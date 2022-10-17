@@ -18,7 +18,8 @@ class InvtItemRackController extends Controller
     public function index()
     {
         Session::forget('rack');
-        $data = InvtItemRack::where('data_state',0)
+        $data = InvtItemRack::select('rack_name','rack_status','item_rack_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
         return view('content.InvtItemRack.ListInvtItemRack', compact('data'));
@@ -78,7 +79,8 @@ class InvtItemRackController extends Controller
 
     public function editInvtItemRack($item_rack_id)
     {
-        $data = InvtItemRack::where('item_rack_id',$item_rack_id)
+        $data = InvtItemRack::select('rack_name','rack_status','item_rack_id')
+        ->where('item_rack_id',$item_rack_id)
         ->first();
         $rack_status = array(
             0 => 'Baris',

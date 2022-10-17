@@ -76,7 +76,8 @@ class HomeController extends Controller
             $datasalesinvoiceweekly[$i]['purchase']			= $this->getAmountPurchaseInvoiceWeekly($date);
         }
 
-        $item_data = InvtItem::where('data_state',0)
+        $item_data = InvtItem::select('item_name','quantity','item_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
         foreach ($item_data as $key => $val) {
@@ -93,6 +94,7 @@ class HomeController extends Controller
     public function getQuantitySalesInvoice($item_id)
     {
         $data = SalesInvoiceItem::join('sales_invoice','sales_invoice.sales_invoice_id','=','sales_invoice_item.sales_invoice_id')
+        ->select('sales_invoice_item.quantity')
         ->where('sales_invoice.data_state',0)
         ->where('sales_invoice.company_id', Auth::user()->company_id)
         ->where('sales_invoice_item.item_id', $item_id)
@@ -110,7 +112,8 @@ class HomeController extends Controller
 
     public function getAmountSalesInvoice($day)
     {
-        $data = SalesInvoice::where('data_state',0)
+        $data = SalesInvoice::select('total_amount')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->whereDay('sales_invoice_date', $day)
         ->whereMonth('sales_invoice_date', date('m'))
@@ -127,7 +130,8 @@ class HomeController extends Controller
 
     public function getAmountPurchaseInvoice($day)
     {
-        $data = PurchaseInvoice::where('data_state',0)
+        $data = PurchaseInvoice::select('total_amount')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->whereDay('purchase_invoice_date', $day)
         ->whereMonth('purchase_invoice_date', date('m'))
@@ -144,7 +148,8 @@ class HomeController extends Controller
 
     public function getAmountSalesInvoiceWeekly($date)
     {
-        $data = SalesInvoice::where('data_state',0)
+        $data = SalesInvoice::select('total_amount')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->where('sales_invoice_date', $date)
         ->get();
@@ -159,7 +164,8 @@ class HomeController extends Controller
 
     public function getAmountPurchaseInvoiceWeekly($date)
     {
-        $data = PurchaseInvoice::where('data_state',0)
+        $data = PurchaseInvoice::select('total_amount')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->where('purchase_invoice_date',$date)
         ->get();

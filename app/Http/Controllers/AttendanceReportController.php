@@ -27,7 +27,8 @@ class AttendanceReportController extends Controller
             $date = Session::get('date');
         }
 
-        $user = User::where('data_state',0)
+        $user = User::select('name','full_name','user_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
@@ -78,7 +79,8 @@ class AttendanceReportController extends Controller
         }else{
             $date = Session::get('date');
         }
-        $data = SystemLoginLog::where('user_id',$user_id)
+        $data = SystemLoginLog::select('log_time')
+        ->where('user_id',$user_id)
         ->where('log_status', 0)
         ->orderBy('log_time', 'ASC')
         ->whereDate('log_time',$date)
@@ -209,7 +211,8 @@ class AttendanceReportController extends Controller
         $dateformat     = date('Y-m-d', strtotime($date));
         $day            = date('d', strtotime($date));
 
-        $data_in = SystemLoginLog::where('user_id',$user_id)
+        $data_in = SystemLoginLog::select('log_time')
+        ->where('user_id',$user_id)
         ->where('log_status', 0)
         ->orderBy('log_time', 'ASC')
         ->whereDay('log_time',$tgl)
@@ -217,7 +220,8 @@ class AttendanceReportController extends Controller
         ->whereYear('log_time',$year)
         ->first();
 
-        $data_out = SystemLoginLog::where('user_id',$user_id)
+        $data_out = SystemLoginLog::select('log_time')
+        ->where('user_id',$user_id)
         ->where('log_status', 1)
         ->orderBy('log_time', 'DESC')
         ->whereDay('log_time',$tgl)
@@ -244,7 +248,8 @@ class AttendanceReportController extends Controller
             $date = Session::get('date');
         }
         $countMonth = date('t', strtotime($date));
-        $data = User::where('data_state',0)
+        $data = User::select('name','full_name','user_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 

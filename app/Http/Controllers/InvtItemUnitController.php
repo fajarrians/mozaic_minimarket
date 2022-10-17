@@ -20,7 +20,8 @@ class InvtItemUnitController extends Controller
     public function index()
     {
         Session::forget('itemunits');
-        $data = InvtItemUnit::where('data_state', '=', 0)
+        $data = InvtItemUnit::select('item_unit_code','item_unit_name','item_unit_id')
+        ->where('data_state', '=', 0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
         return view('content.InvtItemUnit.ListInvtItemUnit', compact('data'));
@@ -80,11 +81,12 @@ class InvtItemUnitController extends Controller
 
     public function editInvtItemUnit($item_unit_id)
     {
-        $itemunitgroup = InvtItemUnit::where('data_state','=',0)->get();
-        $itemunits     = InvtItemUnit::where('item_unit_id',$item_unit_id)->first();
+        $itemunits     = InvtItemUnit::select('item_unit_code','item_unit_id','item_unit_name','item_unit_remark')
+        ->where('item_unit_id',$item_unit_id)
+        ->first();
 
 
-        return view('content.InvtItemUnit.FormEditListInvtItemUnit', compact('itemunitgroup','itemunits'));
+        return view('content.InvtItemUnit.FormEditListInvtItemUnit', compact('itemunits'));
 
     }
 

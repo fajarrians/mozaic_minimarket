@@ -20,7 +20,8 @@ class CoreBankController extends Controller
     public function index()
     {
         Session::forget('databank');
-        $data = CoreBank::where('data_state',0)
+        $data = CoreBank::select('bank_name','account_id','bank_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
         // dd($data);
@@ -82,7 +83,8 @@ class CoreBankController extends Controller
 
     public function editCoreBank($bank_id)
     {
-        $data = CoreBank::where('bank_id',$bank_id)
+        $data = CoreBank::select('bank_id','bank_name','account_id')
+        ->where('bank_id',$bank_id)
         ->first();
         $accountlist = AcctAccount::select(DB::raw("CONCAT(account_code,' - ',account_name) AS full_account"),'account_id')
         ->where('data_state',0)
@@ -124,7 +126,8 @@ class CoreBankController extends Controller
 
     public function getAccountName($account_id)
     {
-        $data = AcctAccount::where('account_id', $account_id)
+        $data = AcctAccount::select('account_code','account_name')
+        ->where('account_id', $account_id)
         ->first();
 
         return $data['account_code'].' - '.$data['account_name'];

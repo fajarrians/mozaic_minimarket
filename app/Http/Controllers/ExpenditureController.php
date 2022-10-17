@@ -23,7 +23,8 @@ class ExpenditureController extends Controller
     public function index()
     {
         Session::forget('dataexpenditure');
-        $data = Expenditure::where('data_state',0)
+        $data = Expenditure::select('expenditure_date','expenditure_remark','expenditure_amount','expenditure_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
         return view('content.Expenditure.ListExpenditure', compact('data'));
@@ -241,21 +242,26 @@ class ExpenditureController extends Controller
 
     public function getTransactionModuleID($transaction_module_code)
     {
-        $data = PreferenceTransactionModule::where('transaction_module_code',$transaction_module_code)->first();
+        $data = PreferenceTransactionModule::select('transaction_module_id')
+        ->where('transaction_module_code',$transaction_module_code)
+        ->first();
 
         return $data['transaction_module_id'];
     }
 
     public function getTransactionModuleName($transaction_module_code)
     {
-        $data = PreferenceTransactionModule::where('transaction_module_code',$transaction_module_code)->first();
+        $data = PreferenceTransactionModule::select('transaction_module_code')
+        ->where('transaction_module_code',$transaction_module_code)
+        ->first();
 
         return $data['transaction_module_name'];
     }
     
     public function getAccountSettingStatus($account_setting_name)
     {
-        $data = AcctAccountSetting::where('company_id', Auth::user()->company_id)
+        $data = AcctAccountSetting::select('account_setting_status')
+        ->where('company_id', Auth::user()->company_id)
         ->where('account_setting_name', $account_setting_name)
         ->first();
 
@@ -264,7 +270,8 @@ class ExpenditureController extends Controller
 
     public function getAccountId($account_setting_name)
     {
-        $data = AcctAccountSetting::where('company_id', Auth::user()->company_id)
+        $data = AcctAccountSetting::select('account_id')
+        ->where('company_id', Auth::user()->company_id)
         ->where('account_setting_name', $account_setting_name)
         ->first();
 
@@ -273,7 +280,9 @@ class ExpenditureController extends Controller
 
     public function getAccountDefaultStatus($account_id)
     {
-        $data = AcctAccount::where('account_id',$account_id)->first();
+        $data = AcctAccount::select('account_default_status')
+        ->where('account_id',$account_id)
+        ->first();
 
         return $data['account_default_status'];
     }

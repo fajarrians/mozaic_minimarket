@@ -23,6 +23,7 @@ class InvtItemBarcodeController extends Controller
         ->where('company_id', Auth::user()->company_id)
         ->first(); 
         $data = InvtItemPackge::join('invt_item_barcode','invt_item_packge.item_packge_id','=','invt_item_barcode.item_packge_id')
+        ->select('invt_item_barcode.item_unit_id','invt_item_barcode.item_barcode','invt_item_barcode.item_barcode_id')
         ->where('invt_item_barcode.data_state',0)
         ->where('invt_item_barcode.company_id', Auth::user()->company_id)
         ->where('invt_item_barcode.item_id', $item_id)
@@ -40,7 +41,8 @@ class InvtItemBarcodeController extends Controller
 
     public function processAddItemBarcode(Request $request)
     {
-        $data_packge = InvtItemPackge::where('data_state',0)
+        $data_packge = InvtItemPackge::select('item_packge_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->where('item_id', $request->item_id)
         ->where('item_unit_id', $request->item_unit_id)
@@ -87,7 +89,8 @@ class InvtItemBarcodeController extends Controller
 
     public function getItemUnitName($item_unit_id)
     {
-        $data = InvtItemUnit::where('item_unit_id', $item_unit_id)
+        $data = InvtItemUnit::select('item_unit_name')
+        ->where('item_unit_id', $item_unit_id)
         ->first();
 
         return $data['item_unit_name'];

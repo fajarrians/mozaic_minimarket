@@ -36,12 +36,14 @@ class AcctProfitLossReportController extends Controller
             $end_date = Session::get('end_date');
         }
 
-        $income = AcctProfitLossReport::where('data_state',0)
+        $income = AcctProfitLossReport::select('report_tab','report_bold','report_type','account_name','account_id','account_code','report_no','report_formula','report_operator')
+        ->where('data_state',0)
         ->where('account_type_id',2)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
-        $expenditure = AcctProfitLossReport::where('data_state',0)
+        $expenditure = AcctProfitLossReport::select('report_tab','report_bold','report_type','account_name','account_id','account_code','report_no','report_formula','report_operator')
+        ->where('data_state',0)
         ->where('account_type_id',3)
         ->where('company_id', Auth::user()->company_id)
         ->get();
@@ -82,6 +84,7 @@ class AcctProfitLossReportController extends Controller
         }
 
         $data = JournalVoucher::join('acct_journal_voucher_item','acct_journal_voucher_item.journal_voucher_id','acct_journal_voucher.journal_voucher_id')
+        ->select('acct_journal_voucher_item.journal_voucher_amount','acct_journal_voucher_item.account_id_status')
         ->where('acct_journal_voucher.journal_voucher_date', '>=', $start_date)
         ->where('acct_journal_voucher.journal_voucher_date', '<=', $end_date)
         ->where('acct_journal_voucher.data_state',0)
@@ -89,6 +92,7 @@ class AcctProfitLossReportController extends Controller
         ->where('acct_journal_voucher.company_id', Auth::user()->company_id)
         ->get();
         $data_first = JournalVoucher::join('acct_journal_voucher_item','acct_journal_voucher_item.journal_voucher_id','acct_journal_voucher.journal_voucher_id')
+        ->select('acct_journal_voucher_item.account_id_status')
         ->where('acct_journal_voucher.journal_voucher_date', '>=', $start_date)
         ->where('acct_journal_voucher.journal_voucher_date', '<=', $end_date)
         ->where('acct_journal_voucher.data_state',0)
@@ -126,12 +130,14 @@ class AcctProfitLossReportController extends Controller
             $end_date = Session::get('end_date');
         }
 
-        $income = AcctProfitLossReport::where('data_state',0)
+        $income = AcctProfitLossReport::select('report_tab','report_bold','report_type','account_name','account_id','account_code','report_no','report_formula','report_operator')
+        ->where('data_state',0)
         ->where('account_type_id',2)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
-        $expenditure = AcctProfitLossReport::where('data_state',0)
+        $expenditure = AcctProfitLossReport::select('report_tab','report_bold','report_type','account_name','account_id','account_code','report_no','report_formula','report_operator')
+        ->where('data_state',0)
         ->where('account_type_id',3)
         ->where('company_id', Auth::user()->company_id)
         ->get();
@@ -490,15 +496,17 @@ class AcctProfitLossReportController extends Controller
             $end_date = Session::get('end_date');
         }
        
-        $income = AcctProfitLossReport::where('data_state',0)
+        $income = AcctProfitLossReport::select('report_tab','report_bold','report_type','account_name','account_id','account_code','report_no','report_formula','report_operator')
+        ->where('data_state',0)
         ->where('account_type_id',2)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
-        $expenditure = AcctProfitLossReport::where('data_state',0)
+        $expenditure = AcctProfitLossReport::select('report_tab','report_bold','report_type','account_name','account_id','account_code','report_no','report_formula','report_operator')
+        ->where('data_state',0)
         ->where('account_type_id',3)
         ->where('company_id', Auth::user()->company_id)
-        ->get();    
+        ->get();
 
         $spreadsheet = new Spreadsheet();
 

@@ -18,7 +18,8 @@ class CoreSupplierController extends Controller
     public function index()
     {
         Session::forget('datasupplier');
-        $data = CoreSupplier::where('data_state',0)
+        $data = CoreSupplier::select('supplier_name','supplier_phone','supplier_address','supplier_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
         return view('content.CoreSupplier.ListCoreSupplier', compact('data'));
@@ -74,7 +75,8 @@ class CoreSupplierController extends Controller
 
     public function editCoreSupplier($supplier_id)
     {
-        $data = CoreSupplier::where('supplier_id', $supplier_id)
+        $data = CoreSupplier::select('supplier_name','supplier_phone','supplier_address','supplier_id')
+        ->where('supplier_id', $supplier_id)
         ->first();
 
         return view('content.CoreSupplier.EditCoreSupplier', compact('data'));

@@ -38,6 +38,7 @@ class AcctReceiptsReportController extends Controller
         // ->where('acct_journal_voucher.journal_voucher_date','<=',$end_date)
         // ->get();
         $data = SalesInvoice::join('sales_invoice_item','sales_invoice_item.sales_invoice_id','=','sales_invoice.sales_invoice_id')
+        ->select('sales_invoice.sales_invoice_date','sales_invoice.total_amount')
         ->where('sales_invoice.data_state',0)
         ->where('sales_invoice.sales_invoice_date','>=', $start_date)
         ->where('sales_invoice.sales_invoice_date','<=', $end_date)
@@ -86,6 +87,7 @@ class AcctReceiptsReportController extends Controller
         // ->where('acct_journal_voucher.journal_voucher_date','<=',$end_date)
         // ->get();
         $data = SalesInvoice::join('sales_invoice_item','sales_invoice_item.sales_invoice_id','=','sales_invoice.sales_invoice_id')
+        ->select('sales_invoice.sales_invoice_date','sales_invoice.total_amount')
         ->where('sales_invoice.data_state',0)
         ->where('sales_invoice.sales_invoice_date','>=', $start_date)
         ->where('sales_invoice.sales_invoice_date','<=', $end_date)
@@ -191,6 +193,7 @@ class AcctReceiptsReportController extends Controller
         // ->where('acct_journal_voucher.journal_voucher_date','<=',$end_date)
         // ->get();
         $data = SalesInvoice::join('sales_invoice_item','sales_invoice_item.sales_invoice_id','=','sales_invoice.sales_invoice_id')
+        ->select('sales_invoice.sales_invoice_date','sales_invoice.total_amount')
         ->where('sales_invoice.data_state',0)
         ->where('sales_invoice.sales_invoice_date','>=', $start_date)
         ->where('sales_invoice.sales_invoice_date','<=', $end_date)

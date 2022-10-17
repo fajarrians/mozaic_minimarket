@@ -163,6 +163,26 @@ class AcctMutationPayableReportController extends Controller
         return $payment_amount;
     }
 
+    public function getMonthName($month) 
+    {
+        $monthlist = array(
+            '01' => 'Januari',
+            '02' => 'Februari',
+            '03' => 'Maret',
+            '04' => 'April',
+            '05' => 'Mei',
+            '06' => 'Juni',
+            '07' => 'Juli',
+            '08' => 'Agustus',
+            '09' => 'September',
+            '10' => 'Oktober',
+            '11' => 'November',
+            '12' => 'Desember'
+        );
+
+        return $monthlist[$month];
+    }
+
     public function getLastBalance($supplier_id)
     {
         if(!$month = Session::get('month')){
@@ -211,7 +231,7 @@ class AcctMutationPayableReportController extends Controller
         $pdf::SetPrintHeader(false);
         $pdf::SetPrintFooter(false);
 
-        $pdf::SetMargins(20, 10, 20, 10); // put space of 10 on top
+        $pdf::SetMargins(10, 10, 10, 10); // put space of 10 on top
 
         $pdf::setImageScale(PDF_IMAGE_SCALE_RATIO);
 
@@ -229,10 +249,10 @@ class AcctMutationPayableReportController extends Controller
         $tbl = "
         <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
             <tr>
-                <td><div style=\"text-align: center; font-size:14px; font-weight: bold\">LAPORAN RETUR PEMBELIAN</div></td>
+                <td><div style=\"text-align: center; font-size:14px; font-weight: bold\">LAPORAN MUTASI HUTANG PEMASOK</div></td>
             </tr>
             <tr>
-                <td><div style=\"text-align: center; font-size:12px\">PERIODE : ".date('d M Y', strtotime($start_date))." s.d. ".date('d M Y', strtotime($end_date))."</div></td>
+                <td><div style=\"text-align: center; font-size:12px\">".$this->getMonthName($month)." ".$year."</div></td>
             </tr>
         </table>
         ";
@@ -243,11 +263,11 @@ class AcctMutationPayableReportController extends Controller
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
                 <td width=\"5%\" ><div style=\"text-align: center; font-weight: bold\">No</div></td>
-                <td width=\"19%\" ><div style=\"text-align: center; font-weight: bold\">Nama Pemasok</div></td>
-                <td width=\"19%\" ><div style=\"text-align: center; font-weight: bold\">Saldo Awal</div></td>
-                <td width=\"19%\" ><div style=\"text-align: center; font-weight: bold\">Hutang Baru</div></td>
-                <td width=\"19%\" ><div style=\"text-align: center; font-weight: bold\">Pembayaran</div></td>
-                <td width=\"19%\" ><div style=\"text-align: center; font-weight: bold\">Saldo Akhir</div></td>
+                <td width=\"35%\" ><div style=\"text-align: center; font-weight: bold\">Nama Pemasok</div></td>
+                <td width=\"15%\" ><div style=\"text-align: center; font-weight: bold\">Saldo Awal</div></td>
+                <td width=\"15%\" ><div style=\"text-align: center; font-weight: bold\">Hutang Baru</div></td>
+                <td width=\"15%\" ><div style=\"text-align: center; font-weight: bold\">Pembayaran</div></td>
+                <td width=\"15%\" ><div style=\"text-align: center; font-weight: bold\">Saldo Akhir</div></td>
             </tr>
         
              ";
@@ -259,10 +279,10 @@ class AcctMutationPayableReportController extends Controller
                 <tr>			
                     <td style=\"text-align:center\">$no.</td>
                     <td style=\"text-align:left\">".$val['supplier_name']."</td>
-                    <td style=\"text-align:left\">".number_format($this->getOpeningBalance($val['warehouse_id']),2,'.',',')."</td>
-                    <td style=\"text-align:left\">".number_format($this->getPayableAmount($val['warehouse_id']),2,'.',',')."</td>
-                    <td style=\"text-align:left\">".number_format($this->getPaymentAmount($val['warehouse_id']),2,'.',',')."</td>
-                    <td style=\"text-align:right\">".number_format($this->getLastBalance($val['warehouse_id']),2,'.',',')."</td>
+                    <td style=\"text-align:right\">".number_format($this->getOpeningBalance($val['supplier_id']),2,'.',',')."</td>
+                    <td style=\"text-align:right\">".number_format($this->getPayableAmount($val['supplier_id']),2,'.',',')."</td>
+                    <td style=\"text-align:right\">".number_format($this->getPaymentAmount($val['supplier_id']),2,'.',',')."</td>
+                    <td style=\"text-align:right\">".number_format($this->getLastBalance($val['supplier_id']),2,'.',',')."</td>
                 </tr>
                 
             ";
@@ -279,7 +299,7 @@ class AcctMutationPayableReportController extends Controller
 
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');
 
-        $filename = 'Laporan_Pembelian_'.$start_date.'s.d.'.$end_date.'.pdf';
+        $filename = 'Laporan_Mutasi_Hutang_Pemasok_'.$this->getMonthName($month).'_'.$year.'.pdf';
         $pdf::Output($filename, 'I');
     }
 
@@ -306,35 +326,37 @@ class AcctMutationPayableReportController extends Controller
         if(count($data_supplier)>=0){
             $spreadsheet->getProperties()->setCreator("IBS CJDW")
                                         ->setLastModifiedBy("IBS CJDW")
-                                        ->setTitle("Purchase Return Report")
+                                        ->setTitle("Mutation Payable Report")
                                         ->setSubject("")
-                                        ->setDescription("Purchase Return Report")
-                                        ->setKeywords("Purchase, Return, Report")
-                                        ->setCategory("Purchase Return Report");
+                                        ->setDescription("Mutation Payable Report")
+                                        ->setKeywords("Mutation, Payable, Report")
+                                        ->setCategory("Mutation Payable Report");
                                  
             $sheet = $spreadsheet->getActiveSheet(0);
             $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
             $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
             $spreadsheet->getActiveSheet()->getColumnDimension('B')->setWidth(5);
-            $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(20);
+            $spreadsheet->getActiveSheet()->getColumnDimension('C')->setWidth(30);
             $spreadsheet->getActiveSheet()->getColumnDimension('D')->setWidth(20);
-            $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(23);
+            $spreadsheet->getActiveSheet()->getColumnDimension('E')->setWidth(20);
             $spreadsheet->getActiveSheet()->getColumnDimension('F')->setWidth(20);
+            $spreadsheet->getActiveSheet()->getColumnDimension('G')->setWidth(20);
     
-            $spreadsheet->getActiveSheet()->mergeCells("B1:F1");
+            $spreadsheet->getActiveSheet()->mergeCells("B1:G1");
             $spreadsheet->getActiveSheet()->getStyle('B1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $spreadsheet->getActiveSheet()->getStyle('B1')->getFont()->setBold(true)->setSize(16);
-            $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('B3:G3')->getFont()->setBold(true);
 
-            $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-            $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->getStyle('B3:G3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle('B3:G3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-            $sheet->setCellValue('B1',"Laporan Retur Pembelian Dari Periode ".date('d M Y', strtotime($start_date))." s.d. ".date('d M Y', strtotime($end_date)));	
+            $sheet->setCellValue('B1',"Laporan Mutasi Hutang Pemasok Periode ".$this->getMonthName($month)." ".$year);	
             $sheet->setCellValue('B3',"No");
             $sheet->setCellValue('C3',"Nama Pemasok");
-            $sheet->setCellValue('D3',"Nama Gudang");
-            $sheet->setCellValue('E3',"Tanggal Retur Pembelian");
-            $sheet->setCellValue('F3',"Jumlah Total");
+            $sheet->setCellValue('D3',"Saldo Awal");
+            $sheet->setCellValue('E3',"Hutang Baru");
+            $sheet->setCellValue('F3',"Pembayaran");
+            $sheet->setCellValue('G3',"Saldo Akhir");
             
             $j=4;
             $no=0;
@@ -344,35 +366,37 @@ class AcctMutationPayableReportController extends Controller
                 if(is_numeric($key)){
                     
                     $sheet = $spreadsheet->getActiveSheet(0);
-                    $spreadsheet->getActiveSheet()->setTitle("Jurnal Umum");
-                    $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                    $spreadsheet->getActiveSheet()->setTitle("Mutation Payable");
+                    $spreadsheet->getActiveSheet()->getStyle('B'.$j.':G'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-                    $spreadsheet->getActiveSheet()->getStyle('H'.$j.':F'.$j)->getNumberFormat()->setFormatCode('0.00');
+                    $spreadsheet->getActiveSheet()->getStyle('D'.$j.':G'.$j)->getNumberFormat()->setFormatCode('0.00');
             
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('D'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+                    $spreadsheet->getActiveSheet()->getStyle('D'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                    $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
                     $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                    $spreadsheet->getActiveSheet()->getStyle('G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
 
 
 
 
                         $no++;
                         $sheet->setCellValue('B'.$j, $no);
-                        $sheet->setCellValue('C'.$j, $this->getSupplierName($val['supplier_id']));
-                        $sheet->setCellValue('D'.$j, $this->getWarehouseName($val['warehouse_id']));
-                        $sheet->setCellValue('E'.$j, date('d-m-Y', strtotime($val['purchase_return_date'])));
-                        $sheet->setCellValue('F'.$j, number_format($val['purchase_return_subtotal'],2,'.',','));
+                        $sheet->setCellValue('C'.$j, $val['supplier_name']);
+                        $sheet->setCellValue('D'.$j, number_format($this->getOpeningBalance($val['supplier_id']),2,'.',','));
+                        $sheet->setCellValue('E'.$j, number_format($this->getPayableAmount($val['supplier_id']),2,'.',','));
+                        $sheet->setCellValue('F'.$j, number_format($this->getPaymentAmount($val['supplier_id']),2,'.',','));
+                        $sheet->setCellValue('G'.$j, number_format($this->getLastBalance($val['supplier_id']),2,'.',','));
                 }
                 $j++;
         
             }
-            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':F'.$j);
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':G'.$j);
             $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
             
-            $filename='Laporan_Retur_Pembelian_'.$start_date.'_s.d._'.$end_date.'.xls';
+            $filename='Laporan_Mutasi_Hutang_Supplier_'.$this->getMonthName($month).'_'.$year.'.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment;filename="'.$filename.'"');
             header('Cache-Control: max-age=0');

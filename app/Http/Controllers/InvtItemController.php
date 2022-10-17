@@ -26,10 +26,10 @@ class InvtItemController extends Controller
     public function index()
     {
         Session::forget('items');
-        $data = InvtItem::join('invt_item_category', 'invt_item_category.item_category_id', '=', 'invt_item.item_category_id')
-        ->where('invt_item.data_state','=',0)
-        ->where('invt_item.company_id', Auth::user()->company_id)
-        ->get();
+        // $data = InvtItem::join('invt_item_category', 'invt_item_category.item_category_id', '=', 'invt_item.item_category_id')
+        // ->where('invt_item.data_state','=',0)
+        // ->where('invt_item.company_id', Auth::user()->company_id)
+        // ->get();
         return view('content.InvtItem.ListInvtItem', compact('data'));
     }
 
@@ -163,12 +163,15 @@ class InvtItemController extends Controller
         ->where('company_id', Auth::user()->company_id)
         ->get()
         ->pluck('item_category_name','item_category_id');
-        $items  = InvtItem::where('item_id', $item_id)->first();
+        $items  = InvtItem::select('item_category_id','item_code','item_id','item_name','item_remark')
+        ->where('item_id', $item_id)
+        ->first();
         $status = array(
             0 => 'Aktif',
             1 => 'Non Aktif'
         );
-        $item_packge = InvtItemPackge::where('item_id', $item_id)
+        $item_packge = InvtItemPackge::select('order','item_unit_id','item_default_quantity','item_packge_id','item_unit_cost','item_unit_price')
+        ->where('item_id', $item_id)
         ->get();
         // dd($item_packge);
         return view('content.InvtItem.FormEditInvtItem', compact('items', 'itemunits', 'category','status','item_packge'));

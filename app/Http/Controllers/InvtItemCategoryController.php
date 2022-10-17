@@ -19,7 +19,8 @@ class InvtItemCategoryController extends Controller
     public function index()
     {
         Session::forget('datacategory');
-        $data = InvtItemCategory::where('data_state', 0)
+        $data = InvtItemCategory::select('item_category_code','item_category_name','item_category_id')
+        ->where('data_state', 0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
         return view('content.InvtItemCategory.ListInvtItemCategory', compact('data'));
@@ -79,7 +80,9 @@ class InvtItemCategoryController extends Controller
 
     public function editItemCategory($item_category_id)
     {
-        $data = InvtItemCategory::where('item_category_id',$item_category_id)->first();
+        $data = InvtItemCategory::select('item_category_code','item_category_name','item_category_id')
+        ->where('item_category_id',$item_category_id)
+        ->first();
         return view('content.InvtItemCategory.FormEditInvtItemCategory', compact('data'));
     }
 

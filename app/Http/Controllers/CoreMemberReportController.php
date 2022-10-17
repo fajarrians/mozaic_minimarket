@@ -30,7 +30,8 @@ class CoreMemberReportController extends Controller
         } else {
             $end_date = Session::get('end_date');
         }
-        $data_member = CoreMember::where('data_state',0)
+        $data_member = CoreMember::select('member_name','member_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
         return view('content.CoreMemberReport.ListCoreMemberReport', compact('data_member','start_date','end_date'));
@@ -89,7 +90,8 @@ class CoreMemberReportController extends Controller
         } else {
             $end_date = Session::get('end_date');
         }
-        $data_sales = SalesInvoice::where('data_state',0)
+        $data_sales = SalesInvoice::select('subtotal_item')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->where('customer_id', $member_id)
         ->where('sales_invoice_date','>=',$start_date)
@@ -116,7 +118,8 @@ class CoreMemberReportController extends Controller
         } else {
             $end_date = Session::get('end_date');
         }
-        $data_sales = SalesInvoice::where('data_state',0)
+        $data_sales = SalesInvoice::select('total_amount')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->where('customer_id', $member_id)
         ->where('sales_invoice_date','>=',$start_date)
@@ -143,7 +146,8 @@ class CoreMemberReportController extends Controller
         } else {
             $end_date = Session::get('end_date');
         }
-        $data_member = CoreMember::where('data_state',0)
+        $data_member = CoreMember::select('member_name','member_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
@@ -237,7 +241,8 @@ class CoreMemberReportController extends Controller
         } else {
             $end_date = Session::get('end_date');
         }
-        $data_member = CoreMember::where('data_state',0)
+        $data_member = CoreMember::select('member_name','member_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
