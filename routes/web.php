@@ -9,6 +9,7 @@ use App\Http\Controllers\AcctLedgerReportController;
 use App\Http\Controllers\AcctMutationPayableReportController;
 use App\Http\Controllers\AcctProfitLossReportController;
 use App\Http\Controllers\AcctProfitLossYearReportController;
+use App\Http\Controllers\AcctPayableCardController;
 use App\Http\Controllers\AcctReceiptsController;
 use App\Http\Controllers\AcctReceiptsReportController;
 use App\Http\Controllers\AttendanceReportController;
@@ -444,3 +445,8 @@ Route::post('mutation-payable-report/filter', [AcctMutationPayableReportControll
 Route::get('mutation-payable-report/reset-filter', [AcctMutationPayableReportController::class, 'resetFilterMutationPayableReport'])->name('reset-filter-mutation-payable-report');
 Route::get('mutation-payable-report/print', [AcctMutationPayableReportController::class, 'printMutationPayableReport'])->name('print-mutation-payable-report');
 Route::get('mutation-payable-report/export', [AcctMutationPayableReportController::class, 'exportMutationPayableReport'])->name('export-mutation-payable-report');
+
+Route::get('payable-card', [AcctPayableCardController::class, 'index'])->name('payable-card');
+Route::post('payable-card/filter', [AcctPayableCardController::class, 'filterPayableCard'])->name('filter-payable-card');
+Route::get('payable-card/reset-filter', [AcctPayableCardController::class, 'resetFilterPayableCard'])->name('reset-filter-payable-card');
+Route::get('payable-card/print/{supplier_id}', [AcctPayableCardController::class, 'printPayableCard'])->name('print-payable-card');

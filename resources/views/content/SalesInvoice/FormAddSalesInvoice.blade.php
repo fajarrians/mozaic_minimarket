@@ -434,6 +434,14 @@
         }
     }); 
 
+    $(document).keydown(function(e){
+        if ((e.keyCode == 13) && (e.shiftKey)) {
+            $('#form-prevent').submit();
+        } else if ((e.keyCode == 9) && (e.shiftKey)) {
+            $('#staticBackdrop').modal('show');
+        }
+    });
+
     $(document).ready(function(){
         $('#myDataTable').DataTable({
     

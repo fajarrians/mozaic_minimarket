@@ -76,7 +76,7 @@ class HomeController extends Controller
             $datasalesinvoiceweekly[$i]['purchase']			= $this->getAmountPurchaseInvoiceWeekly($date);
         }
 
-        $item_data = InvtItem::select('item_name','quantity','item_id')
+        $item_data = InvtItem::select('item_name','item_id')
         ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get();
