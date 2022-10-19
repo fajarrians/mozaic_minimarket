@@ -35,7 +35,7 @@ class SalesInvoiceByUserReportController extends Controller
             $end_date = Session::get('end_date');
         }
         if(!$user_id = Session::get('user_id')){
-            $user_id = '';
+            $user_id = Auth::id();
         } else {
             $user_id = Session::get('user_id');
         }

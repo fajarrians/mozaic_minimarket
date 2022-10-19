@@ -1111,7 +1111,7 @@ class SalesInvoiceController extends Controller
         ->where('invt_item_packge.item_unit_id', '!=', null);
         if (!empty($searchValue)) {
             $totalFilter = $totalFilter->where('invt_item.item_name','like','%'.$searchValue.'%');
-            $totalFilter = $totalFilter->orWhere('invt_item.item_code','like','%'.$searchValue.'%');
+            // $totalFilter = $totalFilter->orWhere('invt_item.item_code','like','%'.$searchValue.'%');
         }
         $totalFilter = $totalFilter->count();
 
@@ -1126,7 +1126,7 @@ class SalesInvoiceController extends Controller
 
         if (!empty($searchValue)) {
             $arrData = $arrData->where('invt_item.item_name','like','%'.$searchValue.'%');
-            $arrData = $arrData->orWhere('invt_item.item_code','like','%'.$searchValue.'%');
+            // $arrData = $arrData->orWhere('invt_item.item_code','like','%'.$searchValue.'%');
         }
 
         $arrData = $arrData->get();
