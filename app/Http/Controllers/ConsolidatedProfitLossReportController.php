@@ -143,7 +143,7 @@ class ConsolidatedProfitLossReportController extends Controller
         }
 
         $journal_mi = curl_init();
-        curl_setopt($journal_mi, CURLOPT_URL,'http://127.0.0.1:8080/api/get-data-journal-voucher');
+        curl_setopt($journal_mi, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-journal-voucher');
         curl_setopt($journal_mi, CURLOPT_RETURNTRANSFER, true);
         $response_journal_mi = curl_exec($journal_mi);
         $result_journal_mi = json_decode($response_journal_mi,TRUE);
@@ -228,62 +228,72 @@ class ConsolidatedProfitLossReportController extends Controller
             $end_date = Session::get('end_date');
         }
 
-        $profit_mi = curl_init();
-        curl_setopt($profit_mi, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-profit-loss-report');
-        curl_setopt($profit_mi, CURLOPT_RETURNTRANSFER, true);
-        $response_profit_mi = curl_exec($profit_mi);
-        $result_profit_mi = json_decode($response_profit_mi,TRUE);
-        curl_close($profit_mi);
+        // $profit_mi = curl_init();
+        // curl_setopt($profit_mi, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-profit-loss-report');
+        // curl_setopt($profit_mi, CURLOPT_RETURNTRANSFER, true);
+        // $response_profit_mi = curl_exec($profit_mi);
+        // $result_profit_mi = json_decode($response_profit_mi,TRUE);
+        // curl_close($profit_mi);
 
-        $profit_merge = [];
-        if (!empty($result_profit_mi)) {
-            for ($i=0; $i < count($result_profit_mi) ; $i++) { 
-                if ($result_profit_mi[$i]['company_id'] == Auth::user()->company_id) {
-                    array_push($profit_merge, $result_profit_mi[$i]);
-                }
-            }
-        }
+        // $profit_merge = [];
+        // if (!empty($result_profit_mi)) {
+        //     for ($i=0; $i < count($result_profit_mi) ; $i++) { 
+        //         if ($result_profit_mi[$i]['company_id'] == Auth::user()->company_id) {
+        //             array_push($profit_merge, $result_profit_mi[$i]);
+        //         }
+        //     }
+        // }
 
-        $profit_mo = curl_init();
-        curl_setopt($profit_mo, CURLOPT_URL,'https://ciptapro.com/kasihibu_mozaic/api/get-data-profit-loss-report');
-        curl_setopt($profit_mo, CURLOPT_RETURNTRANSFER, true);
-        $response_profit_mo = curl_exec($profit_mo);
-        $result_profit_mo = json_decode($response_profit_mo,TRUE);
-        curl_close($profit_mo);
+        // $profit_mo = curl_init();
+        // curl_setopt($profit_mo, CURLOPT_URL,'https://ciptapro.com/kasihibu_mozaic/api/get-data-profit-loss-report');
+        // curl_setopt($profit_mo, CURLOPT_RETURNTRANSFER, true);
+        // $response_profit_mo = curl_exec($profit_mo);
+        // $result_profit_mo = json_decode($response_profit_mo,TRUE);
+        // curl_close($profit_mo);
 
-        if (!empty($result_profit_mo)) {
-            for ($i=0; $i < count($result_profit_mo) ; $i++) { 
-                if ($result_profit_mo[$i]['company_id'] == Auth::user()->company_id) {
-                    array_push($profit_merge, $result_profit_mo[$i]);
-                }
-            }
-        }
+        // if (!empty($result_profit_mo)) {
+        //     for ($i=0; $i < count($result_profit_mo) ; $i++) { 
+        //         if ($result_profit_mo[$i]['company_id'] == Auth::user()->company_id) {
+        //             array_push($profit_merge, $result_profit_mo[$i]);
+        //         }
+        //     }
+        // }
 
-        $profit_unique = [];
-        for ($i=0; $i < count($profit_merge) ; $i++) { 
-            if (!empty($result_profit_mi[$i]) || !empty($result_profit_mo[$i])) {
+        // $profit_unique = [];
+        // for ($i=0; $i < count($profit_merge) ; $i++) { 
+        //     if (!empty($result_profit_mi[$i]) || !empty($result_profit_mo[$i])) {
 
-                if (($result_profit_mi[$i]['account_code'] == $result_profit_mo[$i]['account_code']) && ($result_profit_mi[$i]['account_name'] == $result_profit_mo[$i]['account_name'])) {
-                    array_push($profit_unique, $result_profit_mi[$i]);
-                } else {
-                    array_push($profit_unique, $result_profit_mi[$i]);
-                    array_push($profit_unique, $result_profit_mo[$i]);
-                }
-            }
-        }
+        //         if (($result_profit_mi[$i]['account_code'] == $result_profit_mo[$i]['account_code']) && ($result_profit_mi[$i]['account_name'] == $result_profit_mo[$i]['account_name'])) {
+        //             array_push($profit_unique, $result_profit_mi[$i]);
+        //         } else {
+        //             array_push($profit_unique, $result_profit_mi[$i]);
+        //             array_push($profit_unique, $result_profit_mo[$i]);
+        //         }
+        //     }
+        // }
 
 
-        for ($i=0; $i < count($profit_unique) ; $i++) { 
-            if ($profit_unique[$i]['account_type_id'] == 2) {
-                $income[$i] = $profit_unique[$i];
-            } 
-        }
+        // for ($i=0; $i < count($profit_unique) ; $i++) { 
+        //     if ($profit_unique[$i]['account_type_id'] == 2) {
+        //         $income[$i] = $profit_unique[$i];
+        //     } 
+        // }
 
-        for ($i=0; $i < count($profit_unique) ; $i++) { 
-            if ($profit_unique[$i]['account_type_id'] == 3) {
-                $expenditure[$i] = $profit_unique[$i];
-            }
-        }
+        // for ($i=0; $i < count($profit_unique) ; $i++) { 
+        //     if ($profit_unique[$i]['account_type_id'] == 3) {
+        //         $expenditure[$i] = $profit_unique[$i];
+        //     }
+        // }
+
+        $income = AcctProfitLossCombinedReport::where('data_state',0)
+        ->where('account_type_id',2)
+        ->where('company_id', Auth::user()->company_id)
+        ->get();
+
+        $expenditure = AcctProfitLossCombinedReport::where('data_state',0)
+        ->where('account_type_id',3)
+        ->where('company_id', Auth::user()->company_id)
+        ->get();
 
         $pdf = new TCPDF('P', PDF_UNIT, 'F4', true, 'UTF-8', false);
 
@@ -372,7 +382,7 @@ class ConsolidatedProfitLossReportController extends Controller
 
 										$tblitem_top3 = "
 											<tr>
-												<td style=\"width: 73%\"><div style='font-weight:".$report_bold."'>".$report_tab."(".$valTop['account_code'].") ".$valTop['account_name']."</div> </td>
+												<td style=\"width: 73%\"><div style='font-weight:".$report_bold."'>".$report_tab."(".$valTop['account_code1'].") ".$valTop['account_name']."</div> </td>
 												<td style=\"text-align:right;width: 25%\">".number_format($account_subtotal, 2)."</td>
 											</tr>";
 
@@ -512,7 +522,7 @@ class ConsolidatedProfitLossReportController extends Controller
 
 										$tblitem_bottom3 = "
 											<tr>
-												<td style=\"width: 73%\"><div style=\"font-weight:".$report_bold."\">".$report_tab."(".$valBottom['account_code'].") ".$valBottom['account_name']."</div> </td>
+												<td style=\"width: 73%\"><div style=\"font-weight:".$report_bold."\">".$report_tab."(".$valBottom['account_code1'].") ".$valBottom['account_name']."</div> </td>
 												<td style=\"text-align:right;width: 25%\">".number_format($account_subtotal, 2)."</td>
 											</tr>";
 
@@ -634,62 +644,72 @@ class ConsolidatedProfitLossReportController extends Controller
             $end_date = Session::get('end_date');
         }
        
-        $profit_mi = curl_init();
-        curl_setopt($profit_mi, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-profit-loss-report');
-        curl_setopt($profit_mi, CURLOPT_RETURNTRANSFER, true);
-        $response_profit_mi = curl_exec($profit_mi);
-        $result_profit_mi = json_decode($response_profit_mi,TRUE);
-        curl_close($profit_mi);
+        // $profit_mi = curl_init();
+        // curl_setopt($profit_mi, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-profit-loss-report');
+        // curl_setopt($profit_mi, CURLOPT_RETURNTRANSFER, true);
+        // $response_profit_mi = curl_exec($profit_mi);
+        // $result_profit_mi = json_decode($response_profit_mi,TRUE);
+        // curl_close($profit_mi);
 
-        $profit_merge = [];
-        if (!empty($result_profit_mi)) {
-            for ($i=0; $i < count($result_profit_mi) ; $i++) { 
-                if ($result_profit_mi[$i]['company_id'] == Auth::user()->company_id) {
-                    array_push($profit_merge, $result_profit_mi[$i]);
-                }
-            }
-        }
+        // $profit_merge = [];
+        // if (!empty($result_profit_mi)) {
+        //     for ($i=0; $i < count($result_profit_mi) ; $i++) { 
+        //         if ($result_profit_mi[$i]['company_id'] == Auth::user()->company_id) {
+        //             array_push($profit_merge, $result_profit_mi[$i]);
+        //         }
+        //     }
+        // }
 
-        $profit_mo = curl_init();
-        curl_setopt($profit_mo, CURLOPT_URL,'https://ciptapro.com/kasihibu_mozaic/api/get-data-profit-loss-report');
-        curl_setopt($profit_mo, CURLOPT_RETURNTRANSFER, true);
-        $response_profit_mo = curl_exec($profit_mo);
-        $result_profit_mo = json_decode($response_profit_mo,TRUE);
-        curl_close($profit_mo);
+        // $profit_mo = curl_init();
+        // curl_setopt($profit_mo, CURLOPT_URL,'https://ciptapro.com/kasihibu_mozaic/api/get-data-profit-loss-report');
+        // curl_setopt($profit_mo, CURLOPT_RETURNTRANSFER, true);
+        // $response_profit_mo = curl_exec($profit_mo);
+        // $result_profit_mo = json_decode($response_profit_mo,TRUE);
+        // curl_close($profit_mo);
 
-        if (!empty($result_profit_mo)) {
-            for ($i=0; $i < count($result_profit_mo) ; $i++) { 
-                if ($result_profit_mo[$i]['company_id'] == Auth::user()->company_id) {
-                    array_push($profit_merge, $result_profit_mo[$i]);
-                }
-            }
-        }
+        // if (!empty($result_profit_mo)) {
+        //     for ($i=0; $i < count($result_profit_mo) ; $i++) { 
+        //         if ($result_profit_mo[$i]['company_id'] == Auth::user()->company_id) {
+        //             array_push($profit_merge, $result_profit_mo[$i]);
+        //         }
+        //     }
+        // }
 
-        $profit_unique = [];
-        for ($i=0; $i < count($profit_merge) ; $i++) { 
-            if (!empty($result_profit_mi[$i]) || !empty($result_profit_mo[$i])) {
+        // $profit_unique = [];
+        // for ($i=0; $i < count($profit_merge) ; $i++) { 
+        //     if (!empty($result_profit_mi[$i]) || !empty($result_profit_mo[$i])) {
 
-                if (($result_profit_mi[$i]['account_code'] == $result_profit_mo[$i]['account_code']) && ($result_profit_mi[$i]['account_name'] == $result_profit_mo[$i]['account_name'])) {
-                    array_push($profit_unique, $result_profit_mi[$i]);
-                } else {
-                    array_push($profit_unique, $result_profit_mi[$i]);
-                    array_push($profit_unique, $result_profit_mo[$i]);
-                }
-            }
-        }
+        //         if (($result_profit_mi[$i]['account_code'] == $result_profit_mo[$i]['account_code']) && ($result_profit_mi[$i]['account_name'] == $result_profit_mo[$i]['account_name'])) {
+        //             array_push($profit_unique, $result_profit_mi[$i]);
+        //         } else {
+        //             array_push($profit_unique, $result_profit_mi[$i]);
+        //             array_push($profit_unique, $result_profit_mo[$i]);
+        //         }
+        //     }
+        // }
 
 
-        for ($i=0; $i < count($profit_unique) ; $i++) { 
-            if ($profit_unique[$i]['account_type_id'] == 2) {
-                $income[$i] = $profit_unique[$i];
-            } 
-        }
+        // for ($i=0; $i < count($profit_unique) ; $i++) { 
+        //     if ($profit_unique[$i]['account_type_id'] == 2) {
+        //         $income[$i] = $profit_unique[$i];
+        //     } 
+        // }
 
-        for ($i=0; $i < count($profit_unique) ; $i++) { 
-            if ($profit_unique[$i]['account_type_id'] == 3) {
-                $expenditure[$i] = $profit_unique[$i];
-            }
-        }  
+        // for ($i=0; $i < count($profit_unique) ; $i++) { 
+        //     if ($profit_unique[$i]['account_type_id'] == 3) {
+        //         $expenditure[$i] = $profit_unique[$i];
+        //     }
+        // }  
+
+        $income = AcctProfitLossCombinedReport::where('data_state',0)
+        ->where('account_type_id',2)
+        ->where('company_id', Auth::user()->company_id)
+        ->get();
+
+        $expenditure = AcctProfitLossCombinedReport::where('data_state',0)
+        ->where('account_type_id',3)
+        ->where('company_id', Auth::user()->company_id)
+        ->get();
 
         $spreadsheet = new Spreadsheet();
 

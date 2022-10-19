@@ -149,6 +149,7 @@ Route::post('/sales-invoice/filter',[SalesInvoiceController::class, 'filterSales
 Route::get('/sales-invoice/print',[SalesInvoiceController::class, 'printSalesInvoice'])->name('print-sales-invoice');
 Route::post('/sales-invoice/check-customer',[SalesInvoiceController::class, 'checkCustomerSalesInvoice'])->name('check-customer-sales-invoice');
 Route::post('/sales-invoice/select-voucher',[SalesInvoiceController::class, 'selectVoucherSalesInvoice'])->name('select-voucher-sales-invoice');
+Route::get('/sales-invoice/check-upload-status/{sales_invoice_id}', [SalesInvoiceController::class, 'checkUploadStatusSalesInvoice'])->name('check-upload-status-sales-invoice');
 
 Route::get('/purchase-invoice', [PurchaseInvoiceController::class, 'index'])->name('purchase-invoice');
 Route::get('/purchase-invoice/add', [PurchaseInvoiceController::class, 'addPurchaseInvoice'])->name('add-purchase-invoice');

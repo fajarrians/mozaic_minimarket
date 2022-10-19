@@ -218,6 +218,7 @@ class PurchasePaymentController extends Controller
                 'company_id'				    => $data['company_id'],
                 'journal_voucher_period' 		=> $journal_voucher_period,
                 'journal_voucher_date'			=> $data['payment_date'],
+                'journal_voucher_status'        => 1,
                 'journal_voucher_title'			=> 'Pelunasan Hutang '.$PurchasePayment_last['payment_no'],
                 'journal_voucher_no'			=> $PurchasePayment_last['payment_no'],
                 'journal_voucher_description'	=> $data['payment_remark'],
@@ -540,6 +541,7 @@ class PurchasePaymentController extends Controller
             $data_journal = array(
                 'company_id'				    => $journalvoucher['company_id'],
                 'journal_voucher_period' 		=> $journalvoucher['journal_voucher_period'],
+                'journal_voucher_status'        => 1,
                 'journal_voucher_date'			=> date('Y-m-d'),
                 'journal_voucher_title'			=> 'Pembatalan Pelunasan Hutang '.$payment_no,
                 'journal_voucher_no'			=> $payment_no,

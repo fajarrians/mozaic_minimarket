@@ -45,7 +45,6 @@ am5.ready(function() {
         <?php foreach ($data as $key => $val) { ?>
                 {
                     "day": <?php echo $val['day']; ?>,
-                    "Pembelian": <?php echo $val['purchase']; ?>,
                     "Penjualan": <?php echo $val['sales']; ?>
                 },
         <?php } ?>
@@ -122,16 +121,10 @@ am5.ready(function() {
     }
     
     makeSeries("Penjualan", "Penjualan");
-    makeSeries("Pembelian", "Pembelian");
 
     series.columns.template.states.create("Penjualan", {
         fill: am5.color(0x76b041),
         stroke: am5.color(0x76b041)
-    });
-
-    series.columns.template.states.create("Pembelian", {
-        fill: am5.color(0xe4572e),
-        stroke: am5.color(0xe4572e)
     });
 
     
@@ -240,7 +233,6 @@ am5.ready(function() {
         {
             "day" : "<?php echo $val['day']; ?>",
             "Penjualan" : <?php echo $val['sales']; ?>,
-            "Pembelian" : <?php echo $val['purchase']; ?>
         },
     <?php } ?> 
     ] ;
@@ -316,16 +308,10 @@ am5.ready(function() {
     }
     
     makeSeries("Penjualan", "Penjualan");
-    makeSeries("Pembelian", "Pembelian");
 
     series.columns.template.states.create("Penjualan", {
         fill: am5.color(0x76b041),
         stroke: am5.color(0x76b041)
-    });
-
-    series.columns.template.states.create("Pembelian", {
-        fill: am5.color(0xe4572e),
-        stroke: am5.color(0xe4572e)
     });
 
     
@@ -363,113 +349,6 @@ am5.ready(function() {
         <div class="card border border-dark">
             <div class="card-header border-dark bg-dark">
                 <h5 class="mb-0 float-left">
-                    Menu Utama
-                </h5>
-            </div>
-        
-            <div class="card-body">
-                <div class="row">
-                    <div class='col-md-6'>
-                        <div class="card" style="height: auto;">
-                            <div class="card-header bg-secondary">
-                            Persediaan
-                            </div>
-                            <div class="card-body">
-                            <ul class="list-group">
-                            <?php foreach($menus as $menu){
-                                    if($menu['id_menu']==11){
-                            ?>
-                                <li class="list-group-item main-menu-item" onClick="location.href='{{route('stock-adjustment')}}'"> <i class="fa fa-angle-right"></i> Stok Penyesuaian</li>
-                            <?php }
-                                    if($menu['id_menu']==11){
-                            ?>
-                                <li class="list-group-item main-menu-item" onClick="location.href='{{route('stock-adjustment-report')}}'"> <i class="fa fa-angle-right"></i> Stok Barang</li>
-                            <?php   }
-                            }   
-                            ?> 
-                            </ul>
-                        </div>
-                        </div>
-                    </div>
-                    <div class='col-md-6'>
-                        <div class="card" style="height: auto;">
-                            <div class="card-header bg-info">
-                            Pembelian
-                            </div>
-                            <div class="card-body scrollable">
-                                <ul class="list-group">
-                                <?php foreach($menus as $menu){
-                                    if($menu['id_menu']==21){
-                                ?>
-                                    <li class="list-group-item main-menu-item-b" onClick="location.href='{{route('purchase-invoice')}}'"> <i class="fa fa-angle-right"></i> Pembelian</li>          
-                                <?php   }
-                                    if($menu['id_menu']==23){
-                                ?> 
-                                    <li class="list-group-item main-menu-item" onClick="location.href='{{route('purchase-return')}}'"> <i class="fa fa-angle-right"></i> Retur Pembelian</li>
-                                <?php 
-                                    }
-                                } 
-                                ?>           
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class='col-md-6'>
-                        <div class="card" style="height: auto;">
-                            <div class="card-header bg-info">
-                            Penjualan
-                            </div>
-                            <div class="card-body">
-                            <ul class="list-group">
-                            <?php foreach($menus as $menu){
-                                if($menu['id_menu']==31){
-                            ?>
-                                <li class="list-group-item main-menu-item" onClick="location.href='{{route('sales-invoice')}}'"> <i class="fa fa-angle-right"></i> Penjualan</li>         
-                            <?php 
-                                } if($menu['id_menu']==32) {
-                            ?>
-                            <li class="list-group-item main-menu-item" onClick="location.href='{{route('sales-customer')}}'"> <i class="fa fa-angle-right"></i> Pelanggan</li>     
-                            <?php
-                                    }
-                                } 
-                            ?>                    
-                            </ul>
-                        </div>
-                        </div>
-                    </div>
-                    <div class='col-md-6'>
-                        <div class="card" style="height: auto;">
-                            <div class="card-header bg-secondary">
-                            Akuntansi
-                            </div>
-                            <div class="card-body">
-                            <ul class="list-group">
-                            <?php foreach($menus as $menu){
-                                    if($menu['id_menu']==53){
-                            ?>
-                                <li class="list-group-item main-menu-item" onClick="location.href='{{route('acct-account')}}'"> <i class="fa fa-angle-right"></i> No. Perkiraan</li>
-                            <?php   }
-                                    if($menu['id_menu']==54){
-                            ?> 
-                                <li class="list-group-item main-menu-item" onClick="location.href='{{route('acct-account-setting')}}'"> <i class="fa fa-angle-right"></i> Seting Jurnal</li>      
-                            <?php 
-                                    }
-                                } 
-                            ?>                        
-                            </ul>
-                        </div>
-                        </div>
-                    </div>
-                </div> 
-            </div>
-        </div>
-    </div> 
-    <div class="col-md-12">
-        <div class="card border border-dark">
-            <div class="card-header border-dark bg-dark">
-                <h5 class="mb-0 float-left">
                     <?php
                     $month = [
                         1 => 'Januari',
@@ -486,7 +365,7 @@ am5.ready(function() {
                         12 => 'Desember'
                     ];
                     ?>
-                    Grafik Penjualan & Pembelian Bulan {{ $month[date('n')] }}
+                    Grafik Penjualan Bulan {{ $month[date('n')] }}
                 </h5>
             </div>
         
@@ -543,7 +422,7 @@ am5.ready(function() {
                     $x            = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
                     $day          = date("l", $x); 
                     ?>
-                    Grafik Penjualan & Pembelian Mingguan : <?php echo $dayname[$day].", ".date('d-m-Y'); ?>
+                    Grafik Penjualan Mingguan : <?php echo $dayname[$day].", ".date('d-m-Y'); ?>
                 </h5>
             </div>
         

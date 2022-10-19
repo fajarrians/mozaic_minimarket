@@ -426,19 +426,21 @@
 		});
 	}
  
-    $('#form-prevent').on('keyup keypress', function(e) {
-        var keyCode = e.keyCode || e.which;
-        if (keyCode === 13) { 
-            e.preventDefault();
-            return false;
-        }
-    }); 
+    // $('#form-prevent').on('keyup keypress', function(e) {
+    //     var keyCode = e.keyCode || e.which;
+    //     if (keyCode === 13) { 
+    //         e.preventDefault();
+    //         return false;
+    //     }
+    // }); 
 
     $(document).keydown(function(e){
-        if ((e.keyCode == 13) && (e.shiftKey)) {
+        if ((e.keyCode == 83) && (e.shiftKey)) {
             $('#form-prevent').submit();
         } else if ((e.keyCode == 9) && (e.shiftKey)) {
             $('#staticBackdrop').modal('show');
+        } else if ((e.keyCode == 68) && (e.shiftKey)) {
+            $('#form-reset').click();
         }
     });
 
@@ -663,7 +665,7 @@
                 <br>
                 <div class="">
                     <div class="form-actions float-right">
-                        <button type="reset" name="Reset" class="btn btn-danger" onclick="reset_add();"><i class="fa fa-times"></i> Reset Data</button>
+                        <button type="reset" name="Reset" class="btn btn-danger" id="form-reset" onclick="reset_add();"><i class="fa fa-times"></i> Reset Data</button>
                         <button type="submit" name="Save" class="btn btn-success button-prevent" title="Save"><i class="fa fa-check"></i> Simpan</button>
                     </div>
                 </div>
