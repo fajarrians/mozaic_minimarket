@@ -134,14 +134,14 @@ class ConsolidatedProfitLossYearReportController extends Controller
         }
 
         $journal_mi = curl_init();
-        curl_setopt($journal_mi, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-journal-voucher');
+        curl_setopt($journal_mi, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-journal-voucher');
         curl_setopt($journal_mi, CURLOPT_RETURNTRANSFER, true);
         $response_journal_mi = curl_exec($journal_mi);
         $result_journal_mi = json_decode($response_journal_mi,TRUE);
         curl_close($journal_mi);
 
         $journal_mo = curl_init();
-        curl_setopt($journal_mo, CURLOPT_URL,'http://127.0.0.1:8090/api/get-data-journal-voucher');
+        curl_setopt($journal_mo, CURLOPT_URL,'https://ciptapro.com/kasihibu_mozaic/api/get-data-journal-voucher');
         curl_setopt($journal_mo, CURLOPT_RETURNTRANSFER, true);
         $response_journal_mo = curl_exec($journal_mo);
         $result_journal_mo = json_decode($response_journal_mo,TRUE);

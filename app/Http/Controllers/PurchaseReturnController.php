@@ -138,21 +138,23 @@ class PurchaseReturnController extends Controller
             'updated_id'                => Auth::id(),
             'created_id'                => Auth::id()
         );
-        $journal = array(
-            'company_id'                    => Auth::user()->company_id,
-            'transaction_module_id'         => $transaction_module_id,
-            'transaction_module_code'       => $transaction_module_code,
-            'journal_voucher_status'        => 1,
-            'journal_voucher_date'          => $fields['purchase_return_date'],
-            'journal_voucher_description'   => $this->getTransactionModuleName($transaction_module_code),
-            'journal_voucher_period'        => date('Ym'),
-            'journal_voucher_title'         => $this->getTransactionModuleName($transaction_module_code),
-            'updated_id'                    => Auth::id(),
-            'created_id'                    => Auth::id()
-        );
-
-        if(PurchaseReturn::create($datases) && JournalVoucher::create($journal)){
+        
+        if(PurchaseReturn::create($datases)){
             $purchase_return_id = PurchaseReturn::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+            $journal = array(
+                'company_id'                    => Auth::user()->company_id,
+                'transaction_module_id'         => $transaction_module_id,
+                'transaction_module_code'       => $transaction_module_code,
+                'transaction_journal_no'        => $purchase_return_id['purchase_return_no'],
+                'journal_voucher_status'        => 1,
+                'journal_voucher_date'          => $fields['purchase_return_date'],
+                'journal_voucher_description'   => $this->getTransactionModuleName($transaction_module_code),
+                'journal_voucher_period'        => date('Ym'),
+                'journal_voucher_title'         => $this->getTransactionModuleName($transaction_module_code),
+                'updated_id'                    => Auth::id(),
+                'created_id'                    => Auth::id()
+            );
+            JournalVoucher::create($journal);
             $arraydatases       = Session::get('arraydatases');
             foreach ($arraydatases AS $key => $val){
                 $dataarray = array (

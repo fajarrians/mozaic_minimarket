@@ -98,6 +98,8 @@ class SalesInvoiceController extends Controller
         // dd($data);
         $vouchers = PreferenceVoucher::select(DB::raw("CONCAT(voucher_code,' - ',voucher_percentage,'%') AS full_voucher"),'voucher_id')
         ->where('data_state',0)
+        ->where('start_voucher','<=', date('Y-m-d'))
+        ->where('end_voucher','>=', date('Y-m-d'))
         ->where('company_id', Auth::user()->company_id)
         ->get()
         ->pluck('full_voucher','voucher_id');

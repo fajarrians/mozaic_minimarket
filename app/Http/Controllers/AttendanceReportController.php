@@ -29,6 +29,7 @@ class AttendanceReportController extends Controller
 
         $user = User::select('name','full_name','user_id')
         ->where('data_state',0)
+        ->where('user_id', '!=', 55)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 
@@ -250,6 +251,7 @@ class AttendanceReportController extends Controller
         $countMonth = date('t', strtotime($date));
         $data = User::select('name','full_name','user_id')
         ->where('data_state',0)
+        ->where('user_id', '!=', 55)
         ->where('company_id', Auth::user()->company_id)
         ->get();
 

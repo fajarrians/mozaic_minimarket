@@ -40,6 +40,7 @@ class SalesInvoiceByUserReportController extends Controller
             $user_id = Session::get('user_id');
         }
         $user = User::where('data_state',0)
+        ->where('user_id', '!=', 55)
         ->where('company_id', Auth::user()->company_id)
         ->get()
         ->pluck('name','user_id');
