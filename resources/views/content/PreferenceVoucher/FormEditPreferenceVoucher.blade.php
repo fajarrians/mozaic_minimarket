@@ -2,17 +2,6 @@
 
 @section('title', 'MOZAIC Minimarket')
 
-@section('js')
-    <script>
-        function discount_limit(value) {
-            if (value > 100) {
-                $('#exampleModal').modal('show');
-                $('#voucher_percentage').val('');
-            }
-        }
-    </script>
-@endsection
-
 @section('content_header')
     
 <nav aria-label="breadcrumb">
@@ -67,8 +56,8 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <a class="text-dark">Diskon (%)<a class='red'> *</a></a>
-                        <input class="form-control input-bb" type="number" name="voucher_percentage" id="voucher_percentage" type="text" autocomplete="off" value="{{ $data['voucher_percentage'] }}" oninput="discount_limit(this.value)"/>
+                        <a class="text-dark">Nominal<a class='red'> *</a></a>
+                        <input class="form-control input-bb text-right" type="number" name="voucher_amount" id="voucher_amount" type="text" autocomplete="off" value="{{ $data['voucher_amount'] }}"/>
                     </div>
                 </div>
                 <div class="col-md-6">

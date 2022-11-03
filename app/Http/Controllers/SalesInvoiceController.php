@@ -76,10 +76,11 @@ class SalesInvoiceController extends Controller
         ->where('company_id', Auth::user()->company_id)
         ->get()
         ->pluck('item_category_name','item_category_id');
-        $customers      = CoreMember::where('data_state',0)
+        $customers      = CoreMember::select(DB::raw("CONCAT(member_name,' - ',division_name) AS full_name"),'member_id')
+        ->where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
         ->get()
-        ->pluck('member_name','member_id');
+        ->pluck('full_name','member_id');
         $data_itemses   = Session::get('data_itemses');
         $item_packges   = InvtItem::join('invt_item_packge','invt_item_packge.item_id','=','invt_item.item_id')
         ->select('invt_item_packge.item_unit_id','invt_item.item_name','invt_item.item_id')

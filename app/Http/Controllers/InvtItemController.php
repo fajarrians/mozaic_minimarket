@@ -26,10 +26,10 @@ class InvtItemController extends Controller
     public function index()
     {
         Session::forget('items');
-        // $data = InvtItem::join('invt_item_category', 'invt_item_category.item_category_id', '=', 'invt_item.item_category_id')
-        // ->where('invt_item.data_state','=',0)
-        // ->where('invt_item.company_id', Auth::user()->company_id)
-        // ->get();
+        $data = InvtItem::join('invt_item_category', 'invt_item_category.item_category_id', '=', 'invt_item.item_category_id')
+        ->where('invt_item.data_state','=',0)
+        ->where('invt_item.company_id', Auth::user()->company_id)
+        ->get();
         return view('content.InvtItem.ListInvtItem', compact('data'));
     }
 

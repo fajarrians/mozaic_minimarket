@@ -30,13 +30,6 @@
 		});
 	}
 
-    function discount_limit(value) {
-        if (value > 100) {
-            $('#exampleModal').modal('show');
-            $('#voucher_percentage').val('');
-        }
-    }
-
 </script>
 @stop
 @section('content_header')
@@ -108,8 +101,8 @@
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
-                        <a class="text-dark">Diskon (%)<a class='red'> *</a></a>
-                        <input class="form-control input-bb" type="number" name="voucher_percentage" id="voucher_percentage" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $datases['voucher_percentage'] }}" oninput="discount_limit(this.value)"/>
+                        <a class="text-dark">Nominal<a class='red'> *</a></a>
+                        <input class="form-control input-bb text-right" type="number" name="voucher_amount" id="voucher_amount" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $datases['voucher_amount'] }}"/>
                     </div>
                 </div>
                 <div class="col-md-6">

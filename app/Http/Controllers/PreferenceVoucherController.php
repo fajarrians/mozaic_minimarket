@@ -36,7 +36,7 @@ class PreferenceVoucherController extends Controller
         $datases = Session::get('datases');
         if(!$datases || $datases == ''){
             $datases['voucher_code']        = '';
-            $datases['voucher_percentage']  = '';
+            $datases['voucher_amount']  = '';
             $datases['start_voucher']       = '';
             $datases['end_voucher']         = '';
         }
@@ -55,14 +55,14 @@ class PreferenceVoucherController extends Controller
     {
         $request->validate([
             'voucher_code'        => 'required',
-            'voucher_percentage'  => 'required',
+            'voucher_amount'      => 'required',
             'start_voucher'       => 'required',
             'end_voucher'         => 'required',
         ]);
 
         $data = array(
             'voucher_code'        => $request->voucher_code,
-            'voucher_percentage'  => $request->voucher_percentage,
+            'voucher_amount'      => $request->voucher_amount,
             'start_voucher'       => $request->start_voucher,
             'end_voucher'         => $request->end_voucher,
             'company_id'          => Auth::user()->company_id,
@@ -90,14 +90,14 @@ class PreferenceVoucherController extends Controller
     {
         $request->validate([
             'voucher_code'        => 'required',
-            'voucher_percentage'  => 'required',
+            'voucher_amount'      => 'required',
             'start_voucher'       => 'required',
             'end_voucher'         => 'required',
         ]);
 
         $table                      = PreferenceVoucher::findOrFail($request->voucher_id);
         $table->voucher_code        = $request->voucher_code;
-        $table->voucher_percentage  = $request->voucher_percentage;
+        $table->voucher_amount      = $request->voucher_amount;
         $table->start_voucher       = $request->start_voucher;
         $table->end_voucher         = $request->end_voucher;
         $table->updated_id          = Auth::id();
