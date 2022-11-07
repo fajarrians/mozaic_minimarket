@@ -37,8 +37,7 @@ class AcctReceiptsReportController extends Controller
         // ->where('acct_journal_voucher.journal_voucher_date','>=',$start_date)
         // ->where('acct_journal_voucher.journal_voucher_date','<=',$end_date)
         // ->get();
-        $data = SalesInvoice::join('sales_invoice_item','sales_invoice_item.sales_invoice_id','=','sales_invoice.sales_invoice_id')
-        ->select('sales_invoice.sales_invoice_date','sales_invoice.total_amount')
+        $data = SalesInvoice::select('sales_invoice.sales_invoice_date','sales_invoice.total_amount')
         ->where('sales_invoice.data_state',0)
         ->where('sales_invoice.sales_invoice_date','>=', $start_date)
         ->where('sales_invoice.sales_invoice_date','<=', $end_date)
@@ -86,8 +85,7 @@ class AcctReceiptsReportController extends Controller
         // ->where('acct_journal_voucher.journal_voucher_date','>=',$start_date)
         // ->where('acct_journal_voucher.journal_voucher_date','<=',$end_date)
         // ->get();
-        $data = SalesInvoice::join('sales_invoice_item','sales_invoice_item.sales_invoice_id','=','sales_invoice.sales_invoice_id')
-        ->select('sales_invoice.sales_invoice_date','sales_invoice.total_amount')
+        $data = SalesInvoice::select('sales_invoice.sales_invoice_date','sales_invoice.total_amount')
         ->where('sales_invoice.data_state',0)
         ->where('sales_invoice.sales_invoice_date','>=', $start_date)
         ->where('sales_invoice.sales_invoice_date','<=', $end_date)
@@ -192,8 +190,7 @@ class AcctReceiptsReportController extends Controller
         // ->where('acct_journal_voucher.journal_voucher_date','>=',$start_date)
         // ->where('acct_journal_voucher.journal_voucher_date','<=',$end_date)
         // ->get();
-        $data = SalesInvoice::join('sales_invoice_item','sales_invoice_item.sales_invoice_id','=','sales_invoice.sales_invoice_id')
-        ->select('sales_invoice.sales_invoice_date','sales_invoice.total_amount')
+        $data = SalesInvoice::select('sales_invoice.sales_invoice_date','sales_invoice.total_amount')
         ->where('sales_invoice.data_state',0)
         ->where('sales_invoice.sales_invoice_date','>=', $start_date)
         ->where('sales_invoice.sales_invoice_date','<=', $end_date)
@@ -222,8 +219,7 @@ class AcctReceiptsReportController extends Controller
             $spreadsheet->getActiveSheet()->mergeCells("B1:E1");
             $spreadsheet->getActiveSheet()->getStyle('B1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $spreadsheet->getActiveSheet()->getStyle('B1')->getFont()->setBold(true)->setSize(16);
-            $spreadsheet->getActiveSheet()->getStyle('B3:E3')->getFont();
-
+            $spreadsheet->getActiveSheet()->getStyle('B3:E3')->getFont()->setBold(true);
             $spreadsheet->getActiveSheet()->getStyle('B3:E3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $spreadsheet->getActiveSheet()->getStyle('B3:E3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
@@ -235,33 +231,42 @@ class AcctReceiptsReportController extends Controller
             
             $j=4;
             $no=0;
+            $totalamount = 0;
             
             foreach($data as $key=>$val){
 
-                if(is_numeric($key)){
-                    
-                    $sheet = $spreadsheet->getActiveSheet(0);
-                    $spreadsheet->getActiveSheet()->setTitle("Laporan Penerimaan Kas");
-                    $spreadsheet->getActiveSheet()->getStyle('B'.$j.':E'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $sheet = $spreadsheet->getActiveSheet(0);
+                $spreadsheet->getActiveSheet()->setTitle("Laporan Penerimaan Kas");
+                $spreadsheet->getActiveSheet()->getStyle('B'.$j.':E'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-                    $spreadsheet->getActiveSheet()->getStyle('H'.$j.':E'.$j)->getNumberFormat()->setFormatCode('0.00');
-            
-                    $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                    $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('D'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getNumberFormat()->setFormatCode('0.00');
+        
+                $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+                $spreadsheet->getActiveSheet()->getStyle('D'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+                $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
 
 
 
-                    $no++;
-                    $sheet->setCellValue('B'.$j, $no);
-                    $sheet->setCellValue('C'.$j, 'Penjualan Produk');
-                    $sheet->setCellValue('D'.$j, date('d-m-Y', strtotime($val['sales_invoice_date'])));
-                    $sheet->setCellValue('E'.$j, number_format($val['total_amount'],2,'.',','));
-                }
+                $no++;
+                $sheet->setCellValue('B'.$j, $no);
+                $sheet->setCellValue('C'.$j, 'Penjualan Produk');
+                $sheet->setCellValue('D'.$j, date('d-m-Y', strtotime($val['sales_invoice_date'])));
+                $sheet->setCellValue('E'.$j, $val['total_amount']);
+
                 $j++;
+                $totalamount += $val['total_amount'];
         
             }
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':D'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':E'.$j)->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':E'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getNumberFormat()->setFormatCode('0.00');
+            $sheet->setCellValue('B'.$j, 'TOTAL');
+            $sheet->setCellValue('E'.$j, $totalamount);
+            $j++;
             $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':E'.$j);
             $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));

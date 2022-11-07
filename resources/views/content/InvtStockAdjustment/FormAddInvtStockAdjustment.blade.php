@@ -20,12 +20,12 @@
 		});
 	}
 
-    function function_last_balance_physical(kunci,value){
-        last_data =  document.getElementById((kunci)+"_last_balance_data").value;
-        last_adjustment =  document.getElementById((kunci)+"_last_balance_adjustment").value;
+    function function_last_balance_physical(value){
+        last_data =  document.getElementById("last_balance_data").value;
+        last_adjustment =  document.getElementById("last_balance_adjustment").value || 0;
         
         var last_physical = parseInt(last_data) - parseInt(last_adjustment);
-        $('#'+kunci+"_last_balance_physical").val(last_physical);
+        $('#last_balance_physical').val(last_physical);
     }
     // nostr = $("#no").val();
     // no = parseInt(nostr)+1;
@@ -219,7 +219,33 @@
                             @foreach ($data as $row)
                               <?php $no++ ?>
                                 <tr>
-                                  <td>
+                                    <td>
+                                        {{ $ISAC->getItemName($row['item_id']) }}
+                                        <input type="text" name="item_id" id="item_id" value="{{ $row['item_id'] }}" hidden>
+                                        <input type="text" name="item_category_id" id="item_category_id" value="{{ $row['item_category_id'] }}" hidden>
+                                    </td>
+                                    <td>
+                                        {{ $ISAC->getItemUnitName($row['item_unit_id']) }}
+                                        <input type="text" name="item_unit_id" id="item_unit_id" value="{{ $row['item_unit_id'] }}" hidden>
+                                    </td>
+                                    <td>
+                                        {{ $ISAC->getWarehouseName($row['warehouse_id']) }}
+                                        <input type="text" name="warehouse_id" id="warehouse_id" value="{{ $row['warehouse_id'] }}" hidden>
+                                    </td>
+                                    <td style="text-align: right">
+                                        {{ $ISAC->getItemStock($row['item_id'],$row['item_unit_id'],$row['item_category_id'],$row['warehouse_id']) }}
+                                        <input type="text" name="last_balance_data" id="last_balance_data" value="{{ $ISAC->getItemStock($row['item_id'],$row['item_unit_id'],$row['item_category_id'],$row['warehouse_id']) }}" hidden >
+                                    </td>
+                                    <td style="text-align: center">
+                                        <input style="text-align: right" class="form-control input-bb" type="text" name="last_balance_adjustment" id="last_balance_adjustment" onchange="function_last_balance_physical(this.value)" autocomplete="off">
+                                    </td>
+                                    <td style="text-align: center">
+                                        <input style="text-align: right" class="form-control input-bb" type="text" name="last_balance_physical" id="last_balance_physical" readonly>
+                                    </td>
+                                    <td style="text-align: center">
+                                        <input class="form-control input-bb" type="text" name="stock_adjustment_item_remark" id="stock_adjustment_item_remark" autocomplete="off">
+                                    </td>
+                                  {{-- <td>
                                       {{ $ISAC->getItemName($row['item_id']) }}
                                       <input type="text" name="{{ $row['purchase_invoice_item_id'] }}no" id="no" value="{{ $row['purchase_invoice_item_id'] }}" hidden>
                                       <input type="text" name="{{ $row['purchase_invoice_item_id'] }}_item_id" id="{{ $no }}_item_id" value="{{ $row['item_id'] }}" hidden>
@@ -245,7 +271,7 @@
                                   </td>
                                   <td style="text-align: center">
                                       <input class="form-control input-bb" type="text" name="{{ $row['purchase_invoice_item_id'] }}_stock_adjustment_item_remark" id="{{ $no }}_stock_adjustment_item_remark" autocomplete="off">
-                                  </td>
+                                  </td> --}}
                                 </tr>
                             @endforeach
                         </tbody>

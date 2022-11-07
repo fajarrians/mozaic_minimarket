@@ -42,9 +42,9 @@
                     <tr>
                         <th width="5%" style='text-align:center'>No</th>
                         <th width="25%" style='text-align:center'>Kode Voucher</th>
-                        <th width="20%" style='text-align:center'>Nominal</th>
                         <th width="20%" style='text-align:center'>Tanggal Mulai</th>
                         <th width="20%" style='text-align:center'>Tanggal Akhir</th>
+                        <th width="20%" style='text-align:center'>Nominal</th>
                         <th width="10%" style='text-align:center'>Aksi</th>
                     </tr>
                 </thead>
@@ -54,9 +54,9 @@
                     <tr>
                         <td style='text-align:center'>{{ $no++ }}.</td>
                         <td>{{ $row['voucher_code'] }}</td>
-                        <td>{{ number_format($row['voucher_amount'],2,',','.') }}</td>
                         <td>{{ $row['start_voucher'] }}</td>
                         <td>{{ $row['end_voucher'] }}</td>
+                        <td style='text-align:right'>{{ number_format($row['voucher_amount'],2,',','.') }}</td>
                         <td class="text-center">
                             <a type="button" class="btn btn-outline-warning btn-sm" href="{{ url('/preference-voucher/edit/'.$row['voucher_id']) }}">Edit</a>
                             <a type="button" class="btn btn-outline-danger btn-sm" href="{{ url('/preference-voucher/delete/'.$row['voucher_id']) }}">Hapus</a>

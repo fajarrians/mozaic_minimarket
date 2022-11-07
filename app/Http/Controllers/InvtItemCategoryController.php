@@ -94,19 +94,19 @@ class InvtItemCategoryController extends Controller
             'category_name'     => 'required',
             'category_remark'   => ''
         ]);
-        $data_package = InvtItemPackge::where('data_state',0)
-        ->where('company_id', Auth::user()->company_id)
-        ->where('item_unit_id','!=',null)
-        ->where('item_category_id', $fields['category_id'])
-        ->get();
+        // $data_package = InvtItemPackge::where('data_state',0)
+        // ->where('company_id', Auth::user()->company_id)
+        // ->where('item_unit_id','!=',null)
+        // ->where('item_category_id', $fields['category_id'])
+        // ->get();
         
-        foreach ($data_package as $key => $val) {
-            InvtItemPackge::where('item_packge_id', $val['item_packge_id'])
-            ->update([
-                'item_unit_price' => (($request['margin_percentage'] * $val['item_unit_cost']) / 100) + $val['item_unit_cost'],
-                'updated_id' => Auth::id(),
-            ]);
-        }
+        // foreach ($data_package as $key => $val) {
+        //     InvtItemPackge::where('item_packge_id', $val['item_packge_id'])
+        //     ->update([
+        //         'item_unit_price' => (($request['margin_percentage'] * $val['item_unit_cost']) / 100) + $val['item_unit_cost'],
+        //         'updated_id' => Auth::id(),
+        //     ]);
+        // }
 
         $table                          = InvtItemCategory::findOrFail($fields['category_id']);
         $table->item_category_code      = $fields['category_code'];

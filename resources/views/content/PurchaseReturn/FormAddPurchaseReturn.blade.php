@@ -266,7 +266,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <a class="text-dark">Jumlah<a class='red'> *</a></a>
-                            <input class="form-control input-bb" name="purchase_return_quantity" id="purchase_return_quantity" type="text" autocomplete="off" value=""/>
+                            <input class="form-control input-bb text-right" name="purchase_return_quantity" id="purchase_return_quantity" type="text" autocomplete="off" value=""/>
                         </div>
                     </div>
                     <div class="col-md-6">

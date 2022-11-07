@@ -16,22 +16,6 @@
 
 		});
 	}
-
-    function check_upload(sales_invoice_id)
-    {
-        $.ajax({
-            url : "{{url('sales-invoice/check-upload-status')}}"+'/'+sales_invoice_id,
-            type: "GET",
-				success: function(msg){
-                    if (msg == 1) {
-                        alert('Data yang sudah diunggah tidak bisa dihapus!')
-                    } else {
-                        location.href="{{ url('sales-invoice/delete') }}"+'/'+sales_invoice_id;
-                    }
-			}
-
-		});
-    }
 </script>
 @stop
 @section('content_header')
@@ -151,8 +135,7 @@
                         <td style="text-align: right">{{ number_format($row['total_amount'],2,'.',',') }}</td>
                         <td class="text-center">
                             <a type="button" class="btn btn-outline-warning btn-sm" href="{{ url('/sales-invoice/detail/'.$row['sales_invoice_id']) }}">Detail</a>
-                            {{-- <a type="button" class="btn btn-outline-danger btn-sm" href="{{ url('/sales-invoice/delete/'.$row['sales_invoice_id']) }}">Hapus</a> --}}
-                            <a type="button" class="btn btn-outline-danger btn-sm" onclick="check_upload({{ $row['sales_invoice_id'] }})">Hapus</a>
+                            <a type="button" class="btn btn-outline-danger btn-sm" href="{{ url('/sales-invoice/delete/'.$row['sales_invoice_id']) }}">Hapus</a>
                         </td>
                     </tr>
                     @endforeach

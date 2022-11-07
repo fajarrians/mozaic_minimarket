@@ -9,7 +9,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ url('home') }}">Beranda</a></li>
         <li class="breadcrumb-item"><a href="{{ url('acct-account') }}">Daftar Perkiraan</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Tambah Perkiraan</li>
+        <li class="breadcrumb-item active" aria-current="page">Ubah Perkiraan</li>
     </ol>
   </nav>
 
@@ -18,7 +18,7 @@
 @section('content')
 
 <h3 class="page-title">
-    Form Tambah Perkiraan
+    Form Ubah Perkiraan
 </h3>
 <br/>
 @if(session('msg'))
@@ -37,7 +37,7 @@
     <div class="card border border-dark">
     <div class="card-header border-dark bg-dark">
         <h5 class="mb-0 float-left">
-            Form Tambah
+            Form Ubah
         </h5>
         <div class="float-right">
             <button onclick="location.href='{{ url('acct-account') }}'" name="Find" class="btn btn-sm btn-info" title="Back"><i class="fa fa-angle-left"></i>  Kembali</button>

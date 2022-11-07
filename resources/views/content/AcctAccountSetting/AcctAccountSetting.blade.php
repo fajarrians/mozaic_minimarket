@@ -273,15 +273,6 @@
                                 {!! Form::select(0, $status, $AccountSetting->getAccountSettingStatus('sales_cash_account'),['class' => 'form-control selection-search-clear select-form','name'=>'sales_cash_account_status','id'=>'sales_cash_account_status']) !!}
                             </td>
                         </tr>
-                        {{-- <tr>
-                            <th style="text-align: left !important; width: 40% !important">Kas</th>
-                            <td style="text-align: left !important; width: 30% !important">
-                                {!! Form::select(0, $accountlist, $AccountSetting->getAccountId('sales_cash_account'),['class' => 'form-control selection-search-clear select-form','name'=>'account_receivable_account_id','id'=>'account_receivable_account_id']) !!}
-                            </td>
-                            <td style="text-align: left !important; width: 30% !important">
-                                {!! Form::select(0, $status, $AccountSetting->getAccountSettingStatus('sales_cash_account'),['class' => 'form-control selection-search-clear select-form','name'=>'account_receivable_account_status','id'=>'account_receivable_account_status']) !!}
-                            </td>
-                        </tr> --}}
                         <tr>
                             <th style="text-align: left !important; width: 40% !important">Penjualan</th>
                             <td style="text-align: left !important; width: 30% !important">
@@ -291,7 +282,7 @@
                                 {!! Form::select(0, $status,$AccountSetting->getAccountSettingStatus('sales_account'),['class' => 'form-control selection-search-clear select-form','name'=>'sales_account_status','id'=>'sales_account_status']) !!}
                             </td>
                         </tr>
-    
+                    
                         <tr>
                             <th colspan="3" style="text-align: center !important ;width: 100% !important">Penjualan Piutang</th>
                         </tr>
@@ -311,6 +302,28 @@
                             </td>
                             <td style="text-align: left !important; width: 30% !important">
                                 {!! Form::select(0, $status, $AccountSetting->getAccountSettingStatus('sales_receivable_account'),['class' => 'selection-search-clear select-form','name'=>'sales_receivable_account_status','id'=>'sales_receivable_account_status']) !!}
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <th colspan="3" style="text-align: center !important ;width: 100% !important">Penjualan Non Tunai</th>
+                        </tr>
+                        <tr>
+                            <th style="text-align: left !important; width: 40% !important">Kas</th>
+                            <td style="text-align: left !important; width: 30% !important">
+                                {!! Form::select(0, $accountlist, $AccountSetting->getAccountId('sales_cashless_cash_account'),['class' => 'form-control selection-search-clear select-form','name'=>'sales_cashless_cash_account_id','id'=>'sales_cashless_cash_account_id']) !!}
+                            </td>
+                            <td style="text-align: left !important; width: 30% !important">
+                                {!! Form::select(0, $status, $AccountSetting->getAccountSettingStatus('sales_cashless_cash_account'),['class' => 'form-control selection-search-clear select-form','name'=>'sales_cashless_cash_account_status','id'=>'sales_cashless_cash_account_status']) !!}
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="text-align: left !important; width: 40% !important">Penjualan</th>
+                            <td style="text-align: left !important; width: 30% !important">
+                                {!! Form::select(0, $accountlist,$AccountSetting->getAccountId('sales_cashless_account'),['class' => 'form-control selection-search-clear select-form','name'=>'sales_cashless_account_id','id'=>'sales_cashless_account_id']) !!}
+                            </td>
+                            <td style="text-align: left !important; width: 30% !important">
+                                {!! Form::select(0, $status,$AccountSetting->getAccountSettingStatus('sales_cashless_account'),['class' => 'form-control selection-search-clear select-form','name'=>'sales_cashless_account_status','id'=>'sales_cashless_account_status']) !!}
                             </td>
                         </tr>
                     </table>

@@ -54,7 +54,7 @@
                    @foreach ($data as $row)
                        <tr>
                         <td style="text-align: center">{{ $no++ }}.</td>
-                        <td style="text-align: center">{{ date('d-m-Y',strtotime($row['expenditure_date'])) }}</td>
+                        <td style="text-align: left">{{ date('d-m-Y',strtotime($row['expenditure_date'])) }}</td>
                         <td>{{ $row['expenditure_remark'] }}</td>
                         <td style="text-align: right">{{ number_format($row['expenditure_amount'],2,'.',',') }}</td>
                         <td style="text-align: center">

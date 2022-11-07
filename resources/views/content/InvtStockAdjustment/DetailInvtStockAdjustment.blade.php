@@ -104,25 +104,25 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <a class="text-dark">Nama Kategori Barang<a class='red'> *</a></a>
-                        {!! Form::select('item_category_id',  $categorys, $data['item_category_id'], ['class' => 'selection-search-clear select-form', 'id' => 'item_category_id', 'name' => 'item_category_id', 'onchange' => 'function_elements_add(this.name, this.value)' ,'disabled']) !!}
+                        {!! Form::select('item_category_id',  $categorys, $data['item_category_id'], ['class' => 'form-control selection-search-clear select-form', 'id' => 'item_category_id', 'name' => 'item_category_id', 'onchange' => 'function_elements_add(this.name, this.value)' ,'disabled']) !!}
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <a class="text-dark">Nama Barang<a class='red'> *</a></a>
-                        {!! Form::select('item_id',  $items, $data['item_id'], ['class' => 'selection-search-clear select-form', 'id' => 'item_id', 'name' => 'item_id', 'onchange' => 'function_elements_add(this.name, this.value)' ,'disabled']) !!}
+                        {!! Form::select('item_id',  $items, $data['item_id'], ['class' => 'form-control selection-search-clear select-form', 'id' => 'item_id', 'name' => 'item_id', 'onchange' => 'function_elements_add(this.name, this.value)' ,'disabled']) !!}
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <a class="text-dark">Kode Satuan<a class='red'> *</a></a>
-                        {!! Form::select('item_unit_id',  $units, $data['item_unit_id'], ['class' => 'selection-search-clear select-form', 'id' => 'item_unit_id', 'name' => 'item_unit_id', 'onchange' => 'function_elements_add(this.name, this.value)' ,'disabled']) !!}
+                        {!! Form::select('item_unit_id',  $units, $data['item_unit_id'], ['class' => 'form-control selection-search-clear select-form', 'id' => 'item_unit_id', 'name' => 'item_unit_id', 'onchange' => 'function_elements_add(this.name, this.value)' ,'disabled']) !!}
                     </div>
                 </div>
                 <div class="col-md-6">
                     <div class="form-group">
                         <a class="text-dark">Nama Gudang<a class='red'> *</a></a>
-                        {!! Form::select('warehouse_id',  $warehouse, $data['warehouse_id'], ['class' => 'selection-search-clear select-form', 'id' => 'warehouse_id', 'name' => 'warehouse_id', 'onchange' => 'function_elements_add(this.name, this.value)' ,'disabled']) !!}
+                        {!! Form::select('warehouse_id',  $warehouse, $data['warehouse_id'], ['class' => 'form-control selection-search-clear select-form', 'id' => 'warehouse_id', 'name' => 'warehouse_id', 'onchange' => 'function_elements_add(this.name, this.value)' ,'disabled']) !!}
                     </div>
                 </div>
                 <div class="col-md-3">
@@ -165,9 +165,9 @@
                                   <td> {{ $ISAC->getItemName($row['item_id']) }}</td>
                                   <td>{{ $ISAC->getItemUnitName($row['item_unit_id']) }}</td>
                                   <td>{{ $ISAC->getWarehouseName($row['warehouse_id']) }} </td>
-                                  <td>{{ $ISAC->getItemStock($row['item_id'],$row['item_unit_id'],$row['item_category_id'],$row['warehouse_id']) }}</td>
-                                  <td>{{ $row['last_balance_adjustment'] }}</td>
-                                  <td>{{ $row['last_balance_physical'] }}</td>
+                                  <td style="text-align: right">{{ $row['last_balance_data'] }}</td>
+                                  <td style="text-align: right">{{ $row['last_balance_adjustment'] }}</td>
+                                  <td style="text-align: right">{{ $row['last_balance_physical'] }}</td>
                                   <td>{{ $row['stock_adjustment_item_remark'] }}</td>
                                 </tr>
                             @endforeach
@@ -177,6 +177,7 @@
             </div>
         </div>
     </form>
+</div>
 </div>
 
 

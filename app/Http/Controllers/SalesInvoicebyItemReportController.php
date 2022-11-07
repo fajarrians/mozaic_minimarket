@@ -228,9 +228,9 @@ class SalesInvoicebyItemReportController extends Controller
                     </tr>
                     
                 ";
+                $no++;
                 $totalitem += $this->getTotalItem($val['item_id']);
                 $totalamount += $this->getTotalAmount($val['item_id']);
-                $no++;
             }
         }
         $tblStock3 = " 
@@ -312,6 +312,8 @@ class SalesInvoicebyItemReportController extends Controller
             
             $j=4;
             $no=0;
+            $totalitem = 0;
+            $totalamount = 0;
             
             foreach($data as $key=>$val){
 
@@ -339,7 +341,7 @@ class SalesInvoicebyItemReportController extends Controller
                         $sheet->setCellValue('C'.$j, $this->getCategoryName($val['item_category_id']));
                         $sheet->setCellValue('D'.$j, $this->getItemName($val['item_id']));
                         $sheet->setCellValue('E'.$j, $this->getTotalItem($val['item_id']));
-                        $sheet->setCellValue('F'.$j, number_format($this->getTotalAmount($val['item_id']),2,'.',','));
+                        $sheet->setCellValue('F'.$j, $this->getTotalAmount($val['item_id']));
 
                     }
                            
@@ -348,8 +350,23 @@ class SalesInvoicebyItemReportController extends Controller
                     continue;
                 }
                 $j++;
+                $totalitem += $this->getTotalItem($val['item_id']);
+                $totalamount += $this->getTotalAmount($val['item_id']);
         
             }
+            $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getNumberFormat()->setFormatCode('0.00');
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':D'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+
+            $sheet->setCellValue('B'.$j, 'TOTAL');
+            $sheet->setCellValue('E'.$j, $totalitem);
+            $sheet->setCellValue('F'.$j, $totalamount);
+
+            $j++;
             $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':F'.$j);
             $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
@@ -443,6 +460,7 @@ class SalesInvoicebyItemReportController extends Controller
         ->where('sales_invoice.sales_invoice_date','<=',$end_date)
         ->where('sales_invoice.company_id', Auth::user()->company_id)
         ->where('sales_invoice.data_state',0)
+        ->where('sales_invoice_item.quantity','!=',0)
         ->get(); 
 
         if (empty($data_item)){
@@ -495,6 +513,7 @@ class SalesInvoicebyItemReportController extends Controller
         ->where('sales_invoice.sales_invoice_date','<=',$end_date)
         ->where('sales_invoice.company_id', Auth::user()->company_id)
         ->where('sales_invoice.data_state',0)
+        ->where('sales_invoice_item.quantity','!=',0)
         ->get(); 
 
         if (empty($data_item)){
@@ -602,6 +621,7 @@ class SalesInvoicebyItemReportController extends Controller
         ->where('sales_invoice.sales_invoice_date','<=',$end_date)
         ->where('sales_invoice.company_id', Auth::user()->company_id)
         ->where('sales_invoice.data_state',0)
+        ->where('sales_invoice_item.quantity','!=',0)
         ->get(); 
 
         if (empty($data_item)){
@@ -719,6 +739,7 @@ class SalesInvoicebyItemReportController extends Controller
         ->where('sales_invoice.sales_invoice_date','<=',$end_date)
         ->where('sales_invoice.company_id', Auth::user()->company_id)
         ->where('sales_invoice.data_state',0)
+        ->where('sales_invoice_item.quantity','!=',0)
         ->get(); 
 
         if (empty($data_item)){

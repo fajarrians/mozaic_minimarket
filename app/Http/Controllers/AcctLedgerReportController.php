@@ -574,7 +574,9 @@ class AcctLedgerReportController extends Controller
                     
                     $spreadsheet->setActiveSheetIndex(0);
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j.':H'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-            
+                    
+                    $spreadsheet->getActiveSheet()->getStyle('E'.$j.':H'.$j)->getNumberFormat()->setFormatCode('0.00');
+
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                     $spreadsheet->getActiveSheet()->getStyle('D'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
@@ -587,10 +589,10 @@ class AcctLedgerReportController extends Controller
                         $sheet->setCellValue('B'.$j, $no);
                         $sheet->setCellValue('C'.$j, $val['date']);
                         $sheet->setCellValue('D'.$j, $val['description']);
-                        $sheet->setCellValue('E'.$j, number_format($val['account_in'],2,'.',','));
-                        $sheet->setCellValue('F'.$j, number_format($val['account_out'],2,'.',','));
-                        $sheet->setCellValue('G'.$j, number_format($val['debit'],2,'.',','));
-                        $sheet->setCellValue('H'.$j, number_format($val['credit'],2,'.',','));
+                        $sheet->setCellValue('E'.$j, $val['account_in']);
+                        $sheet->setCellValue('F'.$j, $val['account_out']);
+                        $sheet->setCellValue('G'.$j, $val['debit']);
+                        $sheet->setCellValue('H'.$j, $val['credit']);
                         
                         
                     

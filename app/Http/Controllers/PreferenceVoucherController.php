@@ -36,7 +36,7 @@ class PreferenceVoucherController extends Controller
         $datases = Session::get('datases');
         if(!$datases || $datases == ''){
             $datases['voucher_code']        = '';
-            $datases['voucher_amount']  = '';
+            $datases['voucher_amount']      = '';
             $datases['start_voucher']       = '';
             $datases['end_voucher']         = '';
         }

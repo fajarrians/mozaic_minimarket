@@ -177,6 +177,7 @@ class PurchaseReturnReportController extends Controller
              ";
 
         $no = 1;
+        $total_amount = 0;
         $tblStock2 =" ";
         foreach ($data as $key => $val) {
             $tblStock2 .="
@@ -185,14 +186,18 @@ class PurchaseReturnReportController extends Controller
                     <td style=\"text-align:left\">".$this->getSupplierName($val['supplier_id'])."</td>
                     <td style=\"text-align:left\">".$this->getWarehouseName($val['warehouse_id'])."</td>
                     <td style=\"text-align:left\">".date('d-m-Y', strtotime($val['purchase_return_date']))."</td>
-                    <td style=\"text-align:right\">".number_format($val['purchase_return_subtotal'],2,'.',',')."</td>
+                    <td style=\"text-align:right\">".number_format($val['purchase_item_subtotal'],2,'.',',')."</td>
                 </tr>
                 
             ";
             $no++;
+            $total_amount += $val['purchase_item_subtotal'];
         }
         $tblStock3 = " 
-
+        <tr>
+            <td colspan=\"4\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($total_amount,2,'.',',') ."</div></td>
+        </tr>
         </table>
         <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
             <tr>
@@ -277,7 +282,8 @@ class PurchaseReturnReportController extends Controller
             
             $j=4;
             $no=0;
-            
+            $total_amount = 0;
+
             foreach($data as $key=>$val){
 
                 if(is_numeric($key)){
@@ -286,7 +292,7 @@ class PurchaseReturnReportController extends Controller
                     $spreadsheet->getActiveSheet()->setTitle("Jurnal Umum");
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-                    $spreadsheet->getActiveSheet()->getStyle('H'.$j.':F'.$j)->getNumberFormat()->setFormatCode('0.00');
+                    $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getNumberFormat()->setFormatCode('0.00');
             
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
@@ -302,11 +308,22 @@ class PurchaseReturnReportController extends Controller
                         $sheet->setCellValue('C'.$j, $this->getSupplierName($val['supplier_id']));
                         $sheet->setCellValue('D'.$j, $this->getWarehouseName($val['warehouse_id']));
                         $sheet->setCellValue('E'.$j, date('d-m-Y', strtotime($val['purchase_return_date'])));
-                        $sheet->setCellValue('F'.$j, number_format($val['purchase_return_subtotal'],2,'.',','));
+                        $sheet->setCellValue('F'.$j, $val['purchase_item_subtotal']);
                 }
                 $j++;
+                $total_amount += $val['purchase_item_subtotal'];
         
             }
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':E'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getNumberFormat()->setFormatCode('0.00');
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, 'TOTAL');
+            $sheet->setCellValue('F'.$j, $total_amount);
+
+            $j++;
             $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':F'.$j);
             $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));

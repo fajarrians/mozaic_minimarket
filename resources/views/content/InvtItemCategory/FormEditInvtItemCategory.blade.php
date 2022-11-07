@@ -100,7 +100,7 @@
                 </div>
                 <div class="col-md-8 mt-3">
                     <div class="form-group">
-                        <a class="text-dark">Keterangan<a class='red'> *</a></a>
+                        <a class="text-dark">Keterangan</a>
                         <textarea class="form-control input-bb" name="category_remark" id="category_remark" type="text" autocomplete="off">{{ $data['item_category_remark'] }}{{ old('category_remark') }}</textarea>
                     </div>
                 </div>

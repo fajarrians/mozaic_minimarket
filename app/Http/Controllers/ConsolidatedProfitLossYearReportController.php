@@ -120,6 +120,68 @@ class ConsolidatedProfitLossYearReportController extends Controller
         return view('content.ConsolidatedProfitLossYearReport.ListConsolidatedProfitLossYearReport', compact('monthlist','yearlist','month','year','income','expenditure'));
     }
 
+    // public function getAmountAccount($account_id)
+    // {
+    //     if(!$month = Session::get('month')){
+    //         $month = date('m');
+    //     }else{
+    //         $month = Session::get('month');
+    //     }
+    //     if(!$year = Session::get('year')){
+    //         $year = date('Y');
+    //     }else{
+    //         $year = Session::get('year');
+    //     }
+
+    //     $journal_mi = curl_init();
+    //     curl_setopt($journal_mi, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-journal-voucher');
+    //     curl_setopt($journal_mi, CURLOPT_RETURNTRANSFER, true);
+    //     $response_journal_mi = curl_exec($journal_mi);
+    //     $result_journal_mi = json_decode($response_journal_mi,TRUE);
+    //     curl_close($journal_mi);
+
+    //     $amount_mi = 0;
+    //     $amount1_mi = 0;
+    //     $amount2_mi = 0;
+    //     for ($i=0; $i < count($result_journal_mi) ; $i++) { 
+    //         if (($result_journal_mi[$i]['company_id'] == Auth::user()->company_id) && ($result_journal_mi[$i]['account_id'] == $account_id) && (date('m', strtotime($result_journal_mi[$i]['journal_voucher_date'])) >= 1) && (date('m', strtotime($result_journal_mi[$i]['journal_voucher_date'])) <= $month) && (date('Y', strtotime($result_journal_mi[$i]['journal_voucher_date'])) == $year)) {
+    //             $data_journal_mi[$i] = $result_journal_mi[$i];
+    //             $first_data_journal_mi = key($data_journal_mi);
+    //             if($data_journal_mi[$i]['account_id_status'] == $data_journal_mi[$first_data_journal_mi]['account_id_status']) {
+    //                 $amount1_mi += $data_journal_mi[$i]['journal_voucher_amount'];
+    //             } else {
+    //                 $amount2_mi += $data_journal_mi[$i]['journal_voucher_amount'];
+    //             }
+    //         }
+    //     }
+    //     $amount_mi = $amount1_mi - $amount2_mi;
+        
+    //     $journal_mo = curl_init();
+    //     curl_setopt($journal_mo, CURLOPT_URL,'https://ciptapro.com/kasihibu_mozaic/api/get-data-journal-voucher');
+    //     curl_setopt($journal_mo, CURLOPT_RETURNTRANSFER, true);
+    //     $response_journal_mo = curl_exec($journal_mo);
+    //     $result_journal_mo = json_decode($response_journal_mo,TRUE);
+    //     curl_close($journal_mo);
+
+    //     $amount_mo = 0;
+    //     $amount1_mo = 0;
+    //     $amount2_mo = 0;
+    //     for ($i=0; $i < count($result_journal_mo) ; $i++) { 
+    //         if (($result_journal_mo[$i]['company_id'] == Auth::user()->company_id) && ($result_journal_mo[$i]['account_id'] == $account_id) && (date('m', strtotime($result_journal_mi[$i]['journal_voucher_date'])) >= 1) && (date('m', strtotime($result_journal_mi[$i]['journal_voucher_date'])) <= $month) && (date('Y', strtotime($result_journal_mi[$i]['journal_voucher_date'])) == $year)) {
+    //             $data_journal_mo[$i] = $result_journal_mo[$i];
+    //             $first_data_journal_mo = key($data_journal_mo);
+    //             if($data_journal_mo[$i]['account_id_status'] == $data_journal_mo[$first_data_journal_mo]['account_id_status']) {
+    //                 $amount1_mo += $data_journal_mo[$i]['journal_voucher_amount'];
+    //             } else {
+    //                 $amount2_mo += $data_journal_mo[$i]['journal_voucher_amount'];
+    //             }
+    //         }
+    //     }
+    //     $amount_mo = $amount1_mo - $amount2_mo;
+
+    //     return $amount_mi + $amount_mo;
+    // }
+
     public function getAmountAccount($account_id1, $account_id2)
     {
         if(!$month = Session::get('month')){
@@ -139,7 +201,7 @@ class ConsolidatedProfitLossYearReportController extends Controller
         $response_journal_mi = curl_exec($journal_mi);
         $result_journal_mi = json_decode($response_journal_mi,TRUE);
         curl_close($journal_mi);
-
+        
         $journal_mo = curl_init();
         curl_setopt($journal_mo, CURLOPT_URL,'https://ciptapro.com/kasihibu_mozaic/api/get-data-journal-voucher');
         curl_setopt($journal_mo, CURLOPT_RETURNTRANSFER, true);
@@ -148,10 +210,9 @@ class ConsolidatedProfitLossYearReportController extends Controller
         curl_close($journal_mo);
 
         if ($account_id2 != 0) {
-            
-            $amount_mi = 0;
             $amount1_mi = 0;
             $amount2_mi = 0;
+            $amount_mi = 0;
             for ($i=0; $i < count($result_journal_mi) ; $i++) { 
                 if (($result_journal_mi[$i]['company_id'] == Auth::user()->company_id) && ($result_journal_mi[$i]['account_id'] == $account_id1) && (date('m', strtotime($result_journal_mi[$i]['journal_voucher_date'])) >= 1) && (date('m', strtotime($result_journal_mi[$i]['journal_voucher_date'])) <= $month) && (date('Y', strtotime($result_journal_mi[$i]['journal_voucher_date'])) == $year)) {
                     $data_journal_mi[$i] = $result_journal_mi[$i];
@@ -162,14 +223,15 @@ class ConsolidatedProfitLossYearReportController extends Controller
                         $amount2_mi += $data_journal_mi[$i]['journal_voucher_amount'];
                     }
                 }
+                
             }
             $amount_mi = $amount1_mi - $amount2_mi;
-    
-            $amount_mo = 0;
+
             $amount1_mo = 0;
             $amount2_mo = 0;
+            $amount_mo = 0;
             for ($i=0; $i < count($result_journal_mo) ; $i++) { 
-                if (($result_journal_mo[$i]['company_id'] == Auth::user()->company_id) && ($result_journal_mo[$i]['account_id'] == $account_id2) && (date('m', strtotime($result_journal_mi[$i]['journal_voucher_date'])) >= 1) && (date('m', strtotime($result_journal_mi[$i]['journal_voucher_date'])) <= $month) && (date('Y', strtotime($result_journal_mi[$i]['journal_voucher_date'])) == $year)) {
+                if (($result_journal_mo[$i]['company_id'] == Auth::user()->company_id) && ($result_journal_mo[$i]['account_id'] == $account_id2) && (date('m', strtotime($result_journal_mo[$i]['journal_voucher_date'])) >= 1) && (date('m', strtotime($result_journal_mo[$i]['journal_voucher_date'])) <= $month) && (date('Y', strtotime($result_journal_mo[$i]['journal_voucher_date'])) == $year)) {
                     $data_journal_mo[$i] = $result_journal_mo[$i];
                     $first_data_journal_mo = key($data_journal_mo);
                     if($data_journal_mo[$i]['account_id_status'] == $data_journal_mo[$first_data_journal_mo]['account_id_status']) {
@@ -178,14 +240,15 @@ class ConsolidatedProfitLossYearReportController extends Controller
                         $amount2_mo += $data_journal_mo[$i]['journal_voucher_amount'];
                     }
                 }
+                
             }
             $amount_mo = $amount1_mo - $amount2_mo;
-    
+
             return $amount_mi + $amount_mo;
         } else {
-            $amount_mi = 0;
             $amount1_mi = 0;
             $amount2_mi = 0;
+            $amount_mi = 0;
             for ($i=0; $i < count($result_journal_mi) ; $i++) { 
                 if (($result_journal_mi[$i]['company_id'] == Auth::user()->company_id) && ($result_journal_mi[$i]['account_id'] == $account_id1) && (date('m', strtotime($result_journal_mi[$i]['journal_voucher_date'])) >= 1) && (date('m', strtotime($result_journal_mi[$i]['journal_voucher_date'])) <= $month) && (date('Y', strtotime($result_journal_mi[$i]['journal_voucher_date'])) == $year)) {
                     $data_journal_mi[$i] = $result_journal_mi[$i];
@@ -196,8 +259,10 @@ class ConsolidatedProfitLossYearReportController extends Controller
                         $amount2_mi += $data_journal_mi[$i]['journal_voucher_amount'];
                     }
                 }
+                
             }
             $amount_mi = $amount1_mi - $amount2_mi;
+
             return $amount_mi;
         }
 
@@ -316,7 +381,6 @@ class ConsolidatedProfitLossYearReportController extends Controller
         //         $expenditure[$i] = $profit_unique[$i];
         //     }
         // }
-
         $income = AcctProfitLossCombinedReport::where('data_state',0)
         ->where('account_type_id',2)
         ->where('company_id', Auth::user()->company_id)
@@ -740,7 +804,6 @@ class ConsolidatedProfitLossYearReportController extends Controller
         //         $expenditure[$i] = $profit_unique[$i];
         //     }
         // }
-
         $income = AcctProfitLossCombinedReport::where('data_state',0)
         ->where('account_type_id',2)
         ->where('company_id', Auth::user()->company_id)

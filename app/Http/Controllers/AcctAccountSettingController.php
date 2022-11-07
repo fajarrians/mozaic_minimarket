@@ -73,28 +73,36 @@ class AcctAccountSettingController extends Controller
             '10_account_id'               => $request->input('sales_cash_account_id'),
             '10_account_setting_status'   => $request->input('sales_cash_account_status'),
             '10_account_setting_name'     => 'sales_cash_account',
-
+            
             '11_account_id'               => $request->input('sales_receivable_account_id'),
             '11_account_setting_status'   => $request->input('sales_receivable_account_status'),
             '11_account_setting_name'     => 'sales_receivable_account',
-
+            
             '12_account_id'               => $request->input('sales_cash_receivable_account_id'),
             '12_account_setting_status'   => $request->input('sales_cash_receivable_account_status'),
             '12_account_setting_name'     => 'sales_cash_receivable_account',
 
-            '13_account_id'               => $request->input('expenditure_account_id'),
-            '13_account_setting_status'   => $request->input('expenditure_account_status'),
-            '13_account_setting_name'     => 'expenditure_account',
+            '13_account_id'               => $request->input('sales_cashless_account_id'),
+            '13_account_setting_status'   => $request->input('sales_cashless_account_status'),
+            '13_account_setting_name'     => 'sales_cashless_account',
 
-            '14_account_id'               => $request->input('expenditure_cash_account_id'),
-            '14_account_setting_status'   => $request->input('expenditure_cash_account_status'),
-            '14_account_setting_name'     => 'expenditure_cash_account',
+            '14_account_id'               => $request->input('sales_cashless_cash_account_id'),
+            '14_account_setting_status'   => $request->input('sales_cashless_cash_account_status'),
+            '14_account_setting_name'     => 'sales_cashless_cash_account',
+
+            '15_account_id'               => $request->input('expenditure_account_id'),
+            '15_account_setting_status'   => $request->input('expenditure_account_status'),
+            '15_account_setting_name'     => 'expenditure_account',
+
+            '16_account_id'               => $request->input('expenditure_cash_account_id'),
+            '16_account_setting_status'   => $request->input('expenditure_cash_account_status'),
+            '16_account_setting_name'     => 'expenditure_cash_account',
             
         );
 
         $company_id = AcctAccountSetting::where('company_id', Auth::user()->company_id)->first();
         if(!empty($company_id)){
-            for($key = 1; $key<=14;$key++){
+            for($key = 1; $key<=16;$key++){
                 $data_item = array(
                     'account_id' 				=> $data[$key."_account_id"],
                     'account_setting_status'	=> $data[$key."_account_setting_status"],
@@ -107,7 +115,7 @@ class AcctAccountSettingController extends Controller
                 ->update($data_item);
             }
         } else {
-            for($key = 1; $key<=14;$key++){
+            for($key = 1; $key<=16;$key++){
                 $data_item = array(
                     'account_id' 				=> $data[$key."_account_id"],
                     'account_setting_status'	=> $data[$key."_account_setting_status"],

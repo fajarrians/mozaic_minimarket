@@ -72,6 +72,7 @@
                             <th style='text-align:center'>Quantity</th>
                             <th style='text-align:center'>Satuan</th>
                             <th style='text-align:center'>Harga</th>
+                            <th style='text-align:center'>Aksi</th>
                             {{-- <th style='text-align:center'>Subtotal</th>
                             <th style='text-align:center'>Diskon</th>
                             <th style='text-align:center'>Subtotal Setelah Diskon</th> --}}
@@ -89,50 +90,85 @@
                                     <td style="text-align: right">{{ $salesinvoiceitem['quantity'] }}</td>
                                     <td>{{ $SalesInvoice->getItemUnitName($salesinvoiceitem['item_unit_id']) }}</td>
                                     <td style="text-align: right">{{ number_format($salesinvoiceitem['item_unit_price'],2,'.',',') }}</td>
+                                    <td style="text-align: center">
+                                        <a name='Reset' class='btn btn-outline-warning btn-sm' type="button" data-toggle="modal" data-target="#staticBackdrop{{ $salesinvoiceitem['sales_invoice_item_id'] }}"></i> Ubah</a>
+                                    </td>
                                     {{-- <td style="text-align: right">{{ number_format($salesinvoiceitem['subtotal_amount'],2,'.',',') }}</td>
                                     <td style="text-align: right">{{ $salesinvoiceitem['discount_percentage'] }}</td>
                                     <td style="text-align: right">{{ number_format($salesinvoiceitem['subtotal_amount_after_discount'],2,'.',',') }}</td> --}}
+                                    <div class="modal fade" id="staticBackdrop{{ $salesinvoiceitem['sales_invoice_item_id'] }}" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-sm">
+                                          <div class="modal-content">
+                                            <form action="{{ route('change-detail-item-sales-invoice') }}" method="post">
+                                                @csrf
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="staticBackdropLabel">Ubah Jumlah Barang</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="text" class="form-control input-bb" name="change_qty" autocomplete="off">
+                                                    <input type="text" class="form-control input-bb" name="sales_invoice_item_id" value="{{ $salesinvoiceitem['sales_invoice_item_id'] }}" hidden>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-success">Simpan</button>
+                                                </div>
+                                            </form>
+                                          </div>
+                                        </div>
+                                    </div>
                                 </tr>
                             @endforeach
                             <tr>
                                 <td colspan="5">Total Barang</td>
                                 <td style="text-align: right ">{{ $salesinvoice['subtotal_item'] }}</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td colspan="5">Subtotal</td>
                                 <td style="text-align: right ">{{ number_format($salesinvoice['subtotal_amount'],2,'.',',') }}</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td colspan="5">Potongan</td>
                                 <td style="text-align: right ">{{ number_format($salesinvoice['voucher_amount'],2,'.',',') }}</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td colspan="4">Diskon</td>
                                 <td style="text-align: right ">{{ $salesinvoice['discount_percentage_total'] }}</td>
                                 <td style="text-align: right ">{{ number_format($salesinvoice['discount_amount_total'],2,'.',',') }}</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td colspan="5">Total</td>
                                 <td style="text-align: right ">{{ number_format($salesinvoice['total_amount'],2,'.',',') }}</td>
+                                <td></td>
                             </tr>
                             <tr>
                                 <td colspan="5">Bayar</td>
                                 <td style="text-align: right ">{{ number_format($salesinvoice['paid_amount'],2,'.',',') }}</td>
+                                <td></td>
                             </tr>
                             @if ($salesinvoice['sales_payment_method'] == 2)
                                 <tr>
                                     <td colspan="5">Piutang</td>
                                     <td style="text-align: right ">{{ number_format($salesinvoice['change_amount'],2,'.',',') }}</td>
+                                    <td></td>
                                 </tr>
                             @else
                                 <tr>
                                     <td colspan="5">Kembalian</td>
                                     <td style="text-align: right ">{{ number_format($salesinvoice['change_amount'],2,'.',',') }}</td>
+                                    <td></td>
                                 </tr>
                             @endif
                             <tr>
                                 <td colspan="5">Tanggal Pembayaran</td>
                                 <td style="text-align: right " >{{ date('d-m-Y', strtotime($salesinvoice['sales_invoice_date'])) }}</td>
+                                <td></td>
                             </tr>
                     </tbody>
                 </table>

@@ -39,6 +39,7 @@ use App\Http\Controllers\InvtStockAdjustmentReportController;
 use App\Http\Controllers\InvtWarehouseController;
 use App\Http\Controllers\JournalVoucherController;
 use App\Http\Controllers\PreferenceVoucherController;
+use App\Http\Controllers\PreferenceVoucherReportController;
 use App\Http\Controllers\PurchaseInvoicebyItemReportController;
 use App\Http\Controllers\PurchaseInvoiceController;
 use App\Http\Controllers\PurchaseInvoiceReportController;
@@ -76,6 +77,8 @@ Route::get('/select-item-category',[HomeController::class, 'selectItemCategory']
 Route::get('/select-item/{id}',[HomeController::class, 'selectItem']);
 Route::get('/select-item-unit/{id}',[HomeController::class, 'selectItemUnit']);
 Route::get('/select-item-cost/{unit_id}/{item_id}',[HomeController::class, 'selectItemCost']);
+Route::get('/select-item-price/{category_id}/{unit_id}/{item_id}',[HomeController::class, 'selectItemPrice']);
+Route::get('/get-margin-category/{category_id}',[HomeController::class, 'getMarginCategory']);
 Route::get('/amount/sales-invoice/{day}', [HomeController::class, 'getAmountSalesInvoice']);
 Route::get('/amount/purchase-invoice/{day}', [HomeController::class, 'getAmountPurchaseInvoice']);
 Route::get('/select-sales/{item}',[SalesInvoiceController::class, 'selectSalesInvoice']);
@@ -149,7 +152,7 @@ Route::post('/sales-invoice/filter',[SalesInvoiceController::class, 'filterSales
 Route::get('/sales-invoice/print',[SalesInvoiceController::class, 'printSalesInvoice'])->name('print-sales-invoice');
 Route::post('/sales-invoice/check-customer',[SalesInvoiceController::class, 'checkCustomerSalesInvoice'])->name('check-customer-sales-invoice');
 Route::post('/sales-invoice/select-voucher',[SalesInvoiceController::class, 'selectVoucherSalesInvoice'])->name('select-voucher-sales-invoice');
-Route::get('/sales-invoice/check-upload-status/{sales_invoice_id}', [SalesInvoiceController::class, 'checkUploadStatusSalesInvoice'])->name('check-upload-status-sales-invoice');
+Route::post('/sales-invoice/change-detail-item',[SalesInvoiceController::class, 'changeDetailItemSalesInvoice'])->name('change-detail-item-sales-invoice');
 
 Route::get('/purchase-invoice', [PurchaseInvoiceController::class, 'index'])->name('purchase-invoice');
 Route::get('/purchase-invoice/add', [PurchaseInvoiceController::class, 'addPurchaseInvoice'])->name('add-purchase-invoice');
@@ -161,6 +164,7 @@ Route::post('/purchase-invoice/process-add', [PurchaseInvoiceController::class, 
 Route::get('/purchase-invoice/detail/{purchase_invoice_id}',[PurchaseInvoiceController::class, 'detailPurchaseInvoice'])->name('detail-purchase-invoice');
 Route::post('/purchase-invoice/filter', [PurchaseInvoiceController::class,'filterPurchaseInvoice'])->name('filter-purchase-invoice');
 Route::get('/purchase-invoice/filter-reset', [PurchaseInvoiceController::class,'filterResetPurchaseInvoice'])->name('filter-reset-purchase-invoice');
+Route::post('/purchase-invoice/process-change-cost', [PurchaseInvoiceController::class,'processChangeCostPurchaseInvoice'])->name('process-change-cost-purchase-invoice');
 
 Route::get('/system-user', [SystemUserController::class, 'index'])->name('system-user');
 Route::get('/system-user/add', [SystemUserController::class, 'addSystemUser'])->name('add-system-user');
@@ -337,6 +341,9 @@ Route::get('/configuration-data',[ConfigurationDataController::class,'index'])->
 Route::get('/configuration-data/dwonload',[ConfigurationDataController::class,'dwonloadConfigurationData'])->name('configuration-data-dwonload');
 Route::get('/configuration-data/upload',[ConfigurationDataController::class,'uploadConfigurationData'])->name('configuration-data-upload');
 Route::get('/configuration-data/check-data',[ConfigurationDataController::class,'checkDataConfiguration'])->name('check-data-configuration');
+Route::get('/configuration-data/check-close-cashier',[ConfigurationDataController::class,'checkCloseCashierConfiguration'])->name('check-close-cashier-configuration');
+Route::get('/configuration-data/close-cashier',[ConfigurationDataController::class,'closeCashierConfiguration'])->name('close-cashier-configuration');
+Route::get('/configuration-data/print-close-cashier',[ConfigurationDataController::class,'printCloseCashierConfiguration'])->name('print-close-cashier-configuration');
 
 Route::get('/consolidated-receipts-report', [ConsolidatedReceiptsReportController::class, 'index'])->name('consolidated-receipts-report');
 Route::post('/consolidated-receipts-report/filter', [ConsolidatedReceiptsReportController::class, 'filterConsolidatedReceiptsReport'])->name('filter-consolidated-receipts-report');
@@ -451,3 +458,9 @@ Route::get('payable-card', [AcctPayableCardController::class, 'index'])->name('p
 Route::post('payable-card/filter', [AcctPayableCardController::class, 'filterPayableCard'])->name('filter-payable-card');
 Route::get('payable-card/reset-filter', [AcctPayableCardController::class, 'resetFilterPayableCard'])->name('reset-filter-payable-card');
 Route::get('payable-card/print/{supplier_id}', [AcctPayableCardController::class, 'printPayableCard'])->name('print-payable-card');
+
+Route::get('preference-voucher-report', [PreferenceVoucherReportController::class, 'index'])->name('preference-voucher-report');
+Route::post('preference-voucher-report/filter', [PreferenceVoucherReportController::class, 'filterVoucherReport'])->name('filter-preference-voucher-report');
+Route::get('preference-voucher-report/reset-filter', [PreferenceVoucherReportController::class, 'resetFilterVoucherReport'])->name('reset-filter-preference-voucher-report');
+Route::get('preference-voucher-report/print', [PreferenceVoucherReportController::class, 'printVoucherReport'])->name('print-preference-voucher-report');
+Route::get('preference-voucher-report/export', [PreferenceVoucherReportController::class, 'exportVoucherReport'])->name('export-preference-voucher-report');

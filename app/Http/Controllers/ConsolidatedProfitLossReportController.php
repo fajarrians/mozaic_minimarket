@@ -90,7 +90,7 @@ class ConsolidatedProfitLossReportController extends Controller
         // }
 
         // $journal_mo = curl_init();
-        // curl_setopt($journal_mo, CURLOPT_URL,'https://ciptapro.com/kasihibu_mozaic/api/get-data-journal-voucher');
+        // curl_setopt($journal_mo, CURLOPT_URL,'http://127.0.0.1:8090/api/get-data-journal-voucher');
         // curl_setopt($journal_mo, CURLOPT_RETURNTRANSFER, true);
         // $response_journal_mo = curl_exec($journal_mo);
         // $result_journal_mo = json_decode($response_journal_mo,TRUE);
@@ -382,7 +382,7 @@ class ConsolidatedProfitLossReportController extends Controller
 
 										$tblitem_top3 = "
 											<tr>
-												<td style=\"width: 73%\"><div style='font-weight:".$report_bold."'>".$report_tab."(".$valTop['account_code1'].") ".$valTop['account_name']."</div> </td>
+												<td style=\"width: 73%\"><div style='font-weight:".$report_bold."'>".$report_tab."(".$valTop['account_code'].") ".$valTop['account_name']."</div> </td>
 												<td style=\"text-align:right;width: 25%\">".number_format($account_subtotal, 2)."</td>
 											</tr>";
 
@@ -522,7 +522,7 @@ class ConsolidatedProfitLossReportController extends Controller
 
 										$tblitem_bottom3 = "
 											<tr>
-												<td style=\"width: 73%\"><div style=\"font-weight:".$report_bold."\">".$report_tab."(".$valBottom['account_code1'].") ".$valBottom['account_name']."</div> </td>
+												<td style=\"width: 73%\"><div style=\"font-weight:".$report_bold."\">".$report_tab."(".$valBottom['account_code'].") ".$valBottom['account_name']."</div> </td>
 												<td style=\"text-align:right;width: 25%\">".number_format($account_subtotal, 2)."</td>
 											</tr>";
 

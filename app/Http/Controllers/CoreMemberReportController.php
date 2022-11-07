@@ -199,6 +199,9 @@ class CoreMemberReportController extends Controller
              ";
 
         $no = 1;
+        $TotalTransaction = 0;
+        $TotalItem = 0;
+        $TotalAmount = 0;
         $tblStock2 =" ";
         foreach ($data_member as $key => $val) {
 
@@ -213,9 +216,17 @@ class CoreMemberReportController extends Controller
                 
             ";
             $no++;
+            $TotalTransaction += $this->getTotalTransaction($val['member_id']);
+            $TotalItem += $this->getTotalItem($val['member_id']);
+            $TotalAmount += $this->getTotalAmount($val['member_id']);
         }
         $tblStock3 = " 
-
+        <tr>
+            <td colspan=\"2\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". $TotalTransaction ."</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". $TotalItem ."</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($TotalAmount,2,'.',',') ."</div></td>
+        </tr>
         </table>
         <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
             <tr>
@@ -284,7 +295,9 @@ class CoreMemberReportController extends Controller
             
             $j=4;
             $no=0;
-            
+            $TotalTransaction = 0;
+            $TotalItem = 0;
+            $TotalAmount = 0;
             foreach($data_member as $key=>$val){
 
                 if(is_numeric($key)){
@@ -307,14 +320,31 @@ class CoreMemberReportController extends Controller
                         $sheet->setCellValue('C'.$j, $val['member_name']);
                         $sheet->setCellValue('D'.$j, $this->getTotalTransaction($val['member_id']));
                         $sheet->setCellValue('E'.$j, $this->getTotalItem($val['member_id']));
-                        $sheet->setCellValue('F'.$j, number_format($this->getTotalAmount($val['member_id']),2,'.',','));
+                        $sheet->setCellValue('F'.$j, $this->getTotalAmount($val['member_id']));
 
                 }else{
                     continue;
                 }
                 $j++;
+                $TotalTransaction += $this->getTotalTransaction($val['member_id']);
+                $TotalItem += $this->getTotalItem($val['member_id']);
+                $TotalAmount += $this->getTotalAmount($val['member_id']);
         
             }
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':C'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getNumberFormat()->setFormatCode('0.00');
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->getStyle('D'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, 'TOTAL');
+            $sheet->setCellValue('D'.$j, $TotalTransaction);
+            $sheet->setCellValue('E'.$j, $TotalItem);
+            $sheet->setCellValue('F'.$j, $TotalAmount);
+
+            $j++;
             $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':F'.$j);
             $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));

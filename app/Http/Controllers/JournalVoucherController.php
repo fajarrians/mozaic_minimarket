@@ -300,9 +300,9 @@ class JournalVoucherController extends Controller
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
                 <td width=\"5%\"><div style=\"text-align: center;font-weight: bold\">No.</div></td>
-                <td width=\"40%\"><div style=\"text-align: center;font-weight: bold\">Perkiraan</div></td>
-                <td width=\"20%\"><div style=\"text-align: center;font-weight: bold\">Debet</div></td>
-                <td width=\"20%\"><div style=\"text-align: center;font-weight: bold\">Kredit</div></td>
+                <td width=\"45%\"><div style=\"text-align: center;font-weight: bold\">Perkiraan</div></td>
+                <td width=\"25%\"><div style=\"text-align: center;font-weight: bold\">Debet</div></td>
+                <td width=\"25%\"><div style=\"text-align: center;font-weight: bold\">Kredit</div></td>
             </tr>
         ";
         $tbl3 = " ";
@@ -313,9 +313,9 @@ class JournalVoucherController extends Controller
             $tbl3 .= "
                     <tr>
                         <td width=\"5%\"><div style=\"text-align: center;font-size:12px\">".$no."</div></td>
-                        <td width=\"40%\"><div style=\"text-align: left;font-size:12px\">".$this->getAccountCode($val['account_id'])." - ".$this->getAccountName($val['account_id'])."</div></td>
-                        <td width=\"20%\"><div style=\"text-align: right;font-size:12px\">".number_format($val['journal_voucher_debit_amount'],2,'.',',')."</div></td>
-                        <td width=\"20%\"><div style=\"text-align: right;font-size:12px\">".number_format($val['journal_voucher_credit_amount'],2,'.',',')."</div></td>
+                        <td width=\"45%\"><div style=\"text-align: left;font-size:12px\">".$this->getAccountCode($val['account_id'])." - ".$this->getAccountName($val['account_id'])."</div></td>
+                        <td width=\"25%\"><div style=\"text-align: right;font-size:12px\">".number_format($val['journal_voucher_debit_amount'],2,'.',',')."</div></td>
+                        <td width=\"25%\"><div style=\"text-align: right;font-size:12px\">".number_format($val['journal_voucher_credit_amount'],2,'.',',')."</div></td>
                     </tr>
             ";  
             $total_debet += $val['journal_voucher_debit_amount'];
@@ -325,17 +325,17 @@ class JournalVoucherController extends Controller
         $tbl4 = "
             <tr>
                 <td width=\"5%\"><div style=\"text-align: center;font-size:12px\"></div></td>
-                <td width=\"40%\"><div style=\"text-align: left;font-size:12px\"></div></td>
-                <td width=\"20%\"><div style=\"text-align: right;font-size:12px\"></div></td>
-                <td width=\"20%\"><div style=\"text-align: right;font-size:12px\"></div></td>
+                <td width=\"45%\"><div style=\"text-align: left;font-size:12px\"></div></td>
+                <td width=\"25%\"><div style=\"text-align: right;font-size:12px\"></div></td>
+                <td width=\"25%\"><div style=\"text-align: right;font-size:12px\"></div></td>
             </tr>		
         </table>
 
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
-                <td colspan=\"2\" width=\"45%\"></td>
-                <td width=\"20%\"><div style=\"text-align: right;font-weight:bold\">".number_format($total_debet,2,'.',',')."</div></td>
-                <td width=\"20%\"><div style=\"text-align: right;font-weight:bold\">".number_format($total_kredit,2,'.',',')."</div></td>
+                <td colspan=\"2\" width=\"50%\"></td>
+                <td width=\"25%\"><div style=\"text-align: right;font-weight:bold\">".number_format($total_debet,2,'.',',')."</div></td>
+                <td width=\"25%\"><div style=\"text-align: right;font-weight:bold\">".number_format($total_kredit,2,'.',',')."</div></td>
             </tr>
         </table>";
 

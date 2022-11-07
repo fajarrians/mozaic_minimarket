@@ -19,6 +19,7 @@ use App\Models\PreferenceVoucher;
 use App\Models\SalesCustomer;
 use App\Models\SalesInvoice;
 use App\Models\SalesInvoiceItem;
+use App\Models\SIIRemoveLog;
 use Elibyy\TCPDF\Facades\TCPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -89,7 +90,10 @@ class SalesInvoiceController extends Controller
         ->get();
         $sales_payment_method_list = [
             1 => 'Tunai',
-            2 => 'Piutang'
+            2 => 'Piutang',
+            3 => 'Gopay',
+            4 => 'Ovo',
+            5 => 'Shopeepay'
         ];
         $data = Session::get('data_itemses');
         // $data_item = Session::get('data_input');
@@ -97,13 +101,12 @@ class SalesInvoiceController extends Controller
         // Session::forget('data_itemses');
         // dd(count($data));
         // dd($data);
-        $vouchers = PreferenceVoucher::select(DB::raw("CONCAT(voucher_code,' - ',voucher_percentage,'%') AS full_voucher"),'voucher_id')
-        ->where('data_state',0)
+        $vouchers = PreferenceVoucher::where('data_state',0)
         ->where('start_voucher','<=', date('Y-m-d'))
         ->where('end_voucher','>=', date('Y-m-d'))
         ->where('company_id', Auth::user()->company_id)
         ->get()
-        ->pluck('full_voucher','voucher_id');
+        ->pluck('voucher_code','voucher_id');
         return view('content.SalesInvoice.FormAddSalesInvoice',compact('date','categorys','items','units','arraydatases','customers','data_itemses','datases','item_packges','sales_payment_method_list','vouchers'));
     }
 
@@ -191,7 +194,8 @@ class SalesInvoiceController extends Controller
         $data = array(
             'customer_id'               => $request->customer_id,
             'voucher_id'                => $request->voucher_id,
-            'voucher_amount'            => $request->voucher_amount || 0,
+            'voucher_amount'            => $request->voucher_amount == '' ? 0 : $request->voucher_amount,
+            'voucher_no'                => $request->voucher_no,
             'sales_invoice_date'        => $fields['sales_invoice_date'],
             'sales_payment_method'      => $fields['sales_payment_method'],
             'subtotal_item'             => $request->total_item,
@@ -314,7 +318,7 @@ class SalesInvoiceController extends Controller
                     'created_id'                    => Auth::id()
                 );
                 JournalVoucherItem::create($journal_credit);
-            } else {
+            } else if ($fields['sales_payment_method'] == 2) {
                 $account_setting_name = 'sales_cash_receivable_account';
                 $account_id = $this->getAccountId($account_setting_name);
                 $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
@@ -371,6 +375,58 @@ class SalesInvoiceController extends Controller
                 ->first();
                 CoreMember::where('member_id', $request->customer_id)
                 ->update(['member_account_receivable_amount_temp' => $datacoremember['member_account_receivable_amount_temp'] + $fields['subtotal_amount_change'],]);
+            } else {
+                $account_setting_name = 'sales_cashless_cash_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if ($account_setting_status == 0){
+                    $debit_amount = $fields['subtotal_amount_change'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $fields['subtotal_amount_change'];
+                }
+                $journal_debit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $fields['subtotal_amount_change'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_debit);
+    
+                $account_setting_name = 'sales_cashless_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if ($account_setting_status == 0){
+                    $debit_amount = $fields['subtotal_amount_change'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $fields['subtotal_amount_change'];
+                }
+                $journal_credit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $fields['subtotal_amount_change'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_credit);
             }
 
             $msg = 'Tambah Invoice Penjualan Berhasil';
@@ -416,8 +472,11 @@ class SalesInvoiceController extends Controller
 
     public function detailSalesInvoice($sales_invoice_id)
     {
-        $salesinvoice = SalesInvoice::where('sales_invoice_id', $sales_invoice_id)->first();
-        $salesinvoiceitem = SalesInvoiceItem::where('sales_invoice_id', $sales_invoice_id)->get();
+        $salesinvoice = SalesInvoice::where('sales_invoice_id', $sales_invoice_id)
+        ->first();
+        $salesinvoiceitem = SalesInvoiceItem::where('sales_invoice_id', $sales_invoice_id)
+        ->where('data_state',0)
+        ->get();
         return view('content.SalesInvoice.FormDetailSalesInvoice', compact('salesinvoice','salesinvoiceitem'));
     }
 
@@ -504,7 +563,7 @@ class SalesInvoiceController extends Controller
                 'created_id'                    => Auth::id()
             );
             JournalVoucherItem::create($journal_credit);
-        } else {
+        } else if ($sales_invoice['sales_payment_method'] == 2) {
             $account_setting_name = 'sales_cash_receivable_account';
             $account_id = $this->getAccountId($account_setting_name);
             $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
@@ -571,7 +630,70 @@ class SalesInvoiceController extends Controller
             ->first();
             CoreMember::where('member_id', $sales_invoice['customer_id'])
             ->update(['member_account_receivable_amount_temp' => $datacoremember['member_account_receivable_amount_temp'] - $sales_invoice['total_amount'],]);
+        } else {
+            $account_setting_name = 'sales_cashless_cash_account';
+            $account_id = $this->getAccountId($account_setting_name);
+            $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+            $account_default_status = $this->getAccountDefaultStatus($account_id);
+            $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+            if($account_setting_status == 0){
+                $account_setting_status = 1;
+            } else {
+                $account_setting_status = 0;
+            }
+            if ($account_setting_status == 0){ 
+                $debit_amount = $sales_invoice['total_amount'];
+                $credit_amount = 0;
+            } else {
+                $debit_amount = 0;
+                $credit_amount = $sales_invoice['total_amount'];
+            }
+            $journal_debit = array(
+                'company_id'                    => Auth::user()->company_id,
+                'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                'account_id'                    => $account_id,
+                'journal_voucher_amount'        => $sales_invoice['total_amount'],
+                'account_id_default_status'     => $account_default_status,
+                'account_id_status'             => $account_setting_status,
+                'journal_voucher_debit_amount'  => $debit_amount,
+                'journal_voucher_credit_amount' => $credit_amount,
+                'updated_id'                    => Auth::id(),
+                'created_id'                    => Auth::id()
+            );
+            JournalVoucherItem::create($journal_debit);
+    
+            $account_setting_name = 'sales_cashless_account';
+            $account_id = $this->getAccountId($account_setting_name);
+            $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+            $account_default_status = $this->getAccountDefaultStatus($account_id);
+            $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+            if($account_setting_status == 1){
+                $account_setting_status = 0;
+            } else {
+                $account_setting_status = 1;
+            }
+            if ($account_setting_status == 0){
+                $debit_amount = $sales_invoice['total_amount'];
+                $credit_amount = 0;
+            } else {
+                $debit_amount = 0;
+                $credit_amount = $sales_invoice['total_amount'];
+            }
+            $journal_credit = array(
+                'company_id'                    => Auth::user()->company_id,
+                'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                'account_id'                    => $account_id,
+                'journal_voucher_amount'        => $sales_invoice['total_amount'],
+                'account_id_default_status'     => $account_default_status,
+                'account_id_status'             => $account_setting_status,
+                'journal_voucher_debit_amount'  => $debit_amount,
+                'journal_voucher_credit_amount' => $credit_amount,
+                'updated_id'                    => Auth::id(),
+                'created_id'                    => Auth::id()
+            );
+            JournalVoucherItem::create($journal_credit);
         }
+
         foreach ($sales_invoice_item as $key => $val) {
             $sales_invoice_item_id = array(
                 'item_category_id' => $val['item_category_id'],
@@ -601,11 +723,7 @@ class SalesInvoiceController extends Controller
         $table_sales_invoice->data_state    = 1;
         $table_sales_invoice->updated_id    = Auth::id();
 
-        $table_sales_invoice_item                = SalesInvoiceItem::findOrFail($sales_invoice['sales_invoice_id']);
-        $table_sales_invoice_item->data_state    = 1;
-        $table_sales_invoice_item->updated_id    = Auth::id();
-
-        if($table_sales_invoice->save() && $table_sales_invoice_item->save()){
+        if($table_sales_invoice->save()){
             $msg = "Hapus Penjualan Berhasil";
             return redirect('/sales-invoice')->with('msg',$msg);
         } else {
@@ -1051,7 +1169,7 @@ class SalesInvoiceController extends Controller
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3.$tblStock4.$tblStock5, true, false, false, false, '');
 
 
-        $filename = 'Laporan_Pembelian.pdf';
+        $filename = 'Nota_Penjualan.pdf';
         $pdf::Output($filename, 'I');
     }
 
@@ -1062,6 +1180,8 @@ class SalesInvoiceController extends Controller
         if (!empty($data_member)){
             if ($data_member['member_account_receivable_status'] == 1) {
                 return 1; 
+            } else if ($data_member['member_account_receivable_amount'] != 0) {
+                return 2;
             }
             // if ($data_member['member_account_receivable_status'] == 1) {
             //     return 1; 
@@ -1084,6 +1204,15 @@ class SalesInvoiceController extends Controller
             // }
         }
 
+    }
+
+    public function getItemUnitPrice($item_id, $item_unit_id)
+    {
+        $data = InvtItemPackge::where('item_id', $item_id)
+        ->where('item_unit_id', $item_unit_id)
+        ->first();
+
+        return number_format($data['item_unit_price'],2,',','.');
     }
 
     public function tableSalesItem(Request $request)
@@ -1142,6 +1271,7 @@ class SalesInvoiceController extends Controller
             $row['no']              = "<div class='text-center'>".$no.".</div>";
             $row['item_name']       = $val['item_name'];
             $row['item_unit_name']  = $this->getItemUnitName($val['item_unit_id']);
+            $row['item_unit_price'] = '<div class="text-right">'.$this->getItemUnitPrice($val['item_id'], $val['item_unit_id']).'</div>';
             $row['action']          = '<div class="text-center"><button type="button" data-bs-dismiss="modal" class="btn btn-success btn-sm" onclick="function_add_item('.$val['item_id'].', '.$val['item_unit_id'].');">Pilih</button></div>';
 
             $data[] = $row;
@@ -1161,20 +1291,487 @@ class SalesInvoiceController extends Controller
         $data = PreferenceVoucher::where('voucher_id', $request->voucher_id)
         ->first();
 
-        return $data['voucher_percentage'];
+        return $data['voucher_amount'];
     }
 
-    public function checkUploadStatusSalesInvoice($sales_invoice_id)
+    public function changeDetailItemSalesInvoice(Request $request)
     {
-        $dataSalesInvoice = SalesInvoice::where('company_id', Auth::user()->company_id)
-        ->where('sales_invoice_id', $sales_invoice_id)
-        ->where('status_upload', 1)
+        $sales_item_first = SalesInvoiceItem::where('sales_invoice_item_id', $request->sales_invoice_item_id)
+        ->first();
+        $sales_invoice_first = SalesInvoice::where('sales_invoice_id', $sales_item_first['sales_invoice_id'])
+        ->first();
+        SalesInvoiceItem::where('sales_invoice_item_id', $request->sales_invoice_item_id)
+        ->update([
+            'quantity'                          => $request->change_qty,
+            'subtotal_amount'                   => $sales_item_first['item_unit_price'] * $request->change_qty,
+            'subtotal_amount_after_discount'    => $sales_item_first['item_unit_price'] * $request->change_qty,
+            'updated_id'                        => Auth::id()
+        ]);
+
+        $sales_item_end = SalesInvoiceItem::where('sales_invoice_id', $sales_item_first['sales_invoice_id'])
+        ->get();
+        $subtotal_item = 0;
+        $subtotal_amount = 0;
+        foreach ($sales_item_end as $key => $val) {
+            $subtotal_item += $val['quantity'];
+            $subtotal_amount += $val['subtotal_amount_after_discount'];
+        }
+        
+        SalesInvoice::where('sales_invoice_id', $sales_item_first['sales_invoice_id'])
+        ->update([
+            'subtotal_item'         => $subtotal_item,
+            'subtotal_amount'       => $subtotal_amount,
+            'discount_amount_total' => (($subtotal_amount - $sales_invoice_first['voucher_amount']) * $sales_invoice_first['discount_percentage_total']) / 100,
+            'total_amount'          => ($subtotal_amount - $sales_invoice_first['voucher_amount']) - ((($subtotal_amount - $sales_invoice_first['voucher_amount']) * $sales_invoice_first['discount_percentage_total']) / 100),
+            'change_amount'         => $sales_invoice_first['paid_amount'] - ($subtotal_amount - $sales_invoice_first['voucher_amount']) - ((($subtotal_amount - $sales_invoice_first['voucher_amount']) * $sales_invoice_first['discount_percentage_total']) / 100),
+            'updated_id'            => Auth::id()
+        ]);
+        
+
+        $sales_invoice_end = SalesInvoiceItem::join('sales_invoice', 'sales_invoice.sales_invoice_id','=','sales_invoice_item.sales_invoice_id')
+        ->where('sales_invoice_item.sales_invoice_item_id', $request->sales_invoice_item_id)
         ->first();
 
-        if (!empty($dataSalesInvoice)) {
-            return 1;
+        if ($sales_invoice_end['total_amount'] < $sales_invoice_first['total_amount']) {
+            $transaction_module_code = 'HPSPJL';
+            $transaction_module_id  = $this->getTransactionModuleID($transaction_module_code);
+            $journal = array(
+                'company_id'                    => Auth::user()->company_id,
+                'journal_voucher_status'        => 1,
+                'journal_voucher_description'   => $this->getTransactionModuleName($transaction_module_code),
+                'journal_voucher_title'         => $this->getTransactionModuleName($transaction_module_code),
+                'transaction_module_id'         => $transaction_module_id,
+                'transaction_module_code'       => $transaction_module_code,
+                'transaction_journal_no'        => $sales_invoice_first['sales_invoice_no'],
+                'journal_voucher_date'          => date('Y-m-d'),
+                'journal_voucher_period'        => date('Ym'),
+                'updated_id'                    => Auth::id(),
+                'created_id'                    => Auth::id()
+            );
+            JournalVoucher::create($journal);
+            if ($sales_invoice_first['sales_payment_method'] == 1) {
+                $account_setting_name = 'sales_cash_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if($account_setting_status == 0){
+                    $account_setting_status = 1;
+                } else {
+                    $account_setting_status = 0;
+                }
+                if ($account_setting_status == 0){ 
+                    $debit_amount = $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'];
+                }
+                $journal_debit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_debit);
+        
+                $account_setting_name = 'sales_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if($account_setting_status == 1){
+                    $account_setting_status = 0;
+                } else {
+                    $account_setting_status = 1;
+                }
+                if ($account_setting_status == 0){
+                    $debit_amount = $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'];
+                }
+                $journal_credit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_credit);
+            } else if ($sales_invoice_first['sales_payment_method'] == 2) {
+                $account_setting_name = 'sales_cash_receivable_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if($account_setting_status == 0){
+                    $account_setting_status = 1;
+                } else {
+                    $account_setting_status = 0;
+                }
+                if ($account_setting_status == 0){ 
+                    $debit_amount = $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'];
+                }
+                $journal_debit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_debit);
+        
+                $account_setting_name = 'sales_receivable_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if($account_setting_status == 1){
+                    $account_setting_status = 0;
+                } else {
+                    $account_setting_status = 1;
+                }
+                if ($account_setting_status == 0){
+                    $debit_amount = $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'];
+                }
+                $journal_credit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_credit);
+
+                $datacoremember = CoreMember::where('member_id', $sales_invoice_first['customer_id'])
+                ->first();
+                CoreMember::where('member_id', $sales_invoice_first['customer_id'])
+                ->update(['member_account_receivable_amount_temp' => $datacoremember['member_account_receivable_amount_temp'] - ($sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount']),]);
+            } else {
+                $account_setting_name = 'sales_cashless_cash_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if($account_setting_status == 0){
+                    $account_setting_status = 1;
+                } else {
+                    $account_setting_status = 0;
+                }
+                if ($account_setting_status == 0){ 
+                    $debit_amount = $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'];
+                }
+                $journal_debit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_debit);
+        
+                $account_setting_name = 'sales_cashless_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if($account_setting_status == 1){
+                    $account_setting_status = 0;
+                } else {
+                    $account_setting_status = 1;
+                }
+                if ($account_setting_status == 0){
+                    $debit_amount = $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'];
+                }
+                $journal_credit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $sales_invoice_first['total_amount'] - $sales_invoice_end['total_amount'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_credit);
+            }
+            $stock_item = InvtItemStock::where('item_id',$sales_invoice_end['item_id'])
+            ->where('item_category_id',$sales_invoice_end['item_category_id'])
+            ->where('item_unit_id', $sales_invoice_end['item_unit_id'])
+            ->where('company_id', $sales_invoice_end['company_id'])
+            ->first();
+            if (!empty($stock_item)){
+                $table = InvtItemStock::findOrFail($stock_item['item_stock_id']);
+                $table->last_balance = $stock_item['last_balance'] + ($sales_invoice_first['quantity'] - $sales_invoice_end['quantity']);
+                $table->updated_id = Auth::id();
+                $table->save();
+            }
         } else {
-            return 0;
+            $transaction_module_code = 'PJL';
+            $transaction_module_id  = $this->getTransactionModuleID($transaction_module_code);
+            $journal = array(
+                'company_id'                    => Auth::user()->company_id,
+                'journal_voucher_status'        => 1,
+                'journal_voucher_description'   => $this->getTransactionModuleName($transaction_module_code),
+                'journal_voucher_title'         => $this->getTransactionModuleName($transaction_module_code),
+                'transaction_module_id'         => $transaction_module_id,
+                'transaction_module_code'       => $transaction_module_code,
+                'transaction_journal_no'        => $sales_invoice_first['sales_invoice_no'],
+                'journal_voucher_date'          => date('Y-m-d'),
+                'journal_voucher_period'        => date('Ym'),
+                'updated_id'                    => Auth::id(),
+                'created_id'                    => Auth::id()
+            );
+            JournalVoucher::create($journal);
+            if ($sales_invoice_first['sales_payment_method'] == 1) {
+                $account_setting_name = 'sales_cash_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if ($account_setting_status == 0){
+                    $debit_amount = $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'];
+                }
+                $journal_debit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_debit);
+    
+                $account_setting_name = 'sales_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if ($account_setting_status == 0){
+                    $debit_amount = $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'];
+                }
+                $journal_credit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_credit);
+            } else if ($sales_invoice_first['sales_payment_method'] == 2) {
+                $account_setting_name = 'sales_cash_receivable_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if ($account_setting_status == 0){
+                    $debit_amount = $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'];
+                }
+                $journal_debit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_debit);
+    
+                $account_setting_name = 'sales_receivable_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if ($account_setting_status == 0){
+                    $debit_amount = $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'];
+                }
+                $journal_credit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_credit);
+
+                $datacoremember = CoreMember::where('member_id', $request->customer_id)
+                ->first();
+                CoreMember::where('member_id', $request->customer_id)
+                ->update(['member_account_receivable_amount_temp' => $datacoremember['member_account_receivable_amount_temp'] + ($sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount']),]);
+            } else {
+                $account_setting_name = 'sales_cashless_cash_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if ($account_setting_status == 0){
+                    $debit_amount = $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'];
+                }
+                $journal_debit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_debit);
+    
+                $account_setting_name = 'sales_cashless_account';
+                $account_id = $this->getAccountId($account_setting_name);
+                $account_setting_status = $this->getAccountSettingStatus($account_setting_name);
+                $account_default_status = $this->getAccountDefaultStatus($account_id);
+                $journal_voucher_id = JournalVoucher::orderBy('created_at', 'DESC')->where('company_id', Auth::user()->company_id)->first();
+                if ($account_setting_status == 0){
+                    $debit_amount = $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'];
+                }
+                $journal_credit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $account_id,
+                    'journal_voucher_amount'        => $sales_invoice_end['total_amount'] - $sales_invoice_first['total_amount'],
+                    'account_id_default_status'     => $account_default_status,
+                    'account_id_status'             => $account_setting_status,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_credit);
+            }
+            $stock_item = InvtItemStock::where('item_id',$sales_invoice_end['item_id'])
+            ->where('item_category_id',$sales_invoice_end['item_category_id'])
+            ->where('item_unit_id', $sales_invoice_end['item_unit_id'])
+            ->where('company_id', $sales_invoice_end['company_id'])
+            ->first();
+            if (!empty($stock_item)){
+                $table = InvtItemStock::findOrFail($stock_item['item_stock_id']);
+                $table->last_balance = $stock_item['last_balance'] - ($sales_invoice_end['quantity'] - $sales_invoice_first['quantity']);
+                $table->updated_id = Auth::id();
+                $table->save();
+            }
+        }
+
+        
+        if ($sales_invoice_end['quantity'] == 0) {
+            SalesInvoiceItem::where('sales_invoice_item_id', $request->sales_invoice_item_id)
+            ->update(['data_state' => 1, 'updated_id' => Auth::id()]);
+        }
+
+        if ($sales_invoice_end['subtotal_item'] == 0) {
+            SalesInvoice::where('sales_invoice_id', $sales_invoice_end['sales_invoice_id'])
+            ->update(['data_state' => 1, 'updated_id' => Auth::id()]);
+        }
+
+        SIIRemoveLog::create([
+            'company_id'            => Auth::user()->company_id,
+            'sales_invoice_id'      => $sales_invoice_end['sales_invoice_id'],
+            'sales_invoice_item_id' => $sales_invoice_end['sales_invoice_item_id'],
+            'sales_invoice_no'      => $sales_invoice_end['sales_invoice_no'],
+            'created_id'            => Auth::id(),
+            'updated_id'            => Auth::id(),
+            'sii_amount'            => $sales_item_first['subtotal_amount_after_discount'],
+
+        ]);
+
+        if($table->save()){
+            $msg = "Ubah Jumlah Item Penjualan Berhasil";
+            return redirect()->back()->with('msg',$msg);
+        } else {
+            $msg = "Ubah Jumlah Item Penjualan Gagal";
+            return redirect()->back()->with('msg',$msg);
         }
     }
 }

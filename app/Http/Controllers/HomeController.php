@@ -243,4 +243,26 @@ class HomeController extends Controller
 
         return $unit['item_unit_cost'];
     }
+
+    public function selectItemPrice($category_id, $item_unit_id, $item_id)
+    {
+        $data = InvtItemPackge::where('data_state',0)
+        ->where('company_id', Auth::user()->company_id)
+        ->where('item_category_id', $category_id)
+        ->where('item_unit_id', $item_unit_id)
+        ->where('item_id', $item_id)
+        ->first();
+
+        return $data['item_unit_price'];
+    }
+
+    public function getMarginCategory($category_id)
+    {
+        $data = InvtItemCategory::where('data_state', 0)
+        ->where('company_id', Auth::user()->company_id)
+        ->where('item_category_id', $category_id)
+        ->first();
+
+        return $data['margin_percentage'];
+    }
 }

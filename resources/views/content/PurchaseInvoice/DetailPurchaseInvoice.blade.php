@@ -81,7 +81,7 @@
                 </div>
                 <div class="col-md-9 mt-3">
                     <div class="form-group">
-                        <a class="text-dark">Keterangan<a class='red'> *</a></a>
+                        <a class="text-dark">Keterangan</a>
                         <textarea class="form-control input-bb" name="purchase_invoice_remark" id="purchase_invoice_remark" type="text" autocomplete="off" readonly>{{ $purchaseinvoice['purchase_invoice_remark'] }}</textarea>
                     </div>
                 </div>

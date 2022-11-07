@@ -21,7 +21,7 @@
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ url('home') }}">Beranda</a></li>
         <li class="breadcrumb-item"><a href="{{ url('/stock-adjustment-report') }}">Stok Barang</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Edit Rak Barang</li>
+        <li class="breadcrumb-item active" aria-current="page">Ubah Rak Barang</li>
     </ol>
   </nav>
 
@@ -30,7 +30,7 @@
 @section('content')
 
 <h3 class="page-title">
-    Form Edit Rak Barang
+    Form Ubah Rak Barang
 </h3>
 <br/>
 @if(session('msg'))
@@ -49,7 +49,7 @@
     <div class="card border border-dark">
     <div class="card-header border-dark bg-dark">
         <h5 class="mb-0 float-left">
-            Form Edit
+            Form Ubah
         </h5>
         <div class="float-right">
             <button onclick="location.href='{{ url('stock-adjustment-report') }}'" name="Find" class="btn btn-sm btn-info" title="Back"><i class="fa fa-angle-left"></i>  Kembali</button>

@@ -19,6 +19,7 @@
                         var total_amount = 0; 
                         var total_item = 0;
                         var paid_amount = $('#paid_amount').val() || 0;
+                        var voucher_amount = $('#voucher_amount').val() || 0;
                         var discount_percentage_total = $('#discount_percentage_total').val() || 0;
                         while (i < data.length) {
                             if (data[i].quantity != 0) {
@@ -37,9 +38,10 @@
                             }
                             i++;
                         }
-                    
-                        discount_amount = (total_amount * discount_percentage_total) / 100;
-                        total_amount_af_discount = total_amount - discount_amount;
+                        
+                        total_amount_af_voucher = total_amount - voucher_amount;
+                        discount_amount = (total_amount_af_voucher * discount_percentage_total) / 100;
+                        total_amount_af_discount = total_amount_af_voucher - discount_amount;
                         change_amount = paid_amount - total_amount_af_discount;
 
                         if (paid_amount != 0) {
@@ -76,6 +78,7 @@
                     var total_amount = 0; 
                     var total_item = 0;
                     var paid_amount = $('#paid_amount').val() || 0;
+                    var voucher_amount = $('#voucher_amount').val() || 0;
                     var discount_percentage_total = $('#discount_percentage_total').val() || 0;
                     while (i < data.length) {
                         if (data[i].quantity != 0) {
@@ -94,8 +97,9 @@
                         i++;
                     }
                 
-                    discount_amount = (total_amount * discount_percentage_total) / 100;
-                    total_amount_af_discount = total_amount - discount_amount;
+                    total_amount_af_voucher = total_amount - voucher_amount;
+                    discount_amount = (total_amount_af_voucher * discount_percentage_total) / 100;
+                    total_amount_af_discount = total_amount_af_voucher - discount_amount;
                     change_amount = paid_amount - total_amount_af_discount;
 
                     if (paid_amount != 0) {
@@ -126,6 +130,7 @@
             var total_amount = 0;
             var total_item = 0;
             var paid_amount = $('#paid_amount').val() || 0;
+            var voucher_amount = $('#voucher_amount').val() || 0;
             var discount_percentage_total = $('#discount_percentage_total').val() || 0;
             while (i < data.length) {
                 if (data[i].quantity != 0) {
@@ -145,8 +150,9 @@
                 i++;
             }
             
-            discount_amount = (total_amount * discount_percentage_total) / 100;
-            total_amount_af_discount = total_amount - discount_amount;
+            total_amount_af_voucher = total_amount - voucher_amount;
+            discount_amount = (total_amount_af_voucher * discount_percentage_total) / 100;
+            total_amount_af_discount = total_amount_af_voucher - discount_amount;
             change_amount = paid_amount - total_amount_af_discount;
 
             if (paid_amount != 0) {
@@ -189,6 +195,7 @@
                     var total_amount = 0;
                     var total_item = 0;
                     var paid_amount = $('#paid_amount').val() || 0;
+                    var voucher_amount = $('#voucher_amount').val() || 0;
                     var discount_percentage_total = $('#discount_percentage_total').val() || 0;
                     while (i < data.length) {
                         if (data[i].quantity != 0) {
@@ -208,8 +215,9 @@
                         i++;
                     }
                     
-                    discount_amount = (total_amount * discount_percentage_total) / 100;
-                    total_amount_af_discount = total_amount - discount_amount;
+                    total_amount_af_voucher = total_amount - voucher_amount;
+                    discount_amount = (total_amount_af_voucher * discount_percentage_total) / 100;
+                    total_amount_af_discount = total_amount_af_voucher - discount_amount;
                     change_amount = paid_amount - total_amount_af_discount;
     
                     if (paid_amount != 0) {
@@ -247,7 +255,7 @@
                     },
                     success: function(msg){
                         if (msg != '') {
-                            voucher_amount = (subtotal_amount * msg) / 100;
+                            voucher_amount = msg;
                             total_amount_af_voucher_amount = subtotal_amount - voucher_amount;
                             change_amount = paid_amount - total_amount_af_voucher_amount;
                             $('#voucher_amount').val(voucher_amount);
@@ -282,7 +290,7 @@
                     },
                     success: function(msg){
                         if (msg != '') {
-                            voucher_amount = (subtotal_amount * msg) / 100;
+                            voucher_amount = msg;
                             total_amount_af_voucher_amount = subtotal_amount - voucher_amount;
                             $('#voucher_amount').val(voucher_amount);
 
@@ -358,6 +366,10 @@
                     if (msg == '1') {
                         alert('Pelanggan telah diblokir');
                         $('#customer_id').select2('val','0');
+                    } else if (msg == '2') {
+                        $('#notifHutang').removeClass('d-none');
+                    } else {
+                        $('#notifHutang').addClass('d-none');
                     }
                     // if (msg == '1') {
                     //     alert('Pelanggan telah diblokir');
@@ -435,11 +447,18 @@
     // }); 
 
     $(document).keydown(function(e){
-        if ((e.keyCode == 83) && (e.shiftKey)) {
+        // if ((e.keyCode == 13) && (e.shiftKey)) {
+        //     $('#form-prevent').submit();
+        // } else if ((e.keyCode == 65) && (e.shiftKey)) {
+        //     $('#staticBackdrop').modal('show');
+        // } else if ((e.keyCode == 68) && (e.shiftKey)) {
+        //     $('#form-reset').click();
+        // }
+        if (e.ctrlKey && (e.keyCode == 13)) {
             $('#form-prevent').submit();
-        } else if ((e.keyCode == 9) && (e.shiftKey)) {
+        } else if (e.ctrlKey && e.shiftKey) {
             $('#staticBackdrop').modal('show');
-        } else if ((e.keyCode == 68) && (e.shiftKey)) {
+        } else if ((e.keyCode == 82) && (e.ctrlKey)) {
             $('#form-reset').click();
         }
     });
@@ -457,6 +476,7 @@
                 { data: 'no'},
                 { data: 'item_name' },
                 { data: 'item_unit_name' },
+                { data: 'item_unit_price' },
                 { data: 'action' },
             ],
             });
@@ -515,6 +535,9 @@
                         </div>
                         <div class="col-sm-8">
                           {!! Form::select('member_id', $customers, $datases['customer_id'], ['class' => 'form-control selection-search-clear select-form', 'id' => 'customer_id','name' => 'customer_id','onchange'=>'function_elements_add(this.name, this.value)']) !!}
+                          <small id="notifHutang" class="text-danger d-none">
+                            Pelanggan memiliki hutang.
+                          </small>
                         </div>
                     </div>
                     <div class="row mt-4">
@@ -561,7 +584,8 @@
                                                         <tr>
                                                             <th width="5%" style='text-align:center'>No</th>
                                                             <th width="40%" style='text-align:center'>Nama Barang</th>
-                                                            <th width="40%" style='text-align:center'>Satuan</th>
+                                                            <th width="20%" style='text-align:center'>Satuan</th>
+                                                            <th width="20%" style='text-align:center'>Harga</th>
                                                             <th width="15%" style='text-align:center'>Aksi</th>
                                                         </tr>
                                                     </thead>
@@ -624,15 +648,25 @@
     <div class="col-md-4 mt-4">
         <div class="card border border-dark h-100">
             <div class="card-body">
-                <div class="row mb-3 d-none" id="label_voucher">
-                    <div class="col-sm-4">
-                        <a class="text-dark col-form-label">Voucher</a>
+                <div class="d-none" id="label_voucher">
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <a class="text-dark col-form-label">Voucher</a>
+                        </div>
+                        <div class="col-sm-4">
+                            {!! Form::select('voucher_id', $vouchers, 0, ['class' => 'form-control selection-search-clear select-form', 'id' => 'voucher_id','name' => 'voucher_id', 'onchange' => 'count_total()']) !!}
+                        </div>
+                        <div class="col-sm-4">
+                            <input class="form-control input-bb text-right" type="text" value="" id="voucher_amount" name="voucher_amount" readonly>
+                        </div>
                     </div>
-                    <div class="col-sm-4">
-                        {!! Form::select('voucher_id', $vouchers, 0, ['class' => 'form-control selection-search-clear select-form', 'id' => 'voucher_id','name' => 'voucher_id', 'onchange' => 'count_total()']) !!}
-                    </div>
-                    <div class="col-sm-4">
-                        <input class="form-control input-bb text-right" type="text" value="" id="voucher_amount" name="voucher_amount" readonly>
+                    <div class="row mb-3">
+                        <div class="col-sm-4">
+                            <a class="text-dark col-form-label">No. Voucher</a>
+                        </div>
+                        <div class="col-sm-8">
+                            <input class="form-control input-bb" type="text" value="" id="voucher_no" name="voucher_no" autocomplete="off">
+                        </div>
                     </div>
                 </div>
                 <div class="row mb-3">

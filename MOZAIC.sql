@@ -1,6 +1,6 @@
 /*
 SQLyog Community v13.1.6 (64 bit)
-MySQL - 10.4.19-MariaDB : Database - ciptapro_mozaic_minimarket
+MySQL - 10.4.19-MariaDB : Database - ciptapro_kasihibu_minimarket
 *********************************************************************
 */
 
@@ -12,7 +12,7 @@ MySQL - 10.4.19-MariaDB : Database - ciptapro_mozaic_minimarket
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-USE `ciptapro_mozaic_minimarket`;
+USE `ciptapro_kasihibu_minimarket`;
 
 /*Table structure for table `acct_account` */
 
@@ -602,13 +602,13 @@ CREATE TABLE `core_member` (
 /*Data for the table `core_member` */
 
 insert  into `core_member`(`member_id`,`company_id`,`member_no`,`member_name`,`division_name`,`member_mandatory_savings`,`member_account_receivable_amount`,`member_account_receivable_amount_temp`,`member_account_receivable_status`,`data_state`,`last_update`,`updated_at`,`created_at`) values 
-(1,1,'0920220001','Rudi Anwar','Direksi','30000','373336','0','1',0,'2022-11-03 16:17:04','2022-11-03 16:17:04','2022-11-03 08:31:20'),
-(2,1,'0920220002','Zanita Vagas','Manager','10000','0','0','1',0,'2022-11-03 16:17:04','2022-11-03 16:17:04','2022-11-03 08:31:20'),
-(341,1,'0920220003','Rohan','Manager','10000','-3800','0','0',0,'2022-11-03 16:17:04','2022-11-03 16:17:04','2022-11-03 08:31:20'),
-(343,1,'R00002','Lala','Direksi','10000','0','0','0',0,'2022-11-03 16:17:04','2022-11-03 16:17:04','2022-11-03 08:31:20'),
-(344,1,'000212','Andi','Dokter','10000','0','0','0',0,'2022-11-03 16:17:04','2022-11-03 16:17:04','2022-11-03 08:31:20'),
-(345,1,'09888282','Annie Bockerman','Perawat Nakula/Sadewa -HCU','10000','0','0','0',0,'2022-11-03 16:17:04','2022-11-03 16:17:04','2022-11-03 08:31:20'),
-(346,1,'10000291','Aryani Jenni','Adm Wirata','30000','0','0','0',0,'2022-11-03 16:17:04','2022-11-03 16:17:04','2022-11-03 08:31:20');
+(1,1,'0920220001','Rudi Anwar','Direksi','30000','373336','0','1',0,'2022-11-05 12:50:16','2022-11-05 12:50:16','2022-11-03 08:31:20'),
+(2,1,'0920220002','Zanita Vagas','Manager','10000','0','0','1',0,'2022-11-05 12:50:16','2022-11-05 12:50:16','2022-11-03 08:31:20'),
+(341,1,'0920220003','Rohan','Manager','10000','-3800','0','0',0,'2022-11-05 12:50:16','2022-11-05 12:50:16','2022-11-03 08:31:20'),
+(343,1,'R00002','Lala','Direksi','10000','0','0','0',0,'2022-11-05 12:50:16','2022-11-05 12:50:16','2022-11-03 08:31:20'),
+(344,1,'000212','Andi','Dokter','10000','0','0','0',0,'2022-11-05 12:50:16','2022-11-05 12:50:16','2022-11-03 08:31:20'),
+(345,1,'09888282','Annie Bockerman','Perawat Nakula/Sadewa -HCU','10000','0','0','0',0,'2022-11-05 12:50:16','2022-11-05 12:50:16','2022-11-03 08:31:20'),
+(346,1,'10000291','Aryani Jenni','Adm Wirata','30000','0','0','0',0,'2022-11-05 12:50:16','2022-11-05 12:50:16','2022-11-03 08:31:20');
 
 /*Table structure for table `core_section` */
 
@@ -23832,21 +23832,21 @@ CREATE TABLE `invt_item_stock` (
 /*Data for the table `invt_item_stock` */
 
 insert  into `invt_item_stock`(`item_stock_id`,`company_id`,`warehouse_id`,`item_id`,`item_unit_id`,`item_category_id`,`rack_line`,`rack_column`,`last_balance`,`last_update`,`data_state`,`updated_at`,`updated_id`,`created_at`,`created_id`) values 
-(1,1,1,1,13,2,NULL,NULL,'0','2022-11-03 16:19:36',0,'2022-11-03 16:19:36',56,'2022-11-03 15:30:59',55),
-(2,1,1,2,13,2,NULL,NULL,'0','2022-11-03 14:33:43',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
-(3,1,1,3,3,2,NULL,NULL,'0','2022-11-02 14:07:45',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
-(4,1,1,4,13,2,NULL,NULL,'0','2022-11-02 14:07:46',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
+(1,1,1,1,13,2,NULL,NULL,'-3','2022-11-07 11:15:13',0,'2022-11-07 11:15:13',56,'2022-11-03 15:30:59',55),
+(2,1,1,2,13,2,NULL,NULL,'-3','2022-11-07 11:15:13',0,'2022-11-07 11:15:13',56,'2022-11-03 15:30:59',55),
+(3,1,1,3,3,2,NULL,NULL,'-1','2022-11-07 09:33:03',0,'2022-11-07 09:33:03',56,'2022-11-03 15:30:59',55),
+(4,1,1,4,13,2,NULL,NULL,'-1','2022-11-07 09:33:03',0,'2022-11-07 09:33:03',56,'2022-11-03 15:30:59',55),
 (5,1,1,5,13,2,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
 (6,1,1,6,13,3,NULL,NULL,'0','2022-10-22 11:18:51',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
 (7,1,1,7,13,3,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
 (8,1,1,8,13,3,NULL,NULL,'0','2022-10-22 11:18:52',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
 (9,1,1,9,13,3,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
 (10,1,1,10,13,3,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
-(11,1,1,11,13,2,NULL,NULL,'0','2022-10-19 14:12:19',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
+(11,1,1,11,13,2,NULL,NULL,'-1','2022-11-07 11:21:50',0,'2022-11-07 11:21:50',56,'2022-11-03 15:30:59',55),
 (12,1,1,12,9,2,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
-(13,1,1,13,13,2,NULL,NULL,'0','2022-10-19 14:12:20',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
+(13,1,1,13,13,2,NULL,NULL,'-1','2022-11-07 11:21:49',0,'2022-11-07 11:21:49',56,'2022-11-03 15:30:59',55),
 (14,1,1,14,13,2,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
-(15,1,1,15,13,3,NULL,NULL,'0','2022-09-21 16:29:50',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
+(15,1,1,15,13,3,NULL,NULL,'-1','2022-11-07 11:21:17',0,'2022-11-07 11:21:17',56,'2022-11-03 15:30:59',55),
 (16,1,1,16,13,3,NULL,NULL,'0','2022-11-02 14:07:41',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
 (17,1,1,17,13,3,NULL,NULL,'0','2022-11-02 14:07:41',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
 (18,1,1,18,13,3,NULL,NULL,'0','2022-11-02 14:07:45',0,'2022-11-03 15:30:59',55,'2022-11-03 15:30:59',55),
@@ -28915,7 +28915,7 @@ CREATE TABLE `sales_customer` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`customer_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `sales_customer` */
 
@@ -28949,7 +28949,7 @@ CREATE TABLE `sales_invoice` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`sales_invoice_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `sales_invoice` */
 
@@ -28986,7 +28986,7 @@ CREATE TABLE `sales_invoice_item` (
   CONSTRAINT `FK_sales_invoice_id` FOREIGN KEY (`sales_invoice_id`) REFERENCES `sales_invoice` (`sales_invoice_id`),
   CONSTRAINT `FK_sales_invoice_item` FOREIGN KEY (`item_id`) REFERENCES `invt_item` (`item_id`),
   CONSTRAINT `FK_sales_invoice_unit` FOREIGN KEY (`item_unit_id`) REFERENCES `invt_item_unit` (`item_unit_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=65 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `sales_invoice_item` */
 
@@ -29064,9 +29064,15 @@ CREATE TABLE `system_login_log` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`login_log_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `system_login_log` */
+
+insert  into `system_login_log`(`login_log_id`,`user_id`,`company_id`,`log_time`,`log_status`,`status_upload`,`created_at`,`updated_at`) values 
+(1,56,1,'2022-11-05 10:34:21',0,1,'2022-11-05 10:34:21','2022-11-07 10:41:39'),
+(2,56,1,'2022-11-05 12:03:26',0,1,'2022-11-05 12:03:26','2022-11-07 10:41:39'),
+(3,56,1,'2022-11-07 09:21:07',0,1,'2022-11-07 09:21:07','2022-11-07 10:41:39'),
+(4,56,1,'2022-11-07 09:41:24',0,1,'2022-11-07 09:41:24','2022-11-07 10:41:39');
 
 /*Table structure for table `system_menu` */
 
@@ -29165,7 +29171,7 @@ CREATE TABLE `system_menu_mapping` (
   PRIMARY KEY (`menu_mapping_id`),
   KEY `FK_system_menu_mapping_id_menu` (`id_menu`),
   CONSTRAINT `FK_system_menu_mapping_id_menu` FOREIGN KEY (`id_menu`) REFERENCES `system_menu` (`id_menu`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=103 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `system_menu_mapping` */
 
@@ -29182,7 +29188,8 @@ insert  into `system_menu_mapping`(`menu_mapping_id`,`company_id`,`user_group_le
 (10,1,1,'37',0,'2022-10-19 14:24:00','2022-10-19 14:24:03'),
 (11,1,1,'38',0,'2022-10-19 14:24:07','2022-10-19 14:24:11'),
 (12,1,1,'92',0,'2022-10-19 14:25:28','2022-10-19 14:25:31'),
-(13,1,1,'32',0,'2022-10-20 14:36:46','2022-10-20 14:36:49');
+(13,1,1,'32',0,'2022-10-20 14:36:46','2022-10-20 14:36:49'),
+(102,1,1,'322',0,'2022-11-07 14:12:44','2022-11-07 14:12:49');
 
 /*Table structure for table `system_user` */
 
@@ -29259,6 +29266,681 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 /*Data for the table `users` */
+
+/* Trigger structure for table `acct_journal_voucher` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `insert_acct_journal_voucher` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `insert_acct_journal_voucher` BEFORE INSERT ON `acct_journal_voucher` FOR EACH ROW BEGIN
+	DECLARE year_period 		VARCHAR(20);
+	DECLARE month_period 		VARCHAR(20);
+	DECLARE PERIOD 			VARCHAR(20);
+	DECLARE tPeriod			INT;
+	DECLARE nJournalVoucherNo	VARCHAR(20);
+	DECLARE monthPeriod		VARCHAR(20);
+	
+	SET year_period = (YEAR(new.journal_voucher_date));
+	
+	SET month_period = (SELECT RIGHT(CONCAT('0', MONTH(new.journal_voucher_date)), 2));
+	
+	IF (month_period) = '01' THEN 
+		SET monthPeriod = 'I';
+	END IF;
+	
+	IF (month_period) = '02' THEN 
+		SET monthPeriod = 'II';
+	END IF;
+	
+	IF (month_period) = '03' THEN 
+		SET monthPeriod = 'III';
+	END IF;
+	
+	IF (month_period) = '04' THEN 
+		SET monthPeriod = 'IV';
+	END IF;	
+	
+	IF (month_period) = '05' THEN 
+		SET monthPeriod = 'V';
+	END IF;
+	
+	IF (month_period) = '06' THEN 
+		SET monthPeriod = 'VI';
+	END IF;
+	
+	IF (month_period) = '07' THEN 
+		SET monthPeriod = 'VII';
+	END IF;
+	
+	IF (month_period) = '08' THEN 
+		SET monthPeriod = 'VIII';
+	END IF;
+	
+	IF (month_period) = '09' THEN 
+		SET monthPeriod = 'IX';
+	END IF;
+	
+	IF (month_period) = '10' THEN 
+		SET monthPeriod = 'X';
+	END IF;
+	
+	IF (month_period) = '11' THEN 
+		SET monthPeriod = 'XI';
+	END IF;
+	
+	IF (month_period) = '12' THEN 
+		SET monthPeriod = 'XII';
+	END IF;
+		
+	SET PERIOD = (SELECT LEFT(TRIM(journal_voucher_no), 4) 
+			FROM acct_journal_voucher
+			WHERE RIGHT(TRIM(journal_voucher_no), 4) = year_period
+			ORDER BY journal_voucher_id DESC 
+			LIMIT 1);
+		
+	IF (PERIOD IS NULL ) THEN 
+		SET PERIOD = "0000";
+	END IF;
+	
+	SET tPeriod = CAST(PERIOD AS DECIMAL(10));
+	
+	SET tPeriod = tPeriod + 1;
+	
+	SET PERIOD = RIGHT(CONCAT('0000', TRIM(CAST(tPeriod AS CHAR(4)))), 4);
+	
+	SET nJournalVoucherNo = CONCAT(PERIOD, '/JV/', monthPeriod, '/', year_period);
+		
+	SET new.journal_voucher_no = nJournalVoucherNo;
+    END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `acct_journal_voucher_item` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `insert_acct_journal_voucher_item` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `insert_acct_journal_voucher_item` BEFORE INSERT ON `acct_journal_voucher_item` FOR EACH ROW BEGIN
+	DECLARE nAccountIDDefaultStatus		DECIMAL(1);
+	
+	DECLARE nAccountID		INT(10);
+	DECLARE nBranchID		INT(10);
+	DECLARE nOpeningBalance		DECIMAL(20);
+	DECLARE nLastBalance		DECIMAL(20);
+	DECLARE nTransactionType	DECIMAL(10);
+	DECLARE nTransactionCode	VARCHAR(20);
+	DECLARE nTransactionID		INT(10);
+	DECLARE nTransactionDate	DATE;
+	DECLARE nAccountIn		DECIMAL(20);
+	DECLARE nAccountOut		DECIMAL(20);
+	DECLARE nCreatedId		INT(10);
+	
+	
+	set nCreatedId			= (SELECT created_id FROM acct_journal_voucher
+						WHERE journal_voucher_id = new.journal_voucher_id);
+	
+	SET nBranchID 			= (SELECT company_id FROM acct_journal_voucher
+						WHERE journal_voucher_id = new.journal_voucher_id);
+						
+	SET nOpeningBalance 		= (SELECT last_balance FROM acct_account_balance
+						WHERE company_id = nBranchID
+						AND account_id = new.account_id);
+						
+	IF ( nOpeningBalance IS NULL ) THEN
+		SET nOpeningBalance = 0;
+	END IF;
+				
+	SET nAccountIDDefaultStatus 	= (SELECT account_default_status FROM acct_account 
+						WHERE account_id = new.account_id);
+						
+	IF (new.account_id_status = nAccountIDDefaultStatus) THEN
+		SET nLastBalance 	= nOpeningBalance + new.journal_voucher_amount;
+		SET nAccountIn 		= new.journal_voucher_amount;
+		SET nAccountOut		= 0;
+	ELSE
+		SET nLastBalance 	= nOpeningBalance - new.journal_voucher_amount;
+		SET nAccountIn 		= 0;
+		SET nAccountOut		= new.journal_voucher_amount;
+	END IF; 
+	
+	SET nAccountID 			= (SELECT account_id FROM acct_account_balance 
+						WHERE company_id = nBranchID
+						AND account_id = new.account_id);
+	
+	IF (nAccountID IS NULL) THEN
+		INSERT INTO acct_account_balance (company_id, account_id, last_balance, created_id) VALUES (nBranchID, new.account_id, nLastBalance, nCreatedId);
+	ELSE 
+		UPDATE acct_account_balance SET last_balance = nLastBalance
+			WHERE account_id = new.account_id
+			AND company_id = nBranchID;
+	END IF;
+	
+		
+	SET nTransactionType 		= (SELECT transaction_module_id FROM acct_journal_voucher WHERE journal_voucher_id = new.journal_voucher_id);
+		
+	SET nTransactionCode 		= (SELECT transaction_module_code FROM acct_journal_voucher WHERE journal_voucher_id = new.journal_voucher_id);
+	
+	SET nTransactionID 		= new.journal_voucher_id;
+		
+	SET nTransactionDate 		= (SELECT journal_voucher_date FROM acct_journal_voucher WHERE journal_voucher_id = new.journal_voucher_id);
+		
+	INSERT INTO acct_account_balance_detail (company_id, transaction_type, transaction_code, transaction_id, transaction_date, 
+		account_id, opening_balance, account_in, account_out, last_balance, created_id)
+		VALUES (nBranchID, nTransactionType, nTransactionCode, nTransactionID, nTransactionDate, 
+			new.account_id, nOpeningBalance, nAccountIn, nAccountOut, nLastBalance, nCreatedId);
+    END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `acct_journal_voucher_item` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `update_acct_journal_voucher_item` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `update_acct_journal_voucher_item` BEFORE UPDATE ON `acct_journal_voucher_item` FOR EACH ROW BEGIN
+	DECLARE nAccountIDDefaultStatus		DECIMAL(1);
+	
+	DECLARE nAccountID			INT(10);
+	DECLARE nBranchID			INT(10);
+	DECLARE nOpeningBalance			DECIMAL(20);
+	DECLARE nLastBalance			DECIMAL(20);
+	DECLARE nTransactionType		DECIMAL(10);
+	DECLARE nTransactionCode		VARCHAR(20);
+	DECLARE nTransactionID			INT(10);
+	DECLARE nTransactionDate		DATE;
+	DECLARE nAccountIn			DECIMAL(20);
+	DECLARE nAccountOut			DECIMAL(20);
+	
+	IF (new.data_state = 2) THEN 
+		SET nBranchID 			= (SELECT company_id FROM acct_journal_voucher
+						WHERE journal_voucher_id = new.journal_voucher_id);
+						
+		SET nOpeningBalance 		= (SELECT last_balance FROM acct_account_balance
+						WHERE company_id = nBranchID
+						AND account_id = new.account_id);
+							
+		IF ( nOpeningBalance IS NULL ) THEN
+			SET nOpeningBalance = 0;
+		END IF;
+					
+		SET nAccountIDDefaultStatus 	= (SELECT account_default_status FROM acct_account 
+							WHERE account_id = new.account_id);
+							
+		IF (new.account_id_status = nAccountIDDefaultStatus) THEN
+			SET nLastBalance 	= nOpeningBalance - new.journal_voucher_amount;
+			SET nAccountOut 	= new.journal_voucher_amount;
+			SET nAccountIn		= 0;
+		ELSE
+			SET nLastBalance 	= nOpeningBalance + new.journal_voucher_amount;
+			SET nAccountOut 	= 0;
+			SET nAccountIn		= new.journal_voucher_amount;
+		END IF; 
+			
+		SET nAccountID 			= (SELECT account_id FROM acct_account_balance 
+						WHERE company_id = nBranchID
+						AND account_id = new.account_id);
+		
+		IF (nAccountID IS NULL) THEN
+			INSERT INTO acct_account_balance (company_id, account_id, last_balance) VALUES (nBranchID, new.account_id, nLastBalance);
+		ELSE 
+			UPDATE acct_account_balance SET last_balance = nLastBalance
+				WHERE account_id = new.account_id
+				AND branch_id = nBranchID;
+		END IF;
+		
+			
+		SET nTransactionType 		= (SELECT transaction_module_id FROM acct_journal_voucher WHERE journal_voucher_id = new.journal_voucher_id);
+			
+		SET nTransactionCode 		= (SELECT transaction_module_code FROM acct_journal_voucher WHERE journal_voucher_id = new.journal_voucher_id);
+		
+		SET nTransactionID 		= new.journal_voucher_id;
+			
+		SET nTransactionDate 		= (SELECT journal_voucher_date FROM acct_journal_voucher WHERE journal_voucher_id = new.journal_voucher_id);
+			
+		INSERT INTO acct_account_balance_detail (company_id, transaction_type, transaction_code, transaction_id, transaction_date, 
+			account_id, opening_balance, account_in, account_out, last_balance)
+			VALUES (nBranchID, nTransactionType, nTransactionCode, nTransactionID, nTransactionDate, 
+				new.account_id, nOpeningBalance, nAccountIn, nAccountOut, nLastBalance);
+	END IF;
+    END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `purchase_invoice` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `insert_purchase_invoice` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `insert_purchase_invoice` BEFORE INSERT ON `purchase_invoice` FOR EACH ROW BEGIN
+	DECLARE year_period 		VARCHAR(20);
+	DECLARE month_period 		VARCHAR(20);
+	DECLARE PERIOD 			VARCHAR(20);
+	DECLARE tPeriod			INT;
+	DECLARE nPurchaseInvoiceNo	VARCHAR(20);
+	DECLARE monthPeriod		VARCHAR(20);
+	DECLARE lenPurchaseInvoiceNo	DECIMAL(10);
+	declare nLastBalance		varchar(225);
+	declare nOpeningBalance		varchar(225);
+	
+	SET year_period = (YEAR(new.purchase_invoice_date));
+	
+	SET month_period = (SELECT RIGHT(CONCAT('0', MONTH(new.purchase_invoice_date)), 2));
+	
+	IF (month_period) = '01' THEN 
+		SET monthPeriod = 'I';
+	END IF;
+	
+	IF (month_period) = '02' THEN 
+		SET monthPeriod = 'II';
+	END IF;
+	
+	IF (month_period) = '03' THEN 
+		SET monthPeriod = 'III';
+	END IF;
+	
+	IF (month_period) = '04' THEN 
+		SET monthPeriod = 'IV';
+	END IF;	
+	
+	IF (month_period) = '05' THEN 
+		SET monthPeriod = 'V';
+	END IF;
+	
+	IF (month_period) = '06' THEN 
+		SET monthPeriod = 'VI';
+	END IF;
+	
+	IF (month_period) = '07' THEN 
+		SET monthPeriod = 'VII';
+	END IF;
+	
+	IF (month_period) = '08' THEN 
+		SET monthPeriod = 'VIII';
+	END IF;
+	
+	IF (month_period) = '09' THEN 
+		SET monthPeriod = 'IX';
+	END IF;
+	
+	IF (month_period) = '10' THEN 
+		SET monthPeriod = 'X';
+	END IF;
+	
+	IF (month_period) = '11' THEN 
+		SET monthPeriod = 'XI';
+	END IF;
+	
+	IF (month_period) = '12' THEN 
+		SET monthPeriod = 'XII';
+	END IF;
+		
+	SET PERIOD = (SELECT LEFT(TRIM(purchase_invoice_no), 4) 
+			FROM purchase_invoice
+			WHERE RIGHT(TRIM(purchase_invoice_no), 4) = year_period
+			ORDER BY purchase_invoice_id DESC 
+			LIMIT 1);
+		
+	IF (PERIOD IS NULL ) THEN 
+		SET PERIOD = "0000";
+	END IF;
+	
+	SET tPeriod = CAST(PERIOD AS DECIMAL(10));
+	
+	SET tPeriod = tPeriod + 1;
+	
+	SET PERIOD = RIGHT(CONCAT('0000', TRIM(CAST(tPeriod AS CHAR(4)))), 4);
+	
+	SET nPurchaseInvoiceNo = CONCAT(PERIOD, '/PI/', monthPeriod, '/', year_period);
+		
+	SET new.purchase_invoice_no = nPurchaseInvoiceNo;
+	
+	SET nOpeningBalance 		= (SELECT last_balance FROM acct_supplier_balance
+						WHERE company_id = new.company_id
+						AND supplier_id = new.supplier_id
+						order by supplier_balance_id desc
+						limit 1);
+						
+	IF ( nOpeningBalance IS NULL ) THEN
+		SET nOpeningBalance = 0;
+	END IF;
+	
+	if (new.purchase_payment_method = '1') then
+		set nLastBalance = nOpeningBalance - new.total_amount;
+		insert into acct_supplier_balance (company_id, supplier_id, supplier_balance_remark, transaction_no, supplier_balance_date, opening_balance, payable_amount, payment_amount, last_balance, created_id, updated_id, created_at, updated_at)
+		values (new.company_id, new.supplier_id, 'Pembelian', nPurchaseInvoiceNo, new.purchase_invoice_date, nOpeningBalance, new.total_amount, 0, nLastBalance, new.created_id, new.updated_id, new.created_at, new.updated_at);
+	end if;
+    END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `purchase_payment` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `insert_purchase_payment` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `insert_purchase_payment` BEFORE INSERT ON `purchase_payment` FOR EACH ROW BEGIN
+	DECLARE year_period 		VARCHAR(20);
+	DECLARE month_period 		VARCHAR(20);
+	DECLARE PERIOD 			VARCHAR(20);
+	DECLARE tPeriod			INT;
+	DECLARE nPurchasePaymentNo	VARCHAR(20);
+	DECLARE monthPeriod		VARCHAR(20);
+	DECLARE lenPurchasePaymentNo	DECIMAL(10);
+	DECLARE nLastBalance		VARCHAR(225);
+	DECLARE nOpeningBalance		VARCHAR(225);
+	
+	SET year_period = (YEAR(new.payment_date));
+	
+	SET month_period = (SELECT RIGHT(CONCAT('0', MONTH(new.payment_date)), 2));
+	
+	IF (month_period) = '01' THEN 
+		SET monthPeriod = 'I';
+	END IF;
+	
+	IF (month_period) = '02' THEN 
+		SET monthPeriod = 'II';
+	END IF;
+	
+	IF (month_period) = '03' THEN 
+		SET monthPeriod = 'III';
+	END IF;
+	
+	IF (month_period) = '04' THEN 
+		SET monthPeriod = 'IV';
+	END IF;	
+	
+	IF (month_period) = '05' THEN 
+		SET monthPeriod = 'V';
+	END IF;
+	
+	IF (month_period) = '06' THEN 
+		SET monthPeriod = 'VI';
+	END IF;
+	
+	IF (month_period) = '07' THEN 
+		SET monthPeriod = 'VII';
+	END IF;
+	
+	IF (month_period) = '08' THEN 
+		SET monthPeriod = 'VIII';
+	END IF;
+	
+	IF (month_period) = '09' THEN 
+		SET monthPeriod = 'IX';
+	END IF;
+	
+	IF (month_period) = '10' THEN 
+		SET monthPeriod = 'X';
+	END IF;
+	
+	IF (month_period) = '11' THEN 
+		SET monthPeriod = 'XI';
+	END IF;
+	
+	IF (month_period) = '12' THEN 
+		SET monthPeriod = 'XII';
+	END IF;
+		
+	SET PERIOD = (SELECT LEFT(TRIM(payment_no), 4) 
+			FROM purchase_payment
+			WHERE RIGHT(TRIM(payment_no), 4) = year_period
+			ORDER BY payment_id DESC 
+			LIMIT 1);
+		
+	IF (PERIOD IS NULL ) THEN 
+		SET PERIOD = "0000";
+	END IF;
+	
+	SET tPeriod = CAST(PERIOD AS DECIMAL(10));
+	
+	SET tPeriod = tPeriod + 1;
+	
+	SET PERIOD = RIGHT(CONCAT('0000', TRIM(CAST(tPeriod AS CHAR(4)))), 4);
+	
+	SET nPurchasePaymentNo = CONCAT(PERIOD, '/PO/', monthPeriod, '/', year_period);
+		
+	SET new.payment_no = nPurchasePaymentNo;
+	
+	SET nOpeningBalance 		= (SELECT last_balance FROM acct_supplier_balance
+						WHERE company_id = new.company_id
+						AND supplier_id = new.supplier_id
+						ORDER BY supplier_balance_id DESC
+						LIMIT 1);
+						
+	IF ( nOpeningBalance IS NULL ) THEN
+		SET nOpeningBalance = 0;
+	END IF;
+	
+	SET nLastBalance = nOpeningBalance + new.payment_allocated;
+	
+	INSERT INTO acct_supplier_balance (company_id, supplier_id, supplier_balance_remark, transaction_no, supplier_balance_date, opening_balance, payable_amount, payment_amount, last_balance, created_id, updated_id, created_at, updated_at)
+		VALUES (new.company_id, new.supplier_id, 'Pembayaran Hutang', nPurchasePaymentNo, new.payment_date, nOpeningBalance, 0, new.payment_allocated, nLastBalance, new.created_id, new.updated_id, new.created_at, new.updated_at);
+    END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `purchase_payment` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `update_purchase_payment` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `update_purchase_payment` BEFORE UPDATE ON `purchase_payment` FOR EACH ROW BEGIN
+	DECLARE nLastBalance		VARCHAR(225);
+	DECLARE nOpeningBalance		VARCHAR(225);
+	
+	SET nOpeningBalance 		= (SELECT last_balance FROM acct_supplier_balance
+						WHERE company_id = new.company_id 
+						and transaction_no = new.payment_no
+						AND supplier_id = new.supplier_id
+						ORDER BY supplier_balance_id DESC
+						LIMIT 1);
+						
+	IF ( nOpeningBalance IS NULL ) THEN
+		SET nOpeningBalance = 0;
+	END IF;
+	
+	SET nLastBalance = nOpeningBalance - new.payment_allocated;
+	if (new.data_state = 2) then
+		INSERT INTO acct_supplier_balance (company_id, supplier_id, supplier_balance_remark, transaction_no, supplier_balance_date, opening_balance, payable_amount, payment_amount, last_balance, created_id, updated_id, created_at, updated_at, data_state)
+		VALUES (new.company_id, new.supplier_id, 'Hapus Pembayaran Hutang', new.payment_no, new.payment_date, nOpeningBalance, 0, new.payment_allocated, nLastBalance, new.created_id, new.updated_id, new.created_at, new.updated_at, 2);
+	end if;
+    END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `purchase_return` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `insert_purchase_return` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `insert_purchase_return` BEFORE INSERT ON `purchase_return` FOR EACH ROW BEGIN
+	DECLARE year_period 		VARCHAR(20);
+	DECLARE month_period 		VARCHAR(20);
+	DECLARE PERIOD 			VARCHAR(20);
+	DECLARE tPeriod			INT;
+	DECLARE nSalesInvoiceNo		VARCHAR(20);
+	DECLARE monthPeriod		VARCHAR(20);
+	DECLARE lenSalesInvoiceNo	DECIMAL(10);
+	
+	SET year_period = (YEAR(new.purchase_return_date));
+	
+	SET month_period = (SELECT RIGHT(CONCAT('0', MONTH(new.purchase_return_date)), 2));
+	
+	IF (month_period) = '01' THEN 
+		SET monthPeriod = 'I';
+	END IF;
+	
+	IF (month_period) = '02' THEN 
+		SET monthPeriod = 'II';
+	END IF;
+	
+	IF (month_period) = '03' THEN 
+		SET monthPeriod = 'III';
+	END IF;
+	
+	IF (month_period) = '04' THEN 
+		SET monthPeriod = 'IV';
+	END IF;	
+	
+	IF (month_period) = '05' THEN 
+		SET monthPeriod = 'V';
+	END IF;
+	
+	IF (month_period) = '06' THEN 
+		SET monthPeriod = 'VI';
+	END IF;
+	
+	IF (month_period) = '07' THEN 
+		SET monthPeriod = 'VII';
+	END IF;
+	
+	IF (month_period) = '08' THEN 
+		SET monthPeriod = 'VIII';
+	END IF;
+	
+	IF (month_period) = '09' THEN 
+		SET monthPeriod = 'IX';
+	END IF;
+	
+	IF (month_period) = '10' THEN 
+		SET monthPeriod = 'X';
+	END IF;
+	
+	IF (month_period) = '11' THEN 
+		SET monthPeriod = 'XI';
+	END IF;
+	
+	IF (month_period) = '12' THEN 
+		SET monthPeriod = 'XII';
+	END IF;
+		
+	SET PERIOD = (SELECT LEFT(TRIM(purchase_return_no), 4) 
+			FROM purchase_return
+			WHERE RIGHT(TRIM(purchase_return_no), 4) = year_period
+			ORDER BY purchase_return_id DESC 
+			LIMIT 1);
+		
+	IF (PERIOD IS NULL ) THEN 
+		SET PERIOD = "0000";
+	END IF;
+	
+	SET tPeriod = CAST(PERIOD AS DECIMAL(10));
+	
+	SET tPeriod = tPeriod + 1;
+	
+	SET PERIOD = RIGHT(CONCAT('0000', TRIM(CAST(tPeriod AS CHAR(4)))), 4);
+	
+	SET nSalesInvoiceNo = CONCAT(PERIOD, '/PR/', monthPeriod, '/', year_period);
+		
+	SET new.purchase_return_no = nSalesInvoiceNo;
+    END */$$
+
+
+DELIMITER ;
+
+/* Trigger structure for table `sales_invoice` */
+
+DELIMITER $$
+
+/*!50003 DROP TRIGGER*//*!50032 IF EXISTS */ /*!50003 `insert_sales_invoice` */$$
+
+/*!50003 CREATE */ /*!50017 DEFINER = 'root'@'localhost' */ /*!50003 TRIGGER `insert_sales_invoice` BEFORE INSERT ON `sales_invoice` FOR EACH ROW BEGIN
+	DECLARE year_period 		VARCHAR(20);
+	DECLARE month_period 		VARCHAR(20);
+	DECLARE PERIOD 			VARCHAR(20);
+	DECLARE tPeriod			INT;
+	DECLARE nSalesInvoiceNo		VARCHAR(20);
+	DECLARE monthPeriod		VARCHAR(20);
+	DECLARE lenSalesInvoiceNo	DECIMAL(10);
+	
+	SET year_period = (YEAR(new.sales_invoice_date));
+	
+	SET month_period = (SELECT RIGHT(CONCAT('0', MONTH(new.sales_invoice_date)), 2));
+	
+	IF (month_period) = '01' THEN 
+		SET monthPeriod = 'I';
+	END IF;
+	
+	IF (month_period) = '02' THEN 
+		SET monthPeriod = 'II';
+	END IF;
+	
+	IF (month_period) = '03' THEN 
+		SET monthPeriod = 'III';
+	END IF;
+	
+	IF (month_period) = '04' THEN 
+		SET monthPeriod = 'IV';
+	END IF;	
+	
+	IF (month_period) = '05' THEN 
+		SET monthPeriod = 'V';
+	END IF;
+	
+	IF (month_period) = '06' THEN 
+		SET monthPeriod = 'VI';
+	END IF;
+	
+	IF (month_period) = '07' THEN 
+		SET monthPeriod = 'VII';
+	END IF;
+	
+	IF (month_period) = '08' THEN 
+		SET monthPeriod = 'VIII';
+	END IF;
+	
+	IF (month_period) = '09' THEN 
+		SET monthPeriod = 'IX';
+	END IF;
+	
+	IF (month_period) = '10' THEN 
+		SET monthPeriod = 'X';
+	END IF;
+	
+	IF (month_period) = '11' THEN 
+		SET monthPeriod = 'XI';
+	END IF;
+	
+	IF (month_period) = '12' THEN 
+		SET monthPeriod = 'XII';
+	END IF;
+		
+	SET PERIOD = (SELECT LEFT(TRIM(sales_invoice_no), 4) 
+			FROM sales_invoice
+			WHERE RIGHT(TRIM(sales_invoice_no), 4) = year_period
+			ORDER BY sales_invoice_id DESC 
+			LIMIT 1);
+		
+	IF (PERIOD IS NULL ) THEN 
+		SET PERIOD = "0000";
+	END IF;
+	
+	SET tPeriod = CAST(PERIOD AS DECIMAL(10));
+	
+	SET tPeriod = tPeriod + 1;
+	
+	SET PERIOD = RIGHT(CONCAT('0000', TRIM(CAST(tPeriod AS CHAR(4)))), 4);
+	
+	SET nSalesInvoiceNo = CONCAT(PERIOD, '/SI/', monthPeriod, '/', year_period);
+		
+	SET new.sales_invoice_no = nSalesInvoiceNo;
+    END */$$
+
+
+DELIMITER ;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

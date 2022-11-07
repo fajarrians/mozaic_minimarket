@@ -391,16 +391,19 @@ class InvtStockAdjustmentReportController extends Controller
                 <td width=\"5%\" ><div style=\"text-align: center; font-weight: bold\">No</div></td>
                 <td width=\"12%\" ><div style=\"text-align: center; font-weight: bold\">Nama Kategori</div></td>
                 <td width=\"26%\" ><div style=\"text-align: center; font-weight: bold\">Nama Barang</div></td>
-                <td width=\"12%\" ><div style=\"text-align: center; font-weight: bold\">Nama Satuan</div></td>
-                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Rak</div></td>
+                <td width=\"9%\" ><div style=\"text-align: center; font-weight: bold\">Satuan</div></td>
+                <td width=\"8%\" ><div style=\"text-align: center; font-weight: bold\">Rak</div></td>
                 <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Stok Sistem</div></td>
-                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Harga</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Harga Jual</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Harga Beli</div></td>
                 <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Jumlah</div></td>
             </tr>
         
              ";
 
         $no = 1;
+        $total_stock = 0;
+        $total_amount = 0;
         $tblStock2 =" ";
         foreach ($data as $key => $val) {
 
@@ -411,16 +414,28 @@ class InvtStockAdjustmentReportController extends Controller
                     <td>".$this->getItemName($val['item_id'])."</td>
                     <td>".$this->getItemUnitName($val['item_unit_id'])."</td>
                     <td>".$this->getRackName($val['rack_column']).' | '.$this->getRackName($val['rack_line'])."</td>
-                    <td style=\"text-align:center\">".$this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id'])."</td>
+                    <td style=\"text-align:right\">".$this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id'])."</td>
+                    <td style=\"text-align:right\">".number_format($val['item_unit_price'],2,'.',',')."</td>
                     <td style=\"text-align:right\">".number_format($val['item_unit_cost'],2,'.',',')."</td>
                     <td style=\"text-align:right\">".number_format(($val['item_unit_cost'] * $this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id'])),2,'.',',')."</td>
                 </tr>
                 
             ";
             $no++;
+            $total_stock += $this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id']);
+            $total_amount += $val['item_unit_cost'] * ($this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id']));
         }
         $tblStock3 = " 
-
+        <tr>
+            <td colspan=\"5\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". $total_stock ."</div></td>
+            <td colspan=\"3\" style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($total_amount,2,'.',',') ."</div></td>
+        </tr>
+        </table>
+        <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
+            <tr>
+                <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
+            </tr>
         </table>";
 
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');
@@ -539,6 +554,8 @@ class InvtStockAdjustmentReportController extends Controller
             $sheet->setCellValue('I7',"Jumlah");
             
             $j=8;
+            $total_stock = 0;
+            $total_amount = 0;
             $no=0;
             
             foreach($data as $key=>$val){
@@ -566,16 +583,34 @@ class InvtStockAdjustmentReportController extends Controller
                     $sheet->setCellValue('E'.$j, $this->getItemUnitName($val['item_unit_id']));
                     $sheet->setCellValue('F'.$j, $this->getRackName($val['rack_column']).' | '.$this->getRackName($val['rack_line']));
                     $sheet->setCellValue('G'.$j, $this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id']));
-                    $sheet->setCellValue('H'.$j, number_format($val['item_unit_cost'],2,'.',','));
-                    $sheet->setCellValue('I'.$j, number_format(($val['item_unit_cost'] * $this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id'])),2,'.',','));
+                    $sheet->setCellValue('H'.$j, $val['item_unit_cost']);
+                    $sheet->setCellValue('I'.$j, ($val['item_unit_cost'] * $this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id'])));
                           
                     
                 }else{
                     continue;
                 }
                 $j++;
+                $total_stock += $this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id']);
+                $total_amount += $val['item_unit_cost'] * ($this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id']));
         
             }
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':F'.$j);
+            $spreadsheet->getActiveSheet()->mergeCells('H'.$j.':I'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':I'.$j)->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('H'.$j)->getNumberFormat()->setFormatCode('0.00');
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':I'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->getStyle('G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('H'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, 'TOTAL');
+            $sheet->setCellValue('G'.$j, $total_stock);
+            $sheet->setCellValue('H'.$j, $total_amount);
+
+            $j++;
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':I'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
             
             $filename='Laporan_Stok.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -700,7 +735,7 @@ class InvtStockAdjustmentReportController extends Controller
 
         $arrData = $data_item;
         $arrData = $arrData->skip($start)->take($rowPerPage);
-        $arrData = $arrData->orderBy('invt_item.'.$columnName,$columnSortOrder);
+        $arrData = $arrData->orderBy($columnName,$columnSortOrder);
 
         if (!empty($searchValue)) {
             $arrData = $arrData->where('invt_item.item_name','like','%'.$searchValue.'%');
@@ -719,7 +754,7 @@ class InvtStockAdjustmentReportController extends Controller
             $row['item_category_name']    = $val['item_category_name'];
             $row['item_name']             = $val['item_name'];
             $row['item_unit_name']      = $val['item_unit_name'];
-            $row['total_stock']         = $this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id']);
+            $row['total_stock']         = "<div class='text-right'>".$this->getStock($val['item_id'],$val['item_category_id'],$val['item_unit_id'],$val['warehouse_id'])."</div>";
             $row['rack_name']           = "".$this->getRackName($val['rack_column'])." | ".$this->getRackName($val['rack_line'])."";
             $row['action']              = "<div class='text-center'><a type='button' href='".url('stock-adjustment-report/edit-rack/'.$val['item_stock_id'])."' class='btn btn-sm btn-outline-warning'>Daftar Rak</a></div>";
 

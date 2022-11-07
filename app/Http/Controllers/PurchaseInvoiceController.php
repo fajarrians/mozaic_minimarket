@@ -508,4 +508,28 @@ class PurchaseInvoiceController extends Controller
 
         return $data['supplier_name'];
     }
+
+    public function processChangeCostPurchaseInvoice(Request $request)
+    {
+        $data = InvtItemPackge::where('data_state',0)
+        ->where('company_id', Auth::user()->company_id)
+        ->where('item_category_id', $request->item_category_id)
+        ->where('item_unit_id', $request->item_unit_id)
+        ->where('item_id', $request->item_id)
+        ->first();
+
+        $table                      = InvtItemPackge::findOrFail($data['item_packge_id']);
+        $table->margin_percentage   = $request->margin_percentage;
+        $table->item_unit_cost      = $request->item_cost_new;
+        $table->item_unit_price     = $request->item_price_new;
+        $table->updated_id          = Auth::id();
+
+        if ($table->save()) {
+            $msg = 'Ubah Harga Barang Berhasil';
+            return redirect('/purchase-invoice/add')->with('msg',$msg);
+        } else {
+            $msg = 'Ubah Harga Barang Gagal';
+            return redirect('/purchase-invoice/add')->with('msg',$msg);
+        }
+    }
 }

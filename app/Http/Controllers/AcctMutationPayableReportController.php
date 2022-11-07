@@ -205,7 +205,11 @@ class AcctMutationPayableReportController extends Controller
         ->orderBy('supplier_balance_id', 'DESC')
         ->first();
 
-        return $data['last_balance'];
+        if (!empty($data)) {
+            return $data['last_balance'];
+        } else {
+            return 0;
+        }
     }
     
     public function printMutationPayableReport()
@@ -402,10 +406,10 @@ class AcctMutationPayableReportController extends Controller
                         $no++;
                         $sheet->setCellValue('B'.$j, $no);
                         $sheet->setCellValue('C'.$j, $val['supplier_name']);
-                        $sheet->setCellValue('D'.$j, number_format($this->getOpeningBalance($val['supplier_id']),2,'.',','));
-                        $sheet->setCellValue('E'.$j, number_format($this->getPayableAmount($val['supplier_id']),2,'.',','));
-                        $sheet->setCellValue('F'.$j, number_format($this->getPaymentAmount($val['supplier_id']),2,'.',','));
-                        $sheet->setCellValue('G'.$j, number_format($this->getLastBalance($val['supplier_id']),2,'.',','));
+                        $sheet->setCellValue('D'.$j, $this->getOpeningBalance($val['supplier_id']));
+                        $sheet->setCellValue('E'.$j, $this->getPayableAmount($val['supplier_id']));
+                        $sheet->setCellValue('F'.$j, $this->getPaymentAmount($val['supplier_id']));
+                        $sheet->setCellValue('G'.$j, $this->getLastBalance($val['supplier_id']));
                 }
                 $j++;
                 $totalOpeningBalance += $this->getOpeningBalance($val['supplier_id']);
@@ -420,10 +424,10 @@ class AcctMutationPayableReportController extends Controller
             $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $spreadsheet->getActiveSheet()->getStyle('D'.$j.':G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('B'.$j, 'Total');
-            $sheet->setCellValue('D'.$j, number_format($totalOpeningBalance,2,'.',','));
-            $sheet->setCellValue('E'.$j, number_format($totalPayable,2,'.',','));
-            $sheet->setCellValue('F'.$j, number_format($totalPayment,2,'.',','));
-            $sheet->setCellValue('G'.$j, number_format($totalLastBalance,2,'.',','));
+            $sheet->setCellValue('D'.$j, $totalOpeningBalance);
+            $sheet->setCellValue('E'.$j, $totalPayable);
+            $sheet->setCellValue('F'.$j, $totalPayment);
+            $sheet->setCellValue('G'.$j, $totalLastBalance);
 
             $j++;
             $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':G'.$j);

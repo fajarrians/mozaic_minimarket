@@ -113,15 +113,16 @@
             <table id="example" style="width:100%" class="table table-striped table-bordered table-hover table-full-width">
                 <thead>
                     <tr>
-                        <th style='text-align:center'>No</th>
-                        <th  style='text-align:center'>Nama Pemasok</th>
-                        <th  style='text-align:center'>Nama Gudang</th>
-                        <th  style='text-align:center'>Nama Barang</th>
-                        <th  style='text-align:center'>Tanggal Pembelian</th>
-                        <th  style='text-align:center'>Satuan</th>
-                        <th  style='text-align:center'>Quantity</th>
-                        <th  style='text-align:center'>Harga / Satuan</th>
-                        <th style='text-align:center'>Jumlah Total</th>
+                        <th style='text-align:center; width: 5%'>No</th>
+                        <th style='text-align:center; width: %'>Nama Pemasok</th>
+                        <th style='text-align:center; width: %'>Nama Gudang</th>
+                        <th style='text-align:center; width: %'>No. Pembelian</th>
+                        <th style='text-align:center; width: %'>Tanggal</th>
+                        <th style='text-align:center; width: %'>Jumlah Barang</th>
+                        <th style='text-align:center; width: %'>Subtotal</th>
+                        <th style='text-align:center; width: %'>Diskon</th>
+                        <th style='text-align:center; width: %'>PPN</th>
+                        <th style='text-align:center; width: %'>Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -131,12 +132,13 @@
                             <td class="text-center">{{ $no++ }}.</td>
                             <td>{{ $PIRC->getSupplierName($row['supplier_id']) }}</td>
                             <td>{{ $PIRC->getWarehouseName($row['warehouse_id']) }}</td>
-                            <td>{{ $PIRC->getItemName($row['item_id']) }}</td>
+                            <td>{{ $row['purchase_invoice_no'] }}</td>
                             <td>{{ date('d-m-Y', strtotime($row['purchase_invoice_date'])) }}</td>
-                            <td>{{ $PIRC->getUnitName($row['item_unit_id']) }}</td>
-                            <td style="text-align: right">{{ $row['quantity'] }}</td>
-                            <td style="text-align: right">{{ number_format($row['item_unit_cost'],2,'.',',') }}</td>
-                            <td style="text-align: right">{{ number_format($row['subtotal_amount_after_discount'],2,'.',',') }}</td>
+                            <td style="text-align: right">{{ $row['subtotal_item'] }}</td>
+                            <td style="text-align: right">{{ number_format($row['subtotal_amount_total'],2,'.',',') }}</td>
+                            <td style="text-align: right">{{ number_format($row['discount_amount_total'],2,'.',',') }}</td>
+                            <td style="text-align: right">{{ number_format($row['tax_ppn_amount'],2,'.',',') }}</td>
+                            <td style="text-align: right">{{ number_format($row['total_amount'],2,'.',',') }}</td>
                         </tr>
                     @endforeach
                 </tbody>

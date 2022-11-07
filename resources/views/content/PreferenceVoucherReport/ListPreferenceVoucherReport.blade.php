@@ -1,28 +1,25 @@
-@inject('SIBURC','App\Http\Controllers\SalesInvoicebyUserReportController' )
+@inject('PVRC','App\Http\Controllers\PreferenceVoucherReportController' )
 
 @extends('adminlte::page')
 
 @section('title', 'MOZAIC Minimarket')
 @section('js')
-<script>
-    function reset_add(){
-		$.ajax({
-				type: "GET",
-				url : "{{route('filter-reset-sales-invoice-by-user-report')}}",
-				success: function(msg){
-                    location.reload();
-			}
-
-		});
-	}
-</script>
-@stop
+    <script>
+        $(document).ready(function(){
+            var voucher_id = {!! json_encode($voucher_id) !!} 
+            console.log(voucher_id);
+            if (voucher_id == '') {
+                $('#voucher_id').select2('val', ' ');
+            }
+        });
+    </script>
+@endsection
 @section('content_header')
     
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{{ url('home') }}">Beranda</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Laporan Penjualan Barang By User</li>
+      <li class="breadcrumb-item active" aria-current="page">Laporan Voucher</li>
     </ol>
 </nav>
 
@@ -31,11 +28,16 @@
 @section('content')
 
 <h3 class="page-title">
-    <b>Laporan Penjualan Barang By User</b>
+    <b>Laporan Voucher</b>
 </h3>
 <br/>
+@if(session('msg'))
+<div class="alert alert-info" role="alert">
+    {{session('msg')}}
+</div>
+@endif 
 <div id="accordion">
-    <form  method="post" action="{{ route('filter-sales-invoice-by-user-report') }}" enctype="multipart/form-data">
+    <form  method="post" action="{{ route('filter-preference-voucher-report') }}" enctype="multipart/form-data">
     @csrf
         <div class="card border border-dark">
         <div class="card-header bg-dark" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -68,22 +70,19 @@
                             <input type ="date" class="form-control form-control-inline input-medium date-picker input-date" data-date-format="dd-mm-yyyy" type="text" name="end_date" id="end_date" value="{{ $end_date }}" style="width: 15rem;"/>
                         </div>
                     </div>
-                    <div class = "col-md-6">
+                    <div class = "col-md-4">
                         <div class="form-group form-md-line-input">
-                            <section class="control-label">Nama User
-                                <span class="required text-danger">
-                                    *
-                                </span>
+                            <section class="control-label">Kode Voucher
+                            
                             </section>
-                            {!! Form::select('user_id', $user, 0, ['class' => 'selection-search-clear select-form', 'id' => 'user_id', 'name' => 'user_id']) !!}
+                            {!! Form::select('voucher_id',  $listVoucher, $voucher_id, ['class' => 'selection-search-clear select-form', 'id' => 'voucher_id', 'name' => 'voucher_id']) !!}
                         </div>
                     </div>
-                    
                 </div>
             </div>
             <div class="card-footer text-muted">
                 <div class="form-actions float-right">
-                    <button type="reset" name="Reset" class="btn btn-danger" onclick="reset_add();"><i class="fa fa-times"></i> Batal</button>
+                    <a href="{{ route('reset-filter-preference-voucher-report') }}" type="reset" name="Reset" class="btn btn-danger"><i class="fa fa-times"></i> Batal</a>
                     <button type="submit" name="Find" class="btn btn-primary" title="Search Data"><i class="fa fa-search"></i> Cari</button>
                 </div>
             </div>
@@ -92,11 +91,6 @@
     </form>
 </div>
 <br/>
-@if(session('msg'))
-<div class="alert alert-info" role="alert">
-    {{session('msg')}}
-</div>
-@endif 
 <div class="card border border-dark">
   <div class="card-header bg-dark clearfix">
     <h5 class="mb-0 float-left">
@@ -110,27 +104,23 @@
                 <thead>
                     <tr>
                         <th style='text-align:center; width: 5%'>No</th>
-                        <th style='text-align:center; width: 15%'>Nama User</th>
-                        <th style='text-align:center; width: 15%'>No. Penjualan</th>
-                        <th style='text-align:center; width: 15%'>Tanggal</th>
-                        <th style='text-align:center; width: 10%'>Jumlah Barang</th>
-                        <th style='text-align:center; width: 10%'>Subtotal</th>
-                        <th style='text-align:center; width: 10%'>Diskon</th>
-                        <th style='text-align:center; width: 10%'>Total</th>
+                        <th style='text-align:center'>Kode Voucher</th>
+                        <th style='text-align:center'>No. Voucher</th>
+                        <th style='text-align:center'>Tanggal</th>
+                        <th style='text-align:center'>Nama Pelanggan</th>
+                        <th style='text-align:center'>Jabatan</th></th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $no =1;?>
+                    <?php $no = 1;?>
                     @foreach ($data as $row)
                         <tr>
                             <td class="text-center">{{ $no++ }}.</td>
-                            <td>{{ $SIBURC->getUserName($row['created_id']) }}</td>
-                            <td>{{ $row['sales_invoice_no'] }}</td>
+                            <td>{{ $PVRC->getVoucherCode($row['voucher_id']) }}</td>
+                            <td>{{ $row['voucher_no'] }}</td>
                             <td>{{ date('d-m-Y', strtotime($row['sales_invoice_date'])) }}</td>
-                            <td style="text-align: right">{{ $row['subtotal_item'] }}</td>
-                            <td style="text-align: right">{{ number_format($row['subtotal_amount'],2,'.',',') }}</td>
-                            <td style="text-align: right">{{ number_format($row['discount_amount_total'],2,'.',',') }}</td>
-                            <td style="text-align: right">{{ number_format($row['total_amount'],2,'.',',') }}</td> 
+                            <td>{{ $PVRC->getMemberName($row['customer_id']) }}</td>
+                            <td>{{ $PVRC->getDivisionName($row['customer_id']) }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -139,8 +129,8 @@
     </div>
     <div class="card-footer text-muted">
         <div class="form-actions float-right">
-            <a class="btn btn-secondary" href="{{ url('sales-invoice-by-user-report/print') }}"><i class="fa fa-file-pdf"></i> Pdf</a>
-            <a class="btn btn-dark" href="{{ url('sales-invoice-by-user-report/export') }}"><i class="fa fa-download"></i> Export Data</a>
+            <a class="btn btn-secondary" href="{{ url('preference-voucher-report/print') }}"><i class="fa fa-file-pdf"></i> Pdf</a>
+            <a class="btn btn-dark" href="{{ url('preference-voucher-report/export') }}"><i class="fa fa-download"></i> Export Data</a>
         </div>
     </div>
   </div>

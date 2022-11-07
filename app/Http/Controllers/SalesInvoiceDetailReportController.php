@@ -47,6 +47,7 @@ class SalesInvoiceDetailReportController extends Controller
             ->where('sales_invoice.sales_invoice_date','<=',$end_date)
             ->where('sales_invoice.company_id', Auth::user()->company_id)
             ->where('sales_invoice.data_state',0)
+            ->where('sales_invoice_item.quantity','!=',0)
             ->get();
         } else {
             $data = SalesInvoice::join('sales_invoice_item','sales_invoice.sales_invoice_id','=','sales_invoice_item.sales_invoice_id')
@@ -55,12 +56,16 @@ class SalesInvoiceDetailReportController extends Controller
             ->where('sales_invoice.company_id', Auth::user()->company_id)
             ->where('sales_invoice.data_state',0)
             ->where('sales_invoice.sales_payment_method', $sales_payment_method)
+            ->where('sales_invoice_item.quantity','!=',0)
             ->get();
         }
         
         $sales_payment_method_list = [
             1 => 'Tunai',
-            2 => 'Piutang'
+            2 => 'Piutang',
+            3 => 'Gopay',
+            4 => 'Ovo',
+            5 => 'Shopeepay'
         ];
         return view('content.SalesInvoiceDetailReport.ListSalesInvoiceDetailReport', compact('data','start_date','end_date','sales_payment_method_list','sales_payment_method'));
     }
@@ -152,12 +157,16 @@ class SalesInvoiceDetailReportController extends Controller
         
         $sales_payment_method_list = [
             0 => '',
-            1 => 'TUNAI',
-            2 => 'PIUTANG'
+            1 => 'Tunai',
+            2 => 'Piutang',
+            3 => 'Gopay',
+            4 => 'Ovo',
+            5 => 'Shopeepay'
         ];
         
         $sales_invoice_item = SalesInvoiceItem::where('company_id', Auth::user()->company_id)
         ->where('data_state',0)
+        ->where('quantity','!=',0)
         ->get();
 
         $pdf = new TCPDF('L', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -297,10 +306,14 @@ class SalesInvoiceDetailReportController extends Controller
         $sales_payment_method_list = [
             0 => '',
             1 => 'Tunai',
-            2 => 'Piutang'
+            2 => 'Piutang',
+            3 => 'Gopay',
+            4 => 'Ovo',
+            5 => 'Shopeepay'
         ];
         $sales_invoice_item = SalesInvoiceItem::where('company_id', Auth::user()->company_id)
         ->where('data_state',0)
+        ->where('quantity','!=',0)
         ->get();
 
         $spreadsheet = new Spreadsheet();

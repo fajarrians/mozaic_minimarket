@@ -57,7 +57,10 @@ class SalesInvoiceReportController extends Controller
         }
         $sales_payment_method_list = [
             1 => 'Tunai',
-            2 => 'Piutang'
+            2 => 'Piutang',
+            3 => 'Gopay',
+            4 => 'Ovo',
+            5 => 'Shopeepay'
         ];
         // dd($sales_payment_method);
         return view('content.SalesInvoiceReport.ListSalesInvoiceReport', compact('data','start_date','end_date','sales_payment_method','sales_payment_method_list'));
@@ -120,7 +123,10 @@ class SalesInvoiceReportController extends Controller
     {
         $sales_payment_method_list = [
             1 => 'Tunai',
-            2 => 'Piutang'
+            2 => 'Piutang',
+            3 => 'Gopay',
+            4 => 'Ovo',
+            5 => 'Shopeepay'
         ];
 
         return $sales_payment_method_list[$payment_method];
@@ -159,8 +165,11 @@ class SalesInvoiceReportController extends Controller
         }
         $sales_payment_method_list = [
             0 => '',
-            1 => 'TUNAI',
-            2 => 'PIUTANG'
+            1 => 'Tunai',
+            2 => 'Piutang',
+            3 => 'Gopay',
+            4 => 'Ovo',
+            5 => 'Shopeepay'
         ];
 
         $pdf = new TCPDF('L', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -239,7 +248,6 @@ class SalesInvoiceReportController extends Controller
             $subtotal_amount += $val['subtotal_amount'];
             $discount_amount_total += $val['discount_amount_total'];
             $total_amount += $val['total_amount'];
-            $no++;
         }
         $tblStock3 = " 
         <tr>
@@ -297,7 +305,10 @@ class SalesInvoiceReportController extends Controller
         $sales_payment_method_list = [
             0 => '',
             1 => 'Tunai',
-            2 => 'Piutang'
+            2 => 'Piutang',
+            3 => 'Gopay',
+            4 => 'Ovo',
+            5 => 'Shopeepay'
         ];
 
         $spreadsheet = new Spreadsheet();
@@ -359,6 +370,8 @@ class SalesInvoiceReportController extends Controller
                     $spreadsheet->getActiveSheet()->setTitle("Laporan Penjualan");
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j.':K'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
+                    $spreadsheet->getActiveSheet()->getStyle('H'.$j)->getNumberFormat()->setFormatCode('0.00');
+                    $spreadsheet->getActiveSheet()->getStyle('J'.$j.':K'.$j)->getNumberFormat()->setFormatCode('0.00');
             
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
@@ -378,10 +391,10 @@ class SalesInvoiceReportController extends Controller
                         $sheet->setCellValue('E'.$j, date('d-m-Y', strtotime($val['sales_invoice_date'])));
                         $sheet->setCellValue('F'.$j, $val['sales_invoice_no']);
                         $sheet->setCellValue('G'.$j, $val['subtotal_item']);
-                        $sheet->setCellValue('H'.$j, number_format($val['subtotal_amount'],2,'.',','));
+                        $sheet->setCellValue('H'.$j, $val['subtotal_amount']);
                         $sheet->setCellValue('I'.$j, $val['discount_percentage_total']);
-                        $sheet->setCellValue('J'.$j, number_format($val['discount_amount_total'],2,'.',','));
-                        $sheet->setCellValue('K'.$j, number_format($val['total_amount'],2,'.',','));
+                        $sheet->setCellValue('J'.$j, $val['discount_amount_total']);
+                        $sheet->setCellValue('K'.$j, $val['total_amount']);
                 }
                 $subtotal_item += $val['subtotal_item'];
                 $subtotal_amount += $val['subtotal_amount'];
@@ -392,6 +405,8 @@ class SalesInvoiceReportController extends Controller
                 
                 
             }
+            $spreadsheet->getActiveSheet()->getStyle('H'.$j.':K'.$j)->getNumberFormat()->setFormatCode('0.00');
+
             $spreadsheet->getActiveSheet()->getStyle('B'.$j.':K'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':F'.$j);
             $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
@@ -405,9 +420,9 @@ class SalesInvoiceReportController extends Controller
 
             $sheet->setCellValue('B'.$j, 'TOTAL');
             $sheet->setCellValue('G'.$j, $subtotal_item);
-            $sheet->setCellValue('H'.$j, number_format($subtotal_amount,2,'.',','));
-            $sheet->setCellValue('I'.$j, number_format($discount_amount_total,2,'.',','));
-            $sheet->setCellValue('K'.$j, number_format($total_amount,2,'.',','));
+            $sheet->setCellValue('H'.$j, $subtotal_amount);
+            $sheet->setCellValue('I'.$j, $discount_amount_total);
+            $sheet->setCellValue('K'.$j, $total_amount);
 
             $j++;
             $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':K'.$j);

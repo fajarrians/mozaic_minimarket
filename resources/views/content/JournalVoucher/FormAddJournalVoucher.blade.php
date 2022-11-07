@@ -125,7 +125,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <a class="text-dark">Jumlah<a class='red'> *</a></a>
-                        <input class="form-control input-bb" id="journal_voucher_amount" autocomplete="off" value=""/>
+                        <input class="form-control input-bb text-right" id="journal_voucher_amount" autocomplete="off" value=""/>
                     </div>
                 </div>
             </div>

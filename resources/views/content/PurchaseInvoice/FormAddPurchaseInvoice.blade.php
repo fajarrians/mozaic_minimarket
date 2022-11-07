@@ -32,17 +32,104 @@
             $("#subtotal_amount_after_discount").val(subtotal);
         });
 
+        $('#item_price_new_view').change(function(){
+            var price_new = parseInt($('#item_price_new_view').val());
+            var cost_new =  parseInt($('#item_cost_new').val());
+            var margin_old = parseInt($('#margin_percentage_old').val());
+            var margin = parseInt($('#margin_percentage').val());
+            var margin_percentage = ((price_new - cost_new) / cost_new) * 100;
+            if (margin_percentage > 100) {
+                alert('Margin tidak boleh melebihi 100%');
+                $('#margin_percentage').val(margin_old);
+                var amount_margin = cost_new + ((cost_new * margin_old) / 100);
+                $('#item_price_new_view').val(toRp(amount_margin));
+                $('#item_price_new').val(amount_margin);
+            } else {
+                if (Number.isInteger(margin_percentage)) {
+                    $('#margin_percentage').val(margin_percentage);
+                } else {
+                    $('#margin_percentage').val(margin_percentage.toFixed(2));
+                }
+                $('#item_price_new_view').val(toRp(price_new));
+                $('#item_price_new').val(price_new);
+            }
+        });
+
+        $('#margin_percentage').change(function(){
+            var cost_new =  parseInt($('#item_cost_new').val());
+            var margin_old = parseInt($('#margin_percentage_old').val());
+            var margin = parseInt($('#margin_percentage').val());
+            var price_new = ((margin * cost_new) / 100) + cost_new;
+            if (margin > 100) {
+                alert('Margin tidak boleh melebihi 100%');
+                $('#margin_percentage').val(margin_old);
+                var amount_margin = cost_new + ((cost_new * margin_old) / 100);
+                $('#item_price_new_view').val(toRp(amount_margin));
+                $('#item_price_new').val(amount_margin);
+            } else {
+                if (Number.isInteger(margin)) {
+                    $('#margin_percentage').val(margin);
+                } else {
+                    $('#margin_percentage').val(margin.toFixed(2));
+                }
+                $('#item_price_new_view').val(toRp(price_new));
+                $('#item_price_new').val(price_new);
+            }
+        });
+
         $("#item_unit_cost_view").change(function(){
+            var item_category_id = $("#item_category_id").val();
+            var item_unit_id = $("#item_unit_id").val();
+            var item_id = $("#item_id").val();
+            var cost_new     = $("#item_unit_cost_view").val();
+            var cost         = $("#item_unit_cost").val();
+            $.ajax({
+                url: "{{ url('select-item-price') }}"+'/'+item_category_id+'/'+item_unit_id+'/'+item_id,
+                type: "GET",
+                dataType: "html",
+                success:function(price)
+                {
+                    if (price != '') {
+                        if (cost != cost_new) {
+                            $.ajax({
+                                url: "{{ url('get-margin-category') }}"+'/'+item_category_id,
+                                type: "GET",
+                                dataType: "html",
+                                success:function(margin)
+                                {
+                                    if (margin != '') {
+                                        $('#margin_percentage').val(margin);
+                                        $('#margin_percentage_old').val(margin);
+                                        var price_new = parseInt(cost_new) + ((parseInt(cost_new) * margin) / 100);
+                                        $('#item_price_new_view').val(toRp(price_new));
+                                        $('#item_price_new').val(price_new);
+                                    }
+
+                                }
+                            });
+                            $('#modal').modal('show');
+                            $('#item_price_old_view').val(toRp(price));
+                            $('#item_cost_old_view').val(toRp(cost));
+                            $('#item_cost_new_view').val(toRp(cost_new));
+                            $('#item_price_old').val(price);
+                            $('#item_cost_old').val(cost);
+                            $('#item_cost_new').val(cost_new);
+                        }
+                    }
+                }
+            });
+
+
+
             var quantity = $("#quantity").val();
-            var cost     = $("#item_unit_cost_view").val();
-            var subtotal = quantity * cost;
+            var subtotal = quantity * cost_new;
 
             $("#subtotal_amount").val(subtotal);
             $("#subtotal_amount_view").val(toRp(subtotal));
             $("#subtotal_amount_after_discount_view").val(toRp(subtotal));
             $("#subtotal_amount_after_discount").val(subtotal);
-            $("#item_unit_cost_view").val(toRp(cost));
-            $("#item_unit_cost").val(cost);
+            $("#item_unit_cost_view").val(toRp(cost_new));
+            $("#item_unit_cost").val(cost_new);
         });
 
         $("#discount_percentage").change(function(){
@@ -150,6 +237,32 @@
         //     $('#shortover_amount_view').val(toRp(shortover_amount));
         // });
     });
+
+    function process_change_cost() {
+        var item_category_id                = document.getElementById("item_category_id").value;
+        var item_id		                    = document.getElementById("item_id").value;
+        var item_unit_id		            = document.getElementById("item_unit_id").value;
+        var item_cost_new		            = document.getElementById("item_cost_new").value;
+        var item_price_new		            = document.getElementById("item_price_new").value;
+        var margin_percentage		        = document.getElementById("margin_percentage").value;
+
+        $.ajax({
+            type: "POST",
+            url : "{{route('process-change-cost-purchase-invoice')}}",
+            data: {
+                'item_category_id'  : item_category_id,
+                'item_id'    	    : item_id, 
+                'item_unit_id'      : item_unit_id,
+                'item_cost_new'     : item_cost_new,
+                'item_price_new'    : item_price_new,
+                'margin_percentage' : margin_percentage,
+                '_token'            : '{{csrf_token()}}'
+            },
+            success: function(msg){
+                location.reload();
+            }
+        });
+    }
 
     function processAddArrayPurchaseInvoice(){
         var item_category_id                = document.getElementById("item_category_id").value;
@@ -358,6 +471,64 @@
     @endforeach
 </div>
 @endif
+<div class="modal fade" id="modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger">
+                <h5 class="modal-title" id="staticBackdropLabel">Informasi Perubahan Harga</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row form-group">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <a class="text-dark">Margin Barang (%)</a>
+                            <input style="text-align: left" class="form-control input-bb" name="margin_percentage" id="margin_percentage" type="text" autocomplete="off" value=""/>
+                            <input style="text-align: left" class="form-control input-bb" name="margin_percentage_old" id="margin_percentage_old" type="text" autocomplete="off" value="" hidden/>
+                        </div>
+                    </div>
+                </div>
+                <h6 class="text-bold">Harga Beli</h6>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <a class="text-dark">Lama</a>
+                            <input style="text-align: right" class="form-control input-bb" name="item_cost_old_view" id="item_cost_old_view" type="text" autocomplete="off" value="" readonly/>
+                            <input style="text-align: right" class="form-control input-bb" name="item_cost_old" id="item_cost_old" type="text" autocomplete="off" value="" hidden/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <a class="text-dark">Baru</a>
+                            <input style="text-align: right" class="form-control input-bb" name="item_cost_new_view" id="item_cost_new_view" type="text" autocomplete="off" value="" readonly/>
+                            <input style="text-align: right" class="form-control input-bb" name="item_cost_new" id="item_cost_new" type="text" autocomplete="off" value="" hidden/>
+                        </div>
+                    </div>
+                </div>
+                <h6 class="text-bold">Harga Jual</h6>
+                <div class="row form-group">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <a class="text-dark">Lama</a>
+                            <input style="text-align: right" class="form-control input-bb" name="item_price_old_view" id="item_price_old_view" type="text" autocomplete="off" value="" readonly/>
+                            <input style="text-align: right" class="form-control input-bb" name="item_price_old" id="item_price_old" type="text" autocomplete="off" value="" hidden/>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <a class="text-dark">Baru</a>
+                            <input style="text-align: right" class="form-control input-bb" name="item_price_new_view" id="item_price_new_view" type="text" autocomplete="off" value=""/>
+                            <input style="text-align: right" class="form-control input-bb" name="item_price_new" id="item_price_new" type="text" autocomplete="off" value="" hidden/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="process_change_cost();" class="btn btn-success">Iya</button>
+                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tidak</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <div class="row">
     <div class="col-md-12">
@@ -441,7 +612,7 @@
                     <div class="col-md-6">
                         <div class="form-group">
                             <a class="text-dark">Jumlah<a class='red'> *</a></a>
-                            <input class="form-control input-bb" name="quantity" id="quantity" type="text" autocomplete="off" value=""/>
+                            <input class="form-control input-bb text-right" name="quantity" id="quantity" type="text" autocomplete="off" value=""/>
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -454,7 +625,7 @@
                     <div class="col-md-3">
                         <div class="form-group">
                             <a class="text-dark">Diskon (%)</a>
-                            <input style="text-align: left" class="form-control input-bb" name="discount_percentage" id="discount_percentage" type="text" autocomplete="off" value=""/>
+                            <input style="text-align: right" class="form-control input-bb" name="discount_percentage" id="discount_percentage" type="text" autocomplete="off" value=""/>
                         </div>
                     </div>
                     <div class="col-md-3">

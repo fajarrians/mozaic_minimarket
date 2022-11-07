@@ -97,7 +97,7 @@
                 <div class="col-md-6">
                     <div class="form-group">
                         <a class="text-dark">Nominal<a class='red'> *</a></a>
-                        <input class="form-control input-bb" name="expenditure_amount" id="expenditure_amount" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $expenditure['expenditure_amount'] }}"/>
+                        <input style="text-align: right" class="form-control input-bb" name="expenditure_amount" id="expenditure_amount" type="text" autocomplete="off" onchange="function_elements_add(this.name, this.value)" value="{{ $expenditure['expenditure_amount'] }}"/>
                     </div>
                 </div>
             </div>

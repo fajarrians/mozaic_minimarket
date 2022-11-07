@@ -42,19 +42,17 @@ class PurchaseInvoiceReportController extends Controller
         }
 
         if ($warehouse_id == '') {
-            $data = PurchaseInvoice::join('purchase_invoice_item','purchase_invoice_item.purchase_invoice_id','=','purchase_invoice.purchase_invoice_id')
-            ->where('purchase_invoice.purchase_invoice_date','>=',$start_date)
-            ->where('purchase_invoice.purchase_invoice_date','<=',$end_date)
-            ->where('purchase_invoice.company_id', Auth::user()->company_id)
-            ->where('purchase_invoice.data_state',0)
+            $data = PurchaseInvoice::where('purchase_invoice_date','>=',$start_date)
+            ->where('purchase_invoice_date','<=',$end_date)
+            ->where('company_id', Auth::user()->company_id)
+            ->where('data_state',0)
             ->get();
         } else {
-            $data = PurchaseInvoice::join('purchase_invoice_item','purchase_invoice_item.purchase_invoice_id','=','purchase_invoice.purchase_invoice_id')
-            ->where('purchase_invoice.purchase_invoice_date','>=',$start_date)
-            ->where('purchase_invoice.purchase_invoice_date','<=',$end_date)
-            ->where('purchase_invoice.warehouse_id', $warehouse_id)
-            ->where('purchase_invoice.company_id', Auth::user()->company_id)
-            ->where('purchase_invoice.data_state',0)
+            $data = PurchaseInvoice::where('purchase_invoice_date','>=',$start_date)
+            ->where('purchase_invoice_date','<=',$end_date)
+            ->where('warehouse_id', $warehouse_id)
+            ->where('company_id', Auth::user()->company_id)
+            ->where('data_state',0)
             ->get();
         }
         
@@ -136,19 +134,17 @@ class PurchaseInvoiceReportController extends Controller
         }
 
         if ($warehouse_id == '') {
-            $data = PurchaseInvoice::join('purchase_invoice_item','purchase_invoice_item.purchase_invoice_id','=','purchase_invoice.purchase_invoice_id')
-            ->where('purchase_invoice.purchase_invoice_date','>=',$start_date)
-            ->where('purchase_invoice.purchase_invoice_date','<=',$end_date)
-            ->where('purchase_invoice.company_id', Auth::user()->company_id)
-            ->where('purchase_invoice.data_state',0)
+            $data = PurchaseInvoice::where('purchase_invoice_date','>=',$start_date)
+            ->where('purchase_invoice_date','<=',$end_date)
+            ->where('company_id', Auth::user()->company_id)
+            ->where('data_state',0)
             ->get();
         } else {
-            $data = PurchaseInvoice::join('purchase_invoice_item','purchase_invoice_item.purchase_invoice_id','=','purchase_invoice.purchase_invoice_id')
-            ->where('purchase_invoice.purchase_invoice_date','>=',$start_date)
-            ->where('purchase_invoice.purchase_invoice_date','<=',$end_date)
-            ->where('purchase_invoice.warehouse_id', $warehouse_id)
-            ->where('purchase_invoice.company_id', Auth::user()->company_id)
-            ->where('purchase_invoice.data_state',0)
+            $data = PurchaseInvoice::where('purchase_invoice_date','>=',$start_date)
+            ->where('purchase_invoice_date','<=',$end_date)
+            ->where('warehouse_id', $warehouse_id)
+            ->where('company_id', Auth::user()->company_id)
+            ->where('data_state',0)
             ->get();
         }
 
@@ -191,17 +187,23 @@ class PurchaseInvoiceReportController extends Controller
                 <td width=\"5%\" ><div style=\"text-align: center; font-weight: bold\">No</div></td>
                 <td width=\"12%\" ><div style=\"text-align: center; font-weight: bold\">Pemasok</div></td>
                 <td width=\"11%\" ><div style=\"text-align: center; font-weight: bold\">Gudang</div></td>
-                <td width=\"25%\" ><div style=\"text-align: center; font-weight: bold\">Barang</div></td>
+                <td width=\"12%\" ><div style=\"text-align: center; font-weight: bold\">No. Pembelian</div></td>
                 <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Tanggal</div></td>
-                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Satuan</div></td>
-                <td width=\"6%\" ><div style=\"text-align: center; font-weight: bold\">Qty</div></td>
-                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Harga</div></td>
-                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Jumlah</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Jumlah Barang</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Subtotal</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Diskon</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">PPN</div></td>
+                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Total</div></td>
             </tr>
         
              ";
 
         $no = 1;
+        $total_quantity = 0;
+        $total_diskon = 0;
+        $total_ppn = 0;
+        $subtotal = 0;
+        $total_amount = 0;
         $tblStock2 =" ";
         foreach ($data as $key => $val) {
             $tblStock2 .="
@@ -209,19 +211,32 @@ class PurchaseInvoiceReportController extends Controller
                     <td style=\"text-align:center\">$no.</td>
                     <td style=\"text-align:left\">".$this->getSupplierName($val['supplier_id'])."</td>
                     <td style=\"text-align:left\">".$this->getWarehouseName($val['warehouse_id'])."</td>
-                    <td style=\"text-align:left\">".$this->getItemName($val['item_id'])."</td>
+                    <td style=\"text-align:left\">".$val['purchase_invoice_no']."</td>
                     <td style=\"text-align:left\">".date('d-m-Y', strtotime($val['purchase_invoice_date']))."</td>
-                    <td style=\"text-align:left\">".$this->getUnitName($val['item_unit_id'])."</td>
-                    <td style=\"text-align:right\">".$val['quantity']."</td>
-                    <td style=\"text-align:right\">".number_format($val['item_unit_cost'],2,'.',',')."</td>
-                    <td style=\"text-align:right\">".number_format($val['subtotal_amount_after_discount'],2,'.',',')."</td>
+                    <td style=\"text-align:right\">".$val['subtotal_item']."</td>
+                    <td style=\"text-align:right\">".number_format($val['subtotal_amount_total'],2,'.',',')."</td>
+                    <td style=\"text-align:right\">".number_format($val['discount_amount_total'],2,'.',',')."</td>
+                    <td style=\"text-align:right\">".number_format($val['tax_ppn_amount'],2,'.',',')."</td>
+                    <td style=\"text-align:right\">".number_format($val['total_amount'],2,'.',',')."</td>
                 </tr>
                 
             ";
             $no++;
+            $total_quantity += $val['subtotal_item'];
+            $total_diskon += $val['discount_amount_total'];
+            $total_ppn += $val['tax_ppn_amount'];
+            $subtotal += $val['subtotal_amount_total'];
+            $total_amount += $val['total_amount'];
         }
         $tblStock3 = " 
-            
+        <tr>
+            <td colspan=\"5\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". $total_quantity ."</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($subtotal,2,'.',',') ."</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($total_diskon,2,'.',',') ."</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($total_ppn,2,'.',',') ."</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($total_amount,2,'.',',') ."</div></td>
+        </tr>
         </table>
         <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
             <tr>
@@ -257,19 +272,17 @@ class PurchaseInvoiceReportController extends Controller
         }
 
         if ($warehouse_id == '') {
-            $data = PurchaseInvoice::join('purchase_invoice_item','purchase_invoice_item.purchase_invoice_id','=','purchase_invoice.purchase_invoice_id')
-            ->where('purchase_invoice.purchase_invoice_date','>=',$start_date)
-            ->where('purchase_invoice.purchase_invoice_date','<=',$end_date)
-            ->where('purchase_invoice.company_id', Auth::user()->company_id)
-            ->where('purchase_invoice.data_state',0)
+            $data = PurchaseInvoice::where('purchase_invoice_date','>=',$start_date)
+            ->where('purchase_invoice_date','<=',$end_date)
+            ->where('company_id', Auth::user()->company_id)
+            ->where('data_state',0)
             ->get();
         } else {
-            $data = PurchaseInvoice::join('purchase_invoice_item','purchase_invoice_item.purchase_invoice_id','=','purchase_invoice.purchase_invoice_id')
-            ->where('purchase_invoice.purchase_invoice_date','>=',$start_date)
-            ->where('purchase_invoice.purchase_invoice_date','<=',$end_date)
-            ->where('purchase_invoice.warehouse_id', $warehouse_id)
-            ->where('purchase_invoice.company_id', Auth::user()->company_id)
-            ->where('purchase_invoice.data_state',0)
+            $data = PurchaseInvoice::where('purchase_invoice_date','>=',$start_date)
+            ->where('purchase_invoice_date','<=',$end_date)
+            ->where('warehouse_id', $warehouse_id)
+            ->where('company_id', Auth::user()->company_id)
+            ->where('data_state',0)
             ->get();
         }
         
@@ -296,48 +309,56 @@ class PurchaseInvoiceReportController extends Controller
             $spreadsheet->getActiveSheet()->getColumnDimension('H')->setWidth(20);
             $spreadsheet->getActiveSheet()->getColumnDimension('I')->setWidth(20);
             $spreadsheet->getActiveSheet()->getColumnDimension('J')->setWidth(20);
+            $spreadsheet->getActiveSheet()->getColumnDimension('K')->setWidth(20);
     
-            $spreadsheet->getActiveSheet()->mergeCells("B1:J1");
+            $spreadsheet->getActiveSheet()->mergeCells("B1:K1");
             $spreadsheet->getActiveSheet()->getStyle('B1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
             $spreadsheet->getActiveSheet()->getStyle('B1')->getFont()->setBold(true)->setSize(16);
-            $spreadsheet->getActiveSheet()->getStyle('B3:J3')->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('B3:K3')->getFont()->setBold(true);
 
-            $spreadsheet->getActiveSheet()->getStyle('B3:J3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-            $spreadsheet->getActiveSheet()->getStyle('B3:J3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->getStyle('B3:K3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle('B3:K3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
             $sheet->setCellValue('B1',"Laporan Pembelian Dari Periode ".date('d M Y', strtotime($start_date))." s.d. ".date('d M Y', strtotime($end_date)));	
             $sheet->setCellValue('B3',"No");
             $sheet->setCellValue('C3',"Nama Pemasok");
             $sheet->setCellValue('D3',"Nama Gudang");
-            $sheet->setCellValue('E3',"Nama Barang");
+            $sheet->setCellValue('E3',"No. Pembelian");
             $sheet->setCellValue('F3',"Tanggal Pembelian");
-            $sheet->setCellValue('G3',"Satuan");
-            $sheet->setCellValue('H3',"Quantity");
-            $sheet->setCellValue('I3',"Harga Per Satuan");
-            $sheet->setCellValue('J3',"Subtotal"); 
+            $sheet->setCellValue('G3',"Jumlah Barang");
+            $sheet->setCellValue('H3',"Subtotal");
+            $sheet->setCellValue('I3',"Diskon");
+            $sheet->setCellValue('J3',"PPN"); 
+            $sheet->setCellValue('K3',"Total"); 
             
             $j=4;
             $no=0;
-            
+            $total_quantity = 0;
+            $total_diskon = 0;
+            $total_ppn = 0;
+            $subtotal = 0;
+            $total_amount = 0;
+
             foreach($data as $key=>$val){
 
                 if(is_numeric($key)){
                     
                     $sheet = $spreadsheet->getActiveSheet(0);
                     $spreadsheet->getActiveSheet()->setTitle("Jurnal Umum");
-                    $spreadsheet->getActiveSheet()->getStyle('B'.$j.':J'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                    $spreadsheet->getActiveSheet()->getStyle('B'.$j.':K'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
-                    $spreadsheet->getActiveSheet()->getStyle('I'.$j.':J'.$j)->getNumberFormat()->setFormatCode('0.00');
+                    $spreadsheet->getActiveSheet()->getStyle('H'.$j.':K'.$j)->getNumberFormat()->setFormatCode('0.00');
             
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     $spreadsheet->getActiveSheet()->getStyle('C'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                     $spreadsheet->getActiveSheet()->getStyle('D'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                     $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
                     $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
-                    $spreadsheet->getActiveSheet()->getStyle('G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+                    $spreadsheet->getActiveSheet()->getStyle('G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
                     $spreadsheet->getActiveSheet()->getStyle('H'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
                     $spreadsheet->getActiveSheet()->getStyle('I'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
                     $spreadsheet->getActiveSheet()->getStyle('J'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                    $spreadsheet->getActiveSheet()->getStyle('K'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
 
 
 
@@ -345,17 +366,41 @@ class PurchaseInvoiceReportController extends Controller
                     $sheet->setCellValue('B'.$j, $no);
                     $sheet->setCellValue('C'.$j, $this->getSupplierName($val['supplier_id']));
                     $sheet->setCellValue('D'.$j, $this->getWarehouseName($val['warehouse_id']));
-                    $sheet->setCellValue('E'.$j, $this->getItemName($val['item_id']));
+                    $sheet->setCellValue('E'.$j,$val['purchase_invoice_no']);
                     $sheet->setCellValue('F'.$j, date('d-m-Y', strtotime($val['purchase_invoice_date'])));
-                    $sheet->setCellValue('G'.$j, $this->getUnitName($val['item_unit_id']));
-                    $sheet->setCellValue('H'.$j, $val['quantity']);
-                    $sheet->setCellValue('I'.$j, number_format($val['item_unit_cost'],2,'.',','));
-                    $sheet->setCellValue('J'.$j, number_format($val['subtotal_amount_after_discount'],2,'.',','));
+                    $sheet->setCellValue('G'.$j, $val['subtotal_item']);
+                    $sheet->setCellValue('H'.$j, $val['subtotal_amount_total']);
+                    $sheet->setCellValue('I'.$j, $val['discount_amount_total']);
+                    $sheet->setCellValue('J'.$j, $val['tax_ppn_amount']);
+                    $sheet->setCellValue('K'.$j, $val['total_amount']);
                 }
                 $j++;
+                $total_quantity += $val['subtotal_item'];
+                $total_diskon += $val['discount_amount_total'];
+                $total_ppn += $val['tax_ppn_amount'];
+                $subtotal += $val['subtotal_amount_total'];
+                $total_amount += $val['total_amount'];
         
             }
-            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':J'.$j);
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':F'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':K'.$j)->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('H'.$j.':K'.$j)->getNumberFormat()->setFormatCode('0.00');
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':K'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->getStyle('G'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('H'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('I'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('J'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('K'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, 'TOTAL');
+            $sheet->setCellValue('G'.$j, $total_quantity);
+            $sheet->setCellValue('H'.$j, $subtotal);
+            $sheet->setCellValue('I'.$j, $total_diskon);
+            $sheet->setCellValue('J'.$j, $total_ppn);
+            $sheet->setCellValue('K'.$j, $total_amount);
+
+            $j++;
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':K'.$j);
             $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
 

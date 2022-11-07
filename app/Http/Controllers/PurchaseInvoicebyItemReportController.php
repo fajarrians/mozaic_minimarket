@@ -228,6 +228,8 @@ class PurchaseInvoicebyItemReportController extends Controller
              ";
 
         $no = 1;
+        $total_item = 0;
+        $total_amount = 0;
         $tblStock2 =" ";
         foreach ($data as $key => $val) {
             $tblStock2 .="
@@ -241,9 +243,15 @@ class PurchaseInvoicebyItemReportController extends Controller
                 
             ";
             $no++;
+            $total_item += $this->getTotalItem($val['item_id']);
+            $total_amount += $this->getTotalAmount($val['item_id']);
         }
         $tblStock3 = " 
-
+        <tr>
+            <td colspan=\"3\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". $total_item ."</div></td>
+            <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($total_amount,2,'.',',') ."</div></td>
+        </tr>
         </table>
         <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
             <tr>
@@ -322,6 +330,8 @@ class PurchaseInvoicebyItemReportController extends Controller
             $sheet->setCellValue('F3',"Jumlah Pembelian");
             
             $j=4;
+            $total_item = 0;
+            $total_amount = 0;
             $no=0;
             
             foreach($data as $key=>$val){
@@ -358,8 +368,22 @@ class PurchaseInvoicebyItemReportController extends Controller
                     continue;
                 }
                 $j++;
+                $total_item += $this->getTotalItem($val['item_id']);
+                $total_amount += $this->getTotalAmount($val['item_id']);
         
             }
+            $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':D'.$j);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getNumberFormat()->setFormatCode('0.00');
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+            $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+            $spreadsheet->getActiveSheet()->getStyle('E'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+            $sheet->setCellValue('B'.$j, 'TOTAL');
+            $sheet->setCellValue('E'.$j, $total_item);
+            $sheet->setCellValue('F'.$j, $total_amount);
+
+            $j++;
             $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':F'.$j);
             $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
@@ -420,7 +444,7 @@ class PurchaseInvoicebyItemReportController extends Controller
             $row = array();
             $row['no'] = "<div class='text-center'>".$no.".</div>";
             $row['item_category_name'] = $this->getCategoryName($val['item_category_id']);
-            $row['item_name'] = $this->getItemName($val['item_id']);
+            $row['item_name'] = $val['item_name'];
             $row['item_total'] = "<div class='text-right'>".$this->getTotalItem($val['item_id'])."</div>";
             $row['total_amount'] = "<div class='text-right'>".number_format($this->getTotalAmount($val['item_id']),2,'.',',')."</div>";
 

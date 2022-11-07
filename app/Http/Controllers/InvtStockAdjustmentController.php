@@ -96,14 +96,12 @@ class InvtStockAdjustmentController extends Controller
         ->get()
         ->pluck('item_name','item_id');
         $datasess   = Session::get('datases');
-        $data       = PurchaseInvoice::join('purchase_invoice_item','purchase_invoice.purchase_invoice_id','=','purchase_invoice_item.purchase_invoice_id')
-        ->where('purchase_invoice_item.item_id', $item_id)
-        ->where('purchase_invoice_item.item_category_id', $category_id)
-        ->where('purchase_invoice_item.item_unit_id', $unit_id)
-        ->where('purchase_invoice.warehouse_id',$warehouse_id)
-        ->where('purchase_invoice.company_id', Auth::user()->company_id)
-        ->where('purchase_invoice.data_state',0)
-        ->limit(1)
+        $data       = InvtItemStock::where('item_id', $item_id)
+        ->where('item_category_id', $category_id)
+        ->where('item_unit_id', $unit_id)
+        ->where('warehouse_id',$warehouse_id)
+        ->where('company_id', Auth::user()->company_id)
+        ->where('data_state',0)
         ->get();
         return view('content.InvtStockAdjustment.FormAddInvtStockAdjustment', compact('categorys', 'units', 'items', 'datasess', 'data', 'date','warehouse','category_id','warehouse_id','item_id','unit_id'));
     }
@@ -200,39 +198,33 @@ class InvtStockAdjustmentController extends Controller
             'updated_id'            => Auth::id()
         );
 
-        $allrequest = request()->all();
-        $data = PurchaseInvoiceItem::get();
         if(InvtStockAdjustment::create($data_header)){
             $stock_adjustment_id   = InvtStockAdjustment::orderBy('created_at','DESC')->where('company_id', Auth::user()->company_id)->first();
-            foreach($data as $key=> $val){
-                if(isset($allrequest[$val['purchase_invoice_item_id'].'no'])){
-                    $dataArray = array(
-                    'stock_adjustment_id'           => $stock_adjustment_id['stock_adjustment_id'],
-                    'item_id'                       => request($val['purchase_invoice_item_id'].'_item_id'),
-                    'item_category_id'              => request($val['purchase_invoice_item_id'].'_item_category_id'),
-                    'item_unit_id'                  => request($val['purchase_invoice_item_id'].'_item_unit_id'),
-                    'last_balance_data'             => request($val['purchase_invoice_item_id'].'_last_balance_data'),
-                    'last_balance_physical'         => request($val['purchase_invoice_item_id'].'_last_balance_physical'),
-                    'last_balance_adjustment'       => request($val['purchase_invoice_item_id'].'_last_balance_adjustment'),
-                    'stock_adjustment_item_remark'  => request($val['purchase_invoice_item_id'].'_stock_adjustment_item_remark'),
-                    'company_id'                    => Auth::user()->company_id,
-                    'created_id'                    => Auth::id(),
-                    'updated_id'                    => Auth::id(),
-                    );
-                    InvtStockAdjustmentItem::create($dataArray); 
-                    $stock_item = InvtItemStock::where('item_id',$dataArray['item_id'])
-                    ->where('item_category_id',$dataArray['item_category_id'])
-                    ->where('warehouse_id', $data_header['warehouse_id'])
-                    ->where('item_unit_id', $dataArray['item_unit_id'])
-                    ->first();
-                    if(isset($stock_item)){
-                        $table = InvtItemStock::findOrFail($stock_item['item_stock_id']);
-                        $table->last_balance = $dataArray['last_balance_adjustment'];
-                        $table->updated_id = Auth::id();
-                        $table->save();
+            $dataArray = array(
+            'stock_adjustment_id'           => $stock_adjustment_id['stock_adjustment_id'],
+            'item_id'                       => $request['item_id'],
+            'item_category_id'              => $request['item_category_id'],
+            'item_unit_id'                  => $request['item_unit_id'],
+            'last_balance_data'             => $request['last_balance_data'],
+            'last_balance_physical'         => $request['last_balance_physical'],
+            'last_balance_adjustment'       => $request['last_balance_adjustment'],
+            'stock_adjustment_item_remark'  => $request['stock_adjustment_item_remark'],
+            'company_id'                    => Auth::user()->company_id,
+            'created_id'                    => Auth::id(),
+            'updated_id'                    => Auth::id(),
+            );
+            InvtStockAdjustmentItem::create($dataArray); 
+            $stock_item = InvtItemStock::where('item_id',$dataArray['item_id'])
+            ->where('item_category_id',$dataArray['item_category_id'])
+            ->where('warehouse_id', $data_header['warehouse_id'])
+            ->where('item_unit_id', $dataArray['item_unit_id'])
+            ->first();
+            if(isset($stock_item)){
+                $table = InvtItemStock::findOrFail($stock_item['item_stock_id']);
+                $table->last_balance = $dataArray['last_balance_adjustment'];
+                $table->updated_id = Auth::id();
+                $table->save();
 
-                    }               
-                }
             }
         } else {
             $msg = 'Tambah Stock Gagal';
