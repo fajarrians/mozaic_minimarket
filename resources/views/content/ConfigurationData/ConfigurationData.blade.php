@@ -133,7 +133,8 @@
 <div style="display: flex; justify-content: center; align-items: center; height: 200px; ">
   <a onclick="functin_click_btn()" class="btn btn-success mr-3 btn-lg"><i class="fa fa-download"></i> Unduh Data</a>
   <a href="{{ route('configuration-data-upload') }}" class="btn btn-success btn-lg mr-3"><i class="fa fa-upload"></i> Unggah Data</a>
-  <a onclick="click_close_cashier()" class="btn btn-success btn-lg"><i class="fa fa-archive"></i> Tutup Kasir</a>
+  <a onclick="click_close_cashier()" class="btn btn-success btn-lg mr-3"><i class="fa fa-archive"></i> Tutup Kasir</a>
+  <a href="{{ route('backup-data-configuration') }}" class="btn btn-success btn-lg"><i class="fa fa-cloud"></i> Cadangkan Data</a>
 </div>
 
 @stop

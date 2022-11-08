@@ -548,4 +548,12 @@ class ConfigurationDataController extends Controller
         $filename = 'Tutup_Kasir.pdf';
         $pdf::Output($filename, 'I');
     }
+
+    public function backupDataConfiguration()
+    {
+        exec('start /B C:\xampp\htdocs\kasihibu_minimarket\backup_data.bat');
+
+        $msg = "Data Berhasil dicadangkan";
+        return redirect('/configuration-data')->with('msg', $msg);
+    }
 }
