@@ -183,7 +183,7 @@ class InvtItemController extends Controller
         $fields = $request->validate([
             'item_id'           => '',
             'item_category_id'  => 'required',
-            'item_status'       => 'required',
+            // 'item_status'       => 'required',
             'item_code'         => 'required',
             'item_name'         => 'required',
             // 'item_barcode'      => '',
@@ -196,7 +196,7 @@ class InvtItemController extends Controller
 
         $table                          = InvtItem::findOrFail($fields['item_id']);
         $table->item_category_id        = $fields['item_category_id'];
-        $table->item_status             = $fields['item_status'];
+        // $table->item_status             = $fields['item_status'];
         $table->item_code               = $fields['item_code'];
         $table->item_name               = $fields['item_name'];
         // $table->item_barcode            = $fields['item_barcode'];
