@@ -468,7 +468,7 @@
     
             "processing": true, //Feature control the processing indicator.
             "serverSide": true, //Feature control DataTables' server-side processing mode.
-            "lengthMenu": [ [5, 15, 20, -1], [5, 15, 20, "All"] ],
+            "lengthMenu": [ [5, 15, 20, 100000], [5, 15, 20, "All"] ],
             "pageLength": 5,
             "order": [[1, 'asc']],
             "ajax": "{{ url('table-sales-item') }}",

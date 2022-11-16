@@ -22,7 +22,7 @@
              "processing": true,
              "serverSide": true,
              "pageLength": 5,
-             "lengthMenu": [ [5, 15, 20, -1], [5, 15, 20, "All"] ],
+             "lengthMenu": [ [5, 15, 20, 100000], [5, 15, 20, "All"] ],
              "order": [[2, 'asc']],
              "ajax": "{{ url('table-sales-invoice-by-item-not-sold') }}",
              "columns":[
