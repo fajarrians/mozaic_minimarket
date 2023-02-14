@@ -51,6 +51,7 @@ use App\Http\Controllers\SalesInvoicebyItemReportController;
 use App\Http\Controllers\SalesInvoiceByUserReportController;
 use App\Http\Controllers\SalesInvoiceByYearReportController;
 use App\Http\Controllers\SalesInvoiceController;
+use App\Http\Controllers\SalesInvoiceRecapController;
 use App\Http\Controllers\SalesInvoiceReportController;
 use App\Http\Controllers\SalesInvoiceDetailReportController;
 use Illuminate\Support\Facades\Auth;
@@ -112,6 +113,7 @@ Route::get('/item/edit-item/{item_id}', [InvtItemController::class, 'editItem'])
 Route::post('/item/process-edit-item', [InvtItemController::class, 'processEditItem'])->name('process-edit-item');
 Route::get('/item/delete-item/{item_id}', [InvtItemController::class, 'deleteItem'])->name('delete-item');
 Route::post('/item/count-margin',[InvtItemController::class, 'countMarginAddItem'])->name('count-margin-add-item');
+Route::get('/item/check-warehouse',[InvtItemController::class, 'checkWarehouse'])->name('check-warehouse');
 
 Route::get('/warehouse',[InvtWarehouseController::class, 'index'])->name('warehouse');
 Route::get('/warehouse/add-warehouse', [InvtWarehouseController::class, 'addWarehouse'])->name('add-warehouse');
@@ -150,9 +152,11 @@ Route::get('/sales-invoice/delete/{sales_invoice_id}',[SalesInvoiceController::c
 Route::get('/sales-invoice/filter-reset',[SalesInvoiceController::class, 'filterResetSalesInvoice'])->name('filter-reset-sales-invoice');
 Route::post('/sales-invoice/filter',[SalesInvoiceController::class, 'filterSalesInvoice'])->name('filter-sales-invoice');
 Route::get('/sales-invoice/print',[SalesInvoiceController::class, 'printSalesInvoice'])->name('print-sales-invoice');
+Route::get('/sales-invoice/print-repeat/{sales_invoice_id}',[SalesInvoiceController::class, 'printRepeatSalesInvoice'])->name('print-repeat-sales-invoice');
 Route::post('/sales-invoice/check-customer',[SalesInvoiceController::class, 'checkCustomerSalesInvoice'])->name('check-customer-sales-invoice');
 Route::post('/sales-invoice/select-voucher',[SalesInvoiceController::class, 'selectVoucherSalesInvoice'])->name('select-voucher-sales-invoice');
 Route::post('/sales-invoice/change-detail-item',[SalesInvoiceController::class, 'changeDetailItemSalesInvoice'])->name('change-detail-item-sales-invoice');
+Route::get('/sales-invoice/check-upload-status/{sales_invoice_id}', [SalesInvoiceController::class, 'checkUploadStatusSalesInvoice'])->name('check-upload-status-sales-invoice');
 
 Route::get('/purchase-invoice', [PurchaseInvoiceController::class, 'index'])->name('purchase-invoice');
 Route::get('/purchase-invoice/add', [PurchaseInvoiceController::class, 'addPurchaseInvoice'])->name('add-purchase-invoice');
@@ -465,3 +469,9 @@ Route::post('preference-voucher-report/filter', [PreferenceVoucherReportControll
 Route::get('preference-voucher-report/reset-filter', [PreferenceVoucherReportController::class, 'resetFilterVoucherReport'])->name('reset-filter-preference-voucher-report');
 Route::get('preference-voucher-report/print', [PreferenceVoucherReportController::class, 'printVoucherReport'])->name('print-preference-voucher-report');
 Route::get('preference-voucher-report/export', [PreferenceVoucherReportController::class, 'exportVoucherReport'])->name('export-preference-voucher-report');
+
+Route::get('sales-invoice-recap', [SalesInvoiceRecapController::class, 'index'])->name('sales-invoice-recap');
+Route::post('sales-invoice-recap/filter', [SalesInvoiceRecapController::class, 'filterSalesRecap'])->name('filter-sales-invoice-recap');
+Route::get('sales-invoice-recap/reset-filter', [SalesInvoiceRecapController::class, 'resetFilterSalesRecap'])->name('reset-filter-sales-invoice-recap');
+Route::get('sales-invoice-recap/print', [SalesInvoiceRecapController::class, 'printSalesRecap'])->name('print-sales-invoice-recap');
+Route::get('sales-invoice-recap/export', [SalesInvoiceRecapController::class, 'exportSalesRecap'])->name('export-sales-invoice-recap');

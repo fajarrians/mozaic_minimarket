@@ -95,7 +95,7 @@
                 <div class="col-md-4">
                     <div class="form-group">
                         <a class="text-dark">Margin Kategori Barang (%)</a>
-                        <input class="form-control input-bb" name="margin_percentage" id="margin_percentage" type="text" autocomplete="off" value="{{ $data['margin_percentage'] }}{{ old('margin_percentage') }}"/>
+                        <input class="form-control input-bb" name="margin_percentage" id="margin_percentage" type="number" autocomplete="off" value="{{ $data['margin_percentage'] }}{{ old('margin_percentage') }}"/>
                     </div>
                 </div>
                 <div class="col-md-8 mt-3">

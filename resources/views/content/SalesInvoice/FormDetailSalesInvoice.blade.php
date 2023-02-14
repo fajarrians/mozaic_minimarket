@@ -4,7 +4,21 @@
 @section('title', 'MOZAIC Minimarket')
 @section('js')
 <script>
-  
+  function check_upload(sales_invoice_id, sales_invoice_item_id)
+    {
+        $.ajax({
+            url : "{{url('sales-invoice/check-upload-status')}}"+'/'+sales_invoice_id,
+            type: "GET",
+				success: function(msg){
+                    if (msg == 1) {
+                        alert('Data yang sudah diunggah tidak bisa dihapus!')
+                    } else {
+                        $('#staticBackdrop'+sales_invoice_item_id).modal('show');
+                    }
+			}
+
+		});
+    }
 </script>
 @stop
 @section('content_header')
@@ -91,7 +105,8 @@
                                     <td>{{ $SalesInvoice->getItemUnitName($salesinvoiceitem['item_unit_id']) }}</td>
                                     <td style="text-align: right">{{ number_format($salesinvoiceitem['item_unit_price'],2,'.',',') }}</td>
                                     <td style="text-align: center">
-                                        <a name='Reset' class='btn btn-outline-warning btn-sm' type="button" data-toggle="modal" data-target="#staticBackdrop{{ $salesinvoiceitem['sales_invoice_item_id'] }}"></i> Ubah</a>
+                                        {{-- <a name='Reset' class='btn btn-outline-warning btn-sm' type="button" data-toggle="modal" data-target="#staticBackdrop{{ $salesinvoiceitem['sales_invoice_item_id'] }}"></i> Ubah</a> --}}
+                                        <a name='Reset' class='btn btn-outline-warning btn-sm' type="button" onclick="check_upload({{ $salesinvoice['sales_invoice_id'] }}, {{ $salesinvoiceitem['sales_invoice_item_id'] }})"></i> Ubah</a>
                                     </td>
                                     {{-- <td style="text-align: right">{{ number_format($salesinvoiceitem['subtotal_amount'],2,'.',',') }}</td>
                                     <td style="text-align: right">{{ $salesinvoiceitem['discount_percentage'] }}</td>
@@ -103,9 +118,6 @@
                                                 @csrf
                                                 <div class="modal-header">
                                                     <h5 class="modal-title" id="staticBackdropLabel">Ubah Jumlah Barang</h5>
-                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
                                                 </div>
                                                 <div class="modal-body">
                                                     <input type="text" class="form-control input-bb" name="change_qty" autocomplete="off">
@@ -113,7 +125,7 @@
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Batal</button>
-                                                    <button type="submit" class="btn btn-success">Simpan</button>
+                                                    <button type="submit" class="btn btn-success" onclick="$(this).addClass('disabled');">Simpan</button>
                                                 </div>
                                             </form>
                                           </div>

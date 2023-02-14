@@ -1,34 +1,36 @@
-@inject('PVRC','App\Http\Controllers\PreferenceVoucherReportController' )
+@inject('SalesRecap','App\Http\Controllers\SalesInvoiceRecapController' )
 
 @extends('adminlte::page')
 
 @section('title', 'MOZAIC Minimarket')
 @section('js')
-    <script>
-        $(document).ready(function(){
-            var voucher_id = {!! json_encode($voucher_id) !!} 
-            console.log(voucher_id);
-            if (voucher_id == '') {
-                $('#voucher_id').select2('val', ' ');
-            }
-        });
-    </script>
-@endsection
+<script>
+    function reset_add(){
+		$.ajax({
+				type: "GET",
+				url : "{{route('reset-filter-sales-invoice-recap')}}",
+				success: function(msg){
+                    location.reload();
+			}
+
+		});
+	}
+</script>
+@stop
 @section('content_header')
     
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{{ url('home') }}">Beranda</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Laporan Voucher</li>
+      <li class="breadcrumb-item active" aria-current="page">Rekap Penjualan</li>
     </ol>
 </nav>
 
 @stop
-
 @section('content')
 
 <h3 class="page-title">
-    <b>Laporan Voucher</b>
+    <b>Rekap Penjualan</b>
 </h3>
 <br/>
 @if(session('msg'))
@@ -37,7 +39,7 @@
 </div>
 @endif 
 <div id="accordion">
-    <form  method="post" action="{{ route('filter-preference-voucher-report') }}" enctype="multipart/form-data">
+    <form  method="post" action="{{ route('filter-sales-invoice-recap') }}" enctype="multipart/form-data">
     @csrf
         <div class="card border border-dark">
         <div class="card-header bg-dark" id="headingOne" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
@@ -67,22 +69,14 @@
                                     *
                                 </span>
                             </section>
-                            <input type ="date" class="form-control form-control-inline input-medium date-picker input-date" data-date-format="dd-mm-yyyy" type="text" name="end_date" id="end_date" value="{{ $end_date }}" style="width: 15rem;"/>
-                        </div>
-                    </div>
-                    <div class = "col-md-4">
-                        <div class="form-group form-md-line-input">
-                            <section class="control-label">Kode Voucher
-                            
-                            </section>
-                            {!! Form::select('voucher_id',  $listVoucher, $voucher_id, ['class' => 'selection-search-clear select-form', 'id' => 'voucher_id', 'name' => 'voucher_id']) !!}
+                            <input type ="date" class="form-control form-control-inline input-medium date-picker input-date" data-date-format="dd-mm-yyyy" type="text" name="end_date" id="end_date"  value="{{ $end_date }}" style="width: 15rem;"/>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="card-footer text-muted">
                 <div class="form-actions float-right">
-                    <a href="{{ route('reset-filter-preference-voucher-report') }}" type="reset" name="Reset" class="btn btn-danger"><i class="fa fa-times"></i> Batal</a>
+                    <button type="reset" name="Reset" class="btn btn-danger" onclick="reset_add();"><i class="fa fa-times"></i> Batal</button>
                     <button type="submit" name="Find" class="btn btn-primary" title="Search Data"><i class="fa fa-search"></i> Cari</button>
                 </div>
             </div>
@@ -91,6 +85,7 @@
     </form>
 </div>
 <br/>
+
 <div class="card border border-dark">
   <div class="card-header bg-dark clearfix">
     <h5 class="mb-0 float-left">
@@ -103,25 +98,19 @@
             <table id="example" style="width:100%" class="table table-striped table-bordered table-hover table-full-width">
                 <thead>
                     <tr>
-                        <th style='text-align:center; width: 5%'>No</th>
-                        <th style='text-align:center'>Kode Voucher</th>
-                        <th style='text-align:center'>No. Voucher</th>
-                        <th style='text-align:center'>Tanggal</th>
-                        <th style='text-align:center'>Nama Anggota</th>
-                        <th style='text-align:center'>Jabatan</th></th>
+                        <th width="10%" style='text-align:center'>No</th>
+                        <th width="45%" style='text-align:center'>Metode Pembayaran</th>
+                        <th width="45%" style='text-align:center'>Total</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php $no = 1;?>
-                    @foreach ($data as $row)
-                        <tr>
-                            <td class="text-center">{{ $no++ }}.</td>
-                            <td>{{ $PVRC->getVoucherCode($row['voucher_id']) }}</td>
-                            <td>{{ $row['voucher_no'] }}</td>
-                            <td>{{ date('d-m-Y', strtotime($row['sales_invoice_date'])) }}</td>
-                            <td>{{ $PVRC->getMemberName($row['customer_id']) }}</td>
-                            <td>{{ $PVRC->getDivisionName($row['customer_id']) }}</td>
-                        </tr>
+                    <?php $no = 1; ?>
+                    @foreach($sales_payment_method_list as $key => $val)
+                    <tr>
+                        <td style='text-align:center'>{{ $no++ }}.</td>
+                        <td>{{ $val }}</td>
+                        <td style="text-align: right">{{ number_format($SalesRecap->getAmount($key),2,'.',',') }}</td>
+                    </tr>
                     @endforeach
                 </tbody>
             </table>
@@ -129,8 +118,8 @@
     </div>
     <div class="card-footer text-muted">
         <div class="form-actions float-right">
-            <a class="btn btn-secondary" href="{{ url('preference-voucher-report/print') }}"><i class="fa fa-file-pdf"></i> Pdf</a>
-            <a class="btn btn-dark" href="{{ url('preference-voucher-report/export') }}"><i class="fa fa-download"></i> Export Data</a>
+            <a class="btn btn-secondary" href="{{ url('sales-invoice-recap/print') }}"><i class="fa fa-file-pdf"></i> Pdf</a>
+            <a class="btn btn-dark" href="{{ url('sales-invoice-recap/export') }}"><i class="fa fa-download"></i> Export Data</a>
         </div>
     </div>
   </div>

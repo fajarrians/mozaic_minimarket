@@ -183,10 +183,8 @@ class InvtItemController extends Controller
         $fields = $request->validate([
             'item_id'           => '',
             'item_category_id'  => 'required',
-            // 'item_status'       => 'required',
             'item_code'         => 'required',
             'item_name'         => 'required',
-            // 'item_barcode'      => '',
             'item_remark'       => '',
             'item_unit_id_1'    => 'required',
             'item_quantity_1'   => 'required',
@@ -196,10 +194,8 @@ class InvtItemController extends Controller
 
         $table                          = InvtItem::findOrFail($fields['item_id']);
         $table->item_category_id        = $fields['item_category_id'];
-        // $table->item_status             = $fields['item_status'];
         $table->item_code               = $fields['item_code'];
         $table->item_name               = $fields['item_name'];
-        // $table->item_barcode            = $fields['item_barcode'];
         $table->item_remark             = $fields['item_remark'];
         $table->item_unit_id            = $fields['item_unit_id_1'];
         $table->item_default_quantity   = $fields['item_quantity_1'];
@@ -211,7 +207,7 @@ class InvtItemController extends Controller
         for ($i=1; $i <= 4; $i++) {
             $first_data_packge[$i] = InvtItemPackge::where('item_packge_id',$request['item_packge_id_'.$i])
             ->first();
-            $data_packge[$i] = InvtItemPackge::findOrFail($request['item_packge_id_'.$i])
+            $data_packge[$i] = InvtItemPackge::findOrFail($first_data_packge[$i]['item_packge_id'])
             ->update([
                 'item_unit_id'          => $request['item_unit_id_'.$i],
                 'item_category_id'      => $request['item_category_id'],
@@ -226,14 +222,15 @@ class InvtItemController extends Controller
         ->where('item_unit_id', $request['item_unit_id_1'])
         ->where('item_category_id', $request['item_category_id'])
         ->first();
-        $data_stock = InvtItemStock::findOrFail($first_data_stock['item_stock_id'])
+        InvtItemStock::where('item_stock_id',$first_data_stock['item_stock_id'])
         ->update([
             'item_unit_id'          => $request['item_unit_id_1'],
             'item_category_id'      => $request['item_category_id'],
+            'updated_id'            => Auth::id(),
         ]);
         
         // dd($table);
-        if($table->save() && $data_stock == true){
+        if($table->save()){
             $msg = "Ubah Barang Berhasil";
             return redirect('/item')->with('msg', $msg);
         } else {
@@ -350,6 +347,15 @@ class InvtItemController extends Controller
         $item_category = InvtItemCategory::where('item_category_id', $request->item_category_id)
         ->first();
         $data = (($request->item_unit_cost * $item_category['margin_percentage']) / 100) + $request->item_unit_cost;
+
+        return $data;
+    }
+
+    public function checkWarehouse()
+    {
+        $data = InvtWarehouse::where('data_state',0)
+        ->where('company_id', Auth::user()->company_id)
+        ->first();
 
         return $data;
     }

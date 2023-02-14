@@ -7,8 +7,8 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ url('home') }}">Beranda</a></li>
-        <li class="breadcrumb-item"><a href="{{ url('sales-customer') }}">Daftar Pelanggan</a></li>
-        <li class="breadcrumb-item active" aria-current="page">Ubah Pelanggan</li>
+        <li class="breadcrumb-item"><a href="{{ url('sales-customer') }}">Daftar Anggota</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Ubah Anggota</li>
     </ol>
   </nav>
 
@@ -17,7 +17,7 @@
 @section('content')
 
 <h3 class="page-title">
-    Form Ubah Pelanggan
+    Form Ubah Anggota
 </h3>
 <br/>
 @if(session('msg'))
@@ -55,7 +55,7 @@
             <div class="row form-group">
                 <div class="col-md-6">
                     <div class="form-group">
-                        <a class="text-dark">Nama Pelanggan<a class='red'> *</a></a>
+                        <a class="text-dark">Nama Anggota<a class='red'> *</a></a>
                         <input class="form-control input-bb" name="customer_name" id="customer_name" type="text" autocomplete="off" value="{{ $data['customer_name'] }}"/>
                         <input class="form-control input-bb" name="customer_id" id="customer_id" type="text" autocomplete="off" value="{{ $data['customer_id'] }}" hidden/>
                     </div>

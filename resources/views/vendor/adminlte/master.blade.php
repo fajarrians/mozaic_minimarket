@@ -157,7 +157,6 @@ input[type=number]::-webkit-outer-spin-button {
                     width: 'resolve', 
                 });
             });
-            $('#date').datepicker({ dateFormat: 'dd-mm-yy' }).val();
         </script>
 
         {{-- Configured Scripts --}}

@@ -16,6 +16,22 @@
 
 		});
 	}
+
+    function check_upload(sales_invoice_id)
+    {
+        $.ajax({
+            url : "{{url('sales-invoice/check-upload-status')}}"+'/'+sales_invoice_id,
+            type: "GET",
+				success: function(msg){
+                    if (msg == 1) {
+                        alert('Data yang sudah diunggah tidak bisa dihapus!');
+                    } else {
+                        location.href="{{ url('sales-invoice/delete') }}"+'/'+sales_invoice_id;
+                    }
+			}
+
+		});
+    }
 </script>
 @stop
 @section('content_header')
@@ -119,7 +135,7 @@
                         <th width="2%" style='text-align:center'>No</th>
                         <th width="15%" style='text-align:center'>Tanggal Invoice</th>
                         <th width="15%" style='text-align:center'>Nomor Invoice</th>
-                        <th width="15%" style='text-align:center'>Pelanggan</th>
+                        <th width="15%" style='text-align:center'>Anggota</th>
                         <th width="15%" style='text-align:center'>Subtotal</th>
                         <th width="10%" style='text-align:center'>Aksi</th>
                     </tr>
@@ -135,7 +151,9 @@
                         <td style="text-align: right">{{ number_format($row['total_amount'],2,'.',',') }}</td>
                         <td class="text-center">
                             <a type="button" class="btn btn-outline-warning btn-sm" href="{{ url('/sales-invoice/detail/'.$row['sales_invoice_id']) }}">Detail</a>
-                            <a type="button" class="btn btn-outline-danger btn-sm" href="{{ url('/sales-invoice/delete/'.$row['sales_invoice_id']) }}">Hapus</a>
+                            <a type="button" class="btn btn-outline-success btn-sm" href="{{ url('/sales-invoice/print-repeat/'.$row['sales_invoice_id']) }}">Nota</a>
+                            {{-- <a type="button" class="btn btn-outline-danger btn-sm" href="{{ url('/sales-invoice/delete/'.$row['sales_invoice_id']) }}">Hapus</a> --}}
+                            <a type="button" class="btn btn-outline-danger btn-sm" onclick="check_upload({{ $row['sales_invoice_id'] }});$(this).addClass('disabled');">Hapus</a>
                         </td>
                     </tr>
                     @endforeach

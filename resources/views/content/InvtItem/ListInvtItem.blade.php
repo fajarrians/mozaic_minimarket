@@ -26,6 +26,20 @@
         
              });
         });
+
+        function function_click_add(){
+            $.ajax({
+				type: "GET",
+				url : "{{ route('check-warehouse') }}",
+				success: function(data){
+                    if (data == ''){
+                        $('#alert').append("<div class='alert alert-danger' id='alert' role='alert'>Tidak ada Gudang</div>");
+                    } else {
+                        location.href = "{{ url('/item/add-item') }}";
+                    }
+			    }
+		    });
+        }
     </script>
 @endsection
 @section('content_header')
@@ -45,7 +59,7 @@
     <b>Daftar Barang</b> <small>Kelola Barang </small>
 </h3>
 <br/>
-
+<div id="alert"></div>
 @if(session('msg'))
 <div class="alert alert-info" role="alert">
     {{session('msg')}}
@@ -57,7 +71,8 @@
         Daftar
     </h5>
     <div class="form-actions float-right">
-        <button onclick="location.href='{{ url('/item/add-item') }}'" name="Find" class="btn btn-sm btn-info" title="Add Data"><i class="fa fa-plus"></i> Tambah Barang </button>
+        {{-- <button onclick="location.href='{{ url('/item/add-item') }}'" name="Find" class="btn btn-sm btn-info" title="Add Data"><i class="fa fa-plus"></i> Tambah Barang </button> --}}
+        <a onclick="function_click_add()" class="btn btn-sm btn-info" title="Add Data"><i class="fa fa-plus"></i> Tambah Barang </a>
     </div>
   </div>
 

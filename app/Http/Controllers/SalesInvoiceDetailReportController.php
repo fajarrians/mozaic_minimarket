@@ -206,7 +206,7 @@ class SalesInvoiceDetailReportController extends Controller
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
                 <td rowspan=\"2\" width=\"5%\" ><div style=\"text-align: center; vertical-align: middle; font-weight: bold\">No</div></td>
-                <td rowspan=\"2\" width=\"15%\"><div style=\"text-align: center; font-weight: bold\">Pelanggan</div></td>
+                <td rowspan=\"2\" width=\"15%\"><div style=\"text-align: center; font-weight: bold\">Anggota</div></td>
                 <td rowspan=\"2\" width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Tanggal</div></td>
                 <td rowspan=\"2\" width=\"15%\"><div style=\"text-align: center; font-weight: bold\">No. Invoice</div></td>
                 <td rowspan=\"2\" width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Total Diskon</div></td>
@@ -360,7 +360,7 @@ class SalesInvoiceDetailReportController extends Controller
 
             $sheet->setCellValue('B1',"Laporan Penjualan ".$sales_payment_method_list[$sales_payment_method]." Dari Periode ".date('d M Y', strtotime($start_date))." s.d. ".date('d M Y', strtotime($end_date)));	
             $sheet->setCellValue('B3',"No");
-            $sheet->setCellValue('C3',"Pelanggan");
+            $sheet->setCellValue('C3',"Anggota");
             $sheet->setCellValue('D3',"Tanggal");
             $sheet->setCellValue('E3',"No. Invoice");
             $sheet->setCellValue('F3',"Total Diskon");

@@ -21,9 +21,11 @@
           } else {
             $.ajax({
                 type: "GET",
-                url : "{{route('configuration-data-dwonload')}}"
+                url : "{{route('configuration-data-dwonload')}}",
+                success: function(data){
+                  location.reload();
+                }
               });
-              location.reload();
           }
 			}
 		});
@@ -90,7 +92,7 @@
         Apakah anda ingin mengganti data yang sudah ada?
       </div>
       <div class="modal-footer">
-        <a href="{{ route('configuration-data-dwonload') }}" class="btn btn-success">Iya</a>
+        <a href="{{ route('configuration-data-dwonload') }}" onclick="$(this).addClass('disabled');" class="btn btn-success">Iya</a>
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tidak</button>
       </div>
     </div>
@@ -107,7 +109,7 @@
         Apakah anda yakin ingin menutup kasir?
       </div>
       <div class="modal-footer">
-        <a href="{{ route('close-cashier-configuration') }}" class="btn btn-success">Iya</a>
+        <a href="{{ route('close-cashier-configuration') }}" onclick="$(this).addClass('disabled');" class="btn btn-success">Iya</a>
         <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tidak</button>
       </div>
     </div>
@@ -131,10 +133,10 @@
 </div>
 
 <div style="display: flex; justify-content: center; align-items: center; height: 200px; ">
-  <a onclick="functin_click_btn()" class="btn btn-success mr-3 btn-lg"><i class="fa fa-download"></i> Unduh Data</a>
-  <a href="{{ route('configuration-data-upload') }}" class="btn btn-success btn-lg mr-3"><i class="fa fa-upload"></i> Unggah Data</a>
+  <a onclick="$(this).addClass('disabled');functin_click_btn()" class="btn btn-success mr-3 btn-lg"><i class="fa fa-download"></i> Unduh Data</a>
+  <a href="{{ route('configuration-data-upload') }}" onclick="$(this).addClass('disabled');" class="btn btn-success btn-lg mr-3"><i class="fa fa-upload"></i> Unggah Data</a>
   <a onclick="click_close_cashier()" class="btn btn-success btn-lg mr-3"><i class="fa fa-archive"></i> Tutup Kasir</a>
-  <a href="{{ route('backup-data-configuration') }}" class="btn btn-success btn-lg"><i class="fa fa-cloud"></i> Cadangkan Data</a>
+  <a href="{{ route('backup-data-configuration') }}" onclick="$(this).addClass('disabled');" class="btn btn-success btn-lg"><i class="fa fa-cloud"></i> Cadangkan Data</a>
 </div>
 
 @stop

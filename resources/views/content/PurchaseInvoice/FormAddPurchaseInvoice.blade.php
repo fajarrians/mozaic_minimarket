@@ -129,7 +129,7 @@
             $("#subtotal_amount_after_discount_view").val(toRp(subtotal));
             $("#subtotal_amount_after_discount").val(subtotal);
             $("#item_unit_cost_view").val(toRp(cost_new));
-            $("#item_unit_cost").val(cost_new);
+            // $("#item_unit_cost").val(cost_new);
         });
 
         $("#discount_percentage").change(function(){
@@ -238,30 +238,36 @@
         // });
     });
 
-    function process_change_cost() {
-        var item_category_id                = document.getElementById("item_category_id").value;
-        var item_id		                    = document.getElementById("item_id").value;
-        var item_unit_id		            = document.getElementById("item_unit_id").value;
-        var item_cost_new		            = document.getElementById("item_cost_new").value;
-        var item_price_new		            = document.getElementById("item_price_new").value;
-        var margin_percentage		        = document.getElementById("margin_percentage").value;
+    function process_change_cost(bool) {
+        if (bool == true) {
+            var item_category_id                = document.getElementById("item_category_id").value;
+            var item_id		                    = document.getElementById("item_id").value;
+            var item_unit_id		            = document.getElementById("item_unit_id").value;
+            var item_cost_new		            = document.getElementById("item_cost_new").value;
+            var item_price_new		            = document.getElementById("item_price_new").value;
+            var margin_percentage		        = document.getElementById("margin_percentage").value;
+    
+            $.ajax({
+                type: "POST",
+                url : "{{route('process-change-cost-purchase-invoice')}}",
+                data: {
+                    'item_category_id'  : item_category_id,
+                    'item_id'    	    : item_id, 
+                    'item_unit_id'      : item_unit_id,
+                    'item_cost_new'     : item_cost_new,
+                    'item_price_new'    : item_price_new,
+                    'margin_percentage' : margin_percentage,
+                    '_token'            : '{{csrf_token()}}'
+                },
+                success: function(msg){
+                    location.reload();
+                }
+            });
+        } else {
+            var item_cost_old = $('#item_unit_cost').val();
 
-        $.ajax({
-            type: "POST",
-            url : "{{route('process-change-cost-purchase-invoice')}}",
-            data: {
-                'item_category_id'  : item_category_id,
-                'item_id'    	    : item_id, 
-                'item_unit_id'      : item_unit_id,
-                'item_cost_new'     : item_cost_new,
-                'item_price_new'    : item_price_new,
-                'margin_percentage' : margin_percentage,
-                '_token'            : '{{csrf_token()}}'
-            },
-            success: function(msg){
-                location.reload();
-            }
-        });
+            $('#item_unit_cost_view').val(toRp(item_cost_old));
+        }
     }
 
     function processAddArrayPurchaseInvoice(){
@@ -523,8 +529,8 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="process_change_cost();" class="btn btn-success">Iya</button>
-                <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Tidak</button>
+                <button type="button" onclick="process_change_cost(true);" class="btn btn-success">Iya</button>
+                <button type="button" onclick="process_change_cost(false);" class="btn btn-danger" data-bs-dismiss="modal">Tidak</button>
             </div>
         </div>
     </div>

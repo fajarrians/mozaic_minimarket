@@ -29019,6 +29019,7 @@ CREATE TABLE `sii_remove_log` (
   `sales_invoice_item_id` int(10) DEFAULT NULL,
   `sales_invoice_no` varchar(250) DEFAULT NULL,
   `sii_amount` varchar(250) DEFAULT NULL,
+  `status_upload` int(1) DEFAULT 0,
   `data_state` int(1) DEFAULT 0,
   `created_id` int(10) DEFAULT NULL,
   `updated_id` int(10) DEFAULT NULL,
@@ -29064,16 +29065,9 @@ CREATE TABLE `system_login_log` (
   `created_at` datetime DEFAULT NULL,
   `updated_at` datetime DEFAULT NULL,
   PRIMARY KEY (`login_log_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `system_login_log` */
-
-insert  into `system_login_log`(`login_log_id`,`user_id`,`company_id`,`log_time`,`log_status`,`status_upload`,`created_at`,`updated_at`) values 
-(1,56,1,'2022-11-05 10:34:21',0,1,'2022-11-05 10:34:21','2022-11-07 10:41:39'),
-(2,56,1,'2022-11-05 12:03:26',0,1,'2022-11-05 12:03:26','2022-11-07 10:41:39'),
-(3,56,1,'2022-11-07 09:21:07',0,1,'2022-11-07 09:21:07','2022-11-07 10:41:39'),
-(4,56,1,'2022-11-07 09:41:24',0,1,'2022-11-07 09:41:24','2022-11-07 10:41:39'),
-(5,56,1,'2022-11-08 09:19:31',0,0,'2022-11-08 09:19:31','2022-11-08 09:19:31');
 
 /*Table structure for table `system_menu` */
 
@@ -29754,7 +29748,7 @@ DELIMITER $$
 	SET nLastBalance = nOpeningBalance - new.payment_allocated;
 	if (new.data_state = 2) then
 		INSERT INTO acct_supplier_balance (company_id, supplier_id, supplier_balance_remark, transaction_no, supplier_balance_date, opening_balance, payable_amount, payment_amount, last_balance, created_id, updated_id, created_at, updated_at, data_state)
-		VALUES (new.company_id, new.supplier_id, 'Hapus Pembayaran Hutang', new.payment_no, new.payment_date, nOpeningBalance, 0, new.payment_allocated, nLastBalance, new.created_id, new.updated_id, new.created_at, new.updated_at, 2);
+		VALUES (new.company_id, new.supplier_id, 'Hapus Pembayaran Hutang', new.payment_no, new.payment_date, nOpeningBalance, 0, -new.payment_allocated, nLastBalance, new.created_id, new.updated_id, new.created_at, new.updated_at, 0);
 	end if;
     END */$$
 

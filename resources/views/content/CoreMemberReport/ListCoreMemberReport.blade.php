@@ -22,7 +22,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{{ url('home') }}">Beranda</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Laporan Pembelian Pelanggan</li>
+      <li class="breadcrumb-item active" aria-current="page">Laporan Pembelian Anggota</li>
     </ol>
 </nav>
 
@@ -31,7 +31,7 @@
 @section('content')
 
 <h3 class="page-title">
-    <b>Laporan Pembelian Pelanggan</b>
+    <b>Laporan Pembelian Anggota</b>
 </h3>
 <br/>
 <div id="accordion">
@@ -99,7 +99,7 @@
                 <thead>
                     <tr>
                         <th style='text-align:center; width: 5%'>No</th>
-                        <th style='text-align:center; width: 10%'>Nama Pelanggan</th>
+                        <th style='text-align:center; width: 10%'>Nama Anggota</th>
                         <th style='text-align:center; width: 10%'>Total Transaksi</th>
                         <th style='text-align:center; width: 10%'>Total Barang</th>
                         <th style='text-align:center; width: 15%'>Total Pembelian</th>

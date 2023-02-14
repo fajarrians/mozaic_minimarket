@@ -17,6 +17,7 @@ use App\Models\PreferenceCompany;
 use App\Models\PreferenceVoucher;
 use App\Models\SalesInvoice;
 use App\Models\SalesInvoiceItem;
+use App\Models\SIIRemoveLog;
 use App\Models\SystemLoginLog;
 use Elibyy\TCPDF\Facades\TCPDF;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class ConfigurationDataController extends Controller
     public function checkDataConfiguration()
     {
         $item_stock = curl_init();
-        curl_setopt($item_stock, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-item-stock');
+        curl_setopt($item_stock, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-stock');
         curl_setopt($item_stock, CURLOPT_RETURNTRANSFER, true);
         $response_item_stock = curl_exec($item_stock);
         $result_item_stock = json_decode($response_item_stock,TRUE);
@@ -61,7 +62,7 @@ class ConfigurationDataController extends Controller
     public function dwonloadConfigurationData() 
     {
         $item_category = curl_init();
-        curl_setopt($item_category, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-item-category');
+        curl_setopt($item_category, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-category');
         curl_setopt($item_category, CURLOPT_RETURNTRANSFER, true);
         $response_item_category = curl_exec($item_category);
         $result_item_category = json_decode($response_item_category,TRUE);
@@ -76,7 +77,7 @@ class ConfigurationDataController extends Controller
         }
         
         $item_unit = curl_init();
-        curl_setopt($item_unit, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-item-unit');
+        curl_setopt($item_unit, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-unit');
         curl_setopt($item_unit, CURLOPT_RETURNTRANSFER, true);
         $response_item_unit = curl_exec($item_unit);
         $result_item_unit = json_decode($response_item_unit,TRUE);
@@ -91,7 +92,7 @@ class ConfigurationDataController extends Controller
         }
 
         $item_barcode = curl_init();
-        curl_setopt($item_barcode, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-item-barcode');
+        curl_setopt($item_barcode, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-barcode');
         curl_setopt($item_barcode, CURLOPT_RETURNTRANSFER, true);
         $response_item_barcode = curl_exec($item_barcode);
         $result_item_barcode = json_decode($response_item_barcode,TRUE);
@@ -106,7 +107,7 @@ class ConfigurationDataController extends Controller
         }
 
         $item_packge = curl_init();
-        curl_setopt($item_packge, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-item-packge');
+        curl_setopt($item_packge, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-packge');
         curl_setopt($item_packge, CURLOPT_RETURNTRANSFER, true);
         $response_item_packge = curl_exec($item_packge);
         $result_item_packge = json_decode($response_item_packge,TRUE);
@@ -121,7 +122,7 @@ class ConfigurationDataController extends Controller
         }
         
         $item_warehouse = curl_init();
-        curl_setopt($item_warehouse, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-item-warehouse');
+        curl_setopt($item_warehouse, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-warehouse');
         curl_setopt($item_warehouse, CURLOPT_RETURNTRANSFER, true);
         $response_item_warehouse = curl_exec($item_warehouse);
         $result_item_warehouse = json_decode($response_item_warehouse,TRUE);
@@ -136,7 +137,7 @@ class ConfigurationDataController extends Controller
         }
 
         $item = curl_init();
-        curl_setopt($item, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-item');
+        curl_setopt($item, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item');
         curl_setopt($item, CURLOPT_RETURNTRANSFER, true);
         $response_item = curl_exec($item);
         $result_item = json_decode($response_item,TRUE);
@@ -151,7 +152,7 @@ class ConfigurationDataController extends Controller
         }
 
         $item_stock = curl_init();
-        curl_setopt($item_stock, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-item-stock');
+        curl_setopt($item_stock, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-stock');
         curl_setopt($item_stock, CURLOPT_RETURNTRANSFER, true);
         $response_item_stock = curl_exec($item_stock);
         $result_item_stock = json_decode($response_item_stock,TRUE);
@@ -165,7 +166,7 @@ class ConfigurationDataController extends Controller
         }
 
         $item_rack = curl_init();
-        curl_setopt($item_rack, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-item-rack');
+        curl_setopt($item_rack, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-rack');
         curl_setopt($item_rack, CURLOPT_RETURNTRANSFER, true);
         $response_item_rack = curl_exec($item_rack);
         $result_item_rack = json_decode($response_item_rack,TRUE);
@@ -179,7 +180,7 @@ class ConfigurationDataController extends Controller
         }
 
         $core_member = curl_init();
-        curl_setopt($core_member, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-core-member');
+        curl_setopt($core_member, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-core-member');
         curl_setopt($core_member, CURLOPT_RETURNTRANSFER, true);
         $response_core_member = curl_exec($core_member);
         $result_core_member = json_decode($response_core_member,TRUE);
@@ -193,7 +194,7 @@ class ConfigurationDataController extends Controller
         }
 
         $preference_voucher = curl_init();
-        curl_setopt($preference_voucher, CURLOPT_URL,'http://127.0.0.1:8000/api/get-data-preference-voucher');
+        curl_setopt($preference_voucher, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-preference-voucher');
         curl_setopt($preference_voucher, CURLOPT_RETURNTRANSFER, true);
         $response_preference_voucher = curl_exec($preference_voucher);
         $result_preference_voucher = json_decode($response_preference_voucher,TRUE);
@@ -207,11 +208,9 @@ class ConfigurationDataController extends Controller
         }
 
         if (($data1 == true) && ($data2 == true) && ($data3 == true) && ($data4 == true) && ($data5 == true) && ($data6 == true) && ($data7 == true) && ($data8 == true) && ($data9 == true) && ($data10 == true)) {
-            $msg = "Data Berhasil diunduh";
-            return redirect('/configuration-data')->with('msg', $msg);
+            return session()->flash('msg',"Data Berhasil diunduh");
         } else {
-            $msg = "Data Gagal diunduh";
-            return redirect('/configuration-data')->with('msg', $msg);
+            return session()->flash('msg',"Data Gagal diunduh");
         }
     }   
 
@@ -231,6 +230,9 @@ class ConfigurationDataController extends Controller
         $data_login_log = SystemLoginLog::where('status_upload', 0)
         ->where('company_id',Auth::user()->company_id)
         ->get();
+        $data_sii_remove = SIIRemoveLog::where('status_upload', 0)
+        ->where('company_id',Auth::user()->company_id)
+        ->get();
 
         // dd($data_sales_invoice_item);
 
@@ -238,7 +240,7 @@ class ConfigurationDataController extends Controller
             $data_login_log = json_decode($data_login_log,TRUE);
             for ($i=0; $i < count($data_login_log); $i++) { 
                 $login_log = curl_init();
-                curl_setopt($login_log, CURLOPT_URL,'http://127.0.0.1:8000/api/post-data-login-log');
+                curl_setopt($login_log, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-login-log');
                 curl_setopt($login_log, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($login_log, CURLOPT_POSTFIELDS, $data_login_log[$i]);
                 $response_login_log = curl_exec($login_log);
@@ -256,7 +258,7 @@ class ConfigurationDataController extends Controller
             $data_close_cashier = json_decode($data_close_cashier,TRUE);
             for ($i=0; $i < count($data_close_cashier); $i++) { 
                 $close_cashier = curl_init();
-                curl_setopt($close_cashier, CURLOPT_URL,'http://127.0.0.1:8000/api/post-data-close-cashier');
+                curl_setopt($close_cashier, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-close-cashier');
                 curl_setopt($close_cashier, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($close_cashier, CURLOPT_POSTFIELDS, $data_close_cashier[$i]);
                 $response_close_cashier = curl_exec($close_cashier);
@@ -274,7 +276,7 @@ class ConfigurationDataController extends Controller
             $data_sales_invoice = json_decode($data_sales_invoice,TRUE);
             for ($i=0; $i < count($data_sales_invoice); $i++) { 
                 $sales_invoice = curl_init();
-                curl_setopt($sales_invoice, CURLOPT_URL,'http://127.0.0.1:8000/api/post-data-sales-invoice');
+                curl_setopt($sales_invoice, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-sales-invoice');
                 curl_setopt($sales_invoice, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($sales_invoice, CURLOPT_POSTFIELDS, $data_sales_invoice[$i]);
                 $response_sales_invoice = curl_exec($sales_invoice);
@@ -292,7 +294,7 @@ class ConfigurationDataController extends Controller
             $data_sales_invoice_item = json_decode($data_sales_invoice_item,TRUE);
             for ($i=0; $i < count($data_sales_invoice_item); $i++) { 
                 $sales_invoice_item = curl_init();
-                curl_setopt($sales_invoice_item, CURLOPT_URL,'http://127.0.0.1:8000/api/post-data-sales-invoice-item');
+                curl_setopt($sales_invoice_item, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-sales-invoice-item');
                 curl_setopt($sales_invoice_item, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($sales_invoice_item, CURLOPT_POSTFIELDS, $data_sales_invoice_item[$i]);
                 $response_sales_invoice_item = curl_exec($sales_invoice_item);
@@ -310,7 +312,7 @@ class ConfigurationDataController extends Controller
             $data_core_member = json_decode($data_core_member,TRUE);
             for ($i=0; $i < count($data_core_member); $i++) { 
                 $core_member = curl_init();
-                curl_setopt($core_member, CURLOPT_URL,'http://127.0.0.1:8000/api/post-data-core-member');
+                curl_setopt($core_member, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-core-member');
                 curl_setopt($core_member, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($core_member, CURLOPT_POSTFIELDS, $data_core_member[$i]);
                 $response_core_member = curl_exec($core_member);
@@ -325,12 +327,30 @@ class ConfigurationDataController extends Controller
 
         for ($i=0; $i < count($data_core_member); $i++) { 
             $core_member_kopkar = curl_init();
-            curl_setopt($core_member_kopkar, CURLOPT_URL,'http://127.0.0.1:8000/api/post-data-core-member-kopkar');
+            curl_setopt($core_member_kopkar, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-core-member-kopkar');
             curl_setopt($core_member_kopkar, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($core_member_kopkar, CURLOPT_POSTFIELDS, $data_core_member[$i]);
             $response_core_member_kopkar = curl_exec($core_member_kopkar);
             $result_core_member_kopkar = json_decode($response_core_member_kopkar,TRUE);
             curl_close($core_member_kopkar);    
+        }
+
+        if (count($data_sii_remove) != 0) {
+            $data_sii_remove = json_decode($data_sii_remove,TRUE);
+            for ($i=0; $i < count($data_sii_remove); $i++) { 
+                $sii_remove = curl_init();
+                curl_setopt($sii_remove, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-sii-remove');
+                curl_setopt($sii_remove, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($sii_remove, CURLOPT_POSTFIELDS, $data_sii_remove[$i]);
+                $response_sii_remove = curl_exec($sii_remove);
+                $result_sii_remove = json_decode($response_sii_remove,TRUE);
+                curl_close($sii_remove);    
+            }
+            if ($result_sii_remove == true) {
+                SIIRemoveLog::where('status_upload',0)
+                ->where('company_id',Auth::user()->company_id)
+                ->update(['status_upload' => 1]);
+            }
         }
 
         $msg = "Data Berhasil diunggah";
@@ -430,7 +450,7 @@ class ConfigurationDataController extends Controller
         }
     }
 
-    public function printCloseCashierConfiguration()
+    public function printCloseCashierConfiguration1()
     {
         $data = CloseCashierLog::where('data_state',0)
         ->where('company_id', Auth::user()->company_id)
@@ -539,6 +559,125 @@ class ConfigurationDataController extends Controller
             </tr>
         </table>
         <div>---------------------------------------</div>
+        
+        ";
+
+        $pdf::writeHTML($tblStock1.$tblStock2, true, false, false, false, '');
+
+
+        $filename = 'Tutup_Kasir.pdf';
+        $pdf::Output($filename, 'I');
+    }
+
+    public function printCloseCashierConfiguration()
+    {
+        $data = CloseCashierLog::where('data_state',0)
+        ->where('company_id', Auth::user()->company_id)
+        ->orderBy('cashier_log_id', 'DESC')
+        ->first();
+
+        $data_company = PreferenceCompany::where('data_state',0)
+        ->where('company_id', Auth::user()->company_id)
+        ->first();
+
+        $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+
+        $pdf::SetPrintHeader(false);
+        $pdf::SetPrintFooter(false);
+
+        $pdf::SetMargins(5, 1, 5, 1); // put space of 10 on top
+
+        $pdf::setImageScale(PDF_IMAGE_SCALE_RATIO);
+
+        if (@file_exists(dirname(__FILE__).'/lang/eng.php')) {
+            require_once(dirname(__FILE__).'/lang/eng.php');
+            $pdf::setLanguageArray($l);
+        }
+
+        $pdf::AddPage('P', array(75, 3276));
+
+        $pdf::SetFont('helvetica', '', 10);
+
+        $tbl = " 
+        <table style=\" font-size:9px; \" >
+            <tr>
+                <td style=\"text-align: center; font-size:12px; font-weight: bold\">".$data_company['company_name']."</td>
+            </tr>
+            <tr>
+                <td style=\"text-align: center; font-size:9px;\">".$data_company['company_address']."</td>
+            </tr>
+        </table>
+        ";
+        $pdf::writeHTML($tbl, true, false, false, false, '');
+            
+        $tblStock1 = "
+        <div>-------------------------------------------------------</div>
+        <table style=\" font-size:9px; \">
+            <tr>
+                <td width=\"25%\">TGL.</td>
+                <td width=\"10%\" style=\"text-align: center;\">:</td>
+                <td width=\"60%\">".date('d-m-Y')."  ".date('H:i')."</td>
+            </tr>
+            <tr>
+                <td width=\"25%\">SHIFT</td>
+                <td width=\"10%\" style=\"text-align: center;\">:</td>
+                <td>".$data['shift_cashier']."</td>
+            </tr>
+            <tr>
+                <td width=\"25%\">KASIR</td>
+                <td width=\"10%\" style=\"text-align: center;\">:</td>
+                <td width=\"60%\">".Auth::user()->name."</td>
+            </tr>
+        </table>
+        <div>-------------------------------------------------------</div>
+        ";
+
+        $tblStock2 = "
+        <table style=\" font-size:9px; \" width=\" 100% \">
+            <tr>
+                <td width=\" 45% \" style=\"text-align: left;\">SALDO AWAL</td>
+                <td width=\" 15% \" style=\"text-align: right;\"></td>
+                <td width=\" 7% \" style=\"text-align: right;\">:</td>
+                <td width=\" 33% \" style=\"text-align: right;\">400.000</td>
+            </tr>
+            <tr>
+                <td width=\" 35% \" style=\"text-align: left;\">TOTAL</td>
+                <td width=\" 25% \" style=\"text-align: right;\">(".$data['total_transaction'].")</td>
+                <td width=\" 7% \" style=\"text-align: right;\">:</td>
+                <td width=\" 33% \" style=\"text-align: right;\">".number_format($data['total_amount'],0,',','.')."</td>
+            </tr>
+            <tr>
+                <td width=\" 35% \" style=\"text-align: left;\">PIUTANG</td>
+                <td width=\" 25% \" style=\"text-align: right;\">(".$data['total_receivable_transaction'].")</td>
+                <td width=\" 7% \" style=\"text-align: right;\">:</td>
+                <td width=\" 33% \" style=\"text-align: right;\">".number_format($data['amount_receivable_transaction'],0,',','.')."</td>
+            </tr>
+            <tr>
+                <td width=\" 35% \" style=\"text-align: left;\">E-WALLET</td>
+                <td width=\" 25% \" style=\"text-align: right;\">(".$data['total_cashless_transaction'].")</td>
+                <td width=\" 7% \" style=\"text-align: right;\">:</td>
+                <td width=\" 33% \" style=\"text-align: right;\">".number_format($data['amount_cashless_transaction'],0,',','.')."</td>
+            </tr>
+            <tr>
+                <td width=\" 35% \" style=\"text-align: left;\">TUNAI</td>
+                <td width=\" 25% \" style=\"text-align: right;\">(".$data['total_cash_transaction'].")</td>
+                <td width=\" 7% \" style=\"text-align: right;\">:</td>
+                <td width=\" 33% \" style=\"text-align: right;\">".number_format($data['amount_cash_transaction'],0,',','.')."</td>
+            </tr>
+            <tr>
+                <td width=\" 45% \" style=\"text-align: left;\">DISETOR</td>
+                <td width=\" 15% \" style=\"text-align: right;\"></td>
+                <td width=\" 7% \" style=\"text-align: right;\">:</td>
+                <td width=\" 33% \" style=\"text-align: right;\">".number_format($data['amount_cash_transaction'],0,',','.')."</td>
+            </tr>
+            <tr>
+                <td width=\" 45% \" style=\"text-align: left;\">SALDO AKHIR</td>
+                <td width=\" 15% \" style=\"text-align: right;\"></td>
+                <td width=\" 7% \" style=\"text-align: right;\">:</td>
+                <td width=\" 33% \" style=\"text-align: right;\">400.000</td>
+            </tr>
+        </table>
+        <div>-------------------------------------------------------</div>
         
         ";
 

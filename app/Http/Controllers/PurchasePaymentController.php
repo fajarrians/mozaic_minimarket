@@ -519,6 +519,7 @@ class PurchasePaymentController extends Controller
         $purchasepayment->voided_id     = Auth::id();
         $purchasepayment->data_state    = 2;
         
+        $purchasepaymenttransfer = PurchasePaymentTransfer::where('payment_id', $request->payment_id)->get();
 
         if($purchasepayment->save()){
             $purchasepaymentitem 	= PurchasePaymentItem::where('payment_id', $request->payment_id)->get();
@@ -562,6 +563,9 @@ class PurchasePaymentController extends Controller
 
             $journalvoucher_item_end = JournalVoucherItem::where('company_id', Auth::user()->company_id)->where('journal_voucher_item_id', $journalvoucher_item_first['journal_voucher_item_id'] + 1)->first();
             $account_setting_status_end =  $journalvoucher_item_end['account_id_status'];
+
+            $datapurchasepaymenttransfer = JournalVoucherItem::where('company_id', Auth::user()->company_id)->where('journal_voucher_item_id', $journalvoucher_item_first['journal_voucher_item_id'] + 2)->first();
+            $account_setting_status_transfer =  $datapurchasepaymenttransfer['account_id_status'];
 
             if($account_setting_status_end == 0){
                 $account_setting_status_end = 1;
@@ -614,6 +618,34 @@ class PurchasePaymentController extends Controller
                 'created_id'                    => Auth::id()
             );
             JournalVoucherItem::create($journal_credit);
+
+            if(!empty($purchasepaymenttransfer) && $purchasepaymenttransfer != null){
+                if($account_setting_status_transfer == 0){
+                    $account_setting_status_transfer = 1;
+                } else {
+                    $account_setting_status_transfer = 0;
+                }
+                if ($account_setting_status_transfer == 0){ 
+                    $debit_amount = $datapurchasepaymenttransfer['journal_voucher_amount'];
+                    $credit_amount = 0;
+                } else {
+                    $debit_amount = 0;
+                    $credit_amount = $datapurchasepaymenttransfer['journal_voucher_amount'];
+                }
+                $journal_debit = array(
+                    'company_id'                    => Auth::user()->company_id,
+                    'journal_voucher_id'            => $journal_voucher_id['journal_voucher_id'],
+                    'account_id'                    => $datapurchasepaymenttransfer['account_id'],
+                    'journal_voucher_amount'        => $datapurchasepaymenttransfer['journal_voucher_amount'],
+                    'account_id_default_status'     => $datapurchasepaymenttransfer['account_id_default_status'],
+                    'account_id_status'             => $account_setting_status_transfer,
+                    'journal_voucher_debit_amount'  => $debit_amount,
+                    'journal_voucher_credit_amount' => $credit_amount,
+                    'updated_id'                    => Auth::id(),
+                    'created_id'                    => Auth::id()
+                );
+                JournalVoucherItem::create($journal_debit);
+            }
 
 
             // $journalvoucher 	    = JournalVoucher::where('transaction_journal_no', $payment_no)->where('company_id', Auth::user()->company_id)->first();

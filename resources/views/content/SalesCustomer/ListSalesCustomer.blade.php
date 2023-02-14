@@ -8,7 +8,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{{ url('home') }}">Beranda</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Daftar Pelanggan</li>
+      <li class="breadcrumb-item active" aria-current="page">Daftar Anggota</li>
     </ol>
   </nav>
 
@@ -17,7 +17,7 @@
 @section('content')
 
 <h3 class="page-title">
-    <b>Daftar Pelanggan</b> <small>Kelola Pelanggan </small>
+    <b>Daftar Anggota</b> <small>Kelola Anggota </small>
 </h3>
 <br/>
 
@@ -32,7 +32,7 @@
         Daftar
     </h5>
     <div class="form-actions float-right">
-        <button onclick="location.href='{{ url('/sales-customer/add') }}'" name="Find" class="btn btn-sm btn-info" title="Add Data"><i class="fa fa-plus"></i> Tambah Pelanggan </button>
+        <button onclick="location.href='{{ url('/sales-customer/add') }}'" name="Find" class="btn btn-sm btn-info" title="Add Data"><i class="fa fa-plus"></i> Tambah Anggota </button>
     </div>
   </div>
 
@@ -42,7 +42,7 @@
                 <thead>
                     <tr>
                         <th width="5%" style='text-align:center'>No</th>
-                        <th width="20%" style='text-align:center'>Nama Pelanggan</th>
+                        <th width="20%" style='text-align:center'>Nama Anggota</th>
                         <th width="20%" style='text-align:center'>Jenis Kelamin</th>
                         <th width="10%" style='text-align:center'>Aksi</th>
                     </tr>

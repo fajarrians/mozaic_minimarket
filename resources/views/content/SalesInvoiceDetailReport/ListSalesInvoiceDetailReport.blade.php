@@ -115,7 +115,7 @@
                 <thead>
                     <tr>
                         <th style='text-align:center; width: 5%'>No</th>
-                        <th style='text-align:center; width: 10%'>Pelanggan</th>
+                        <th style='text-align:center; width: 10%'>Anggota</th>
                         <th style='text-align:center; width: 10%'>Tanggal</th>
                         <th style='text-align:center; width: 15%'>No. Penjulan</th>
                         <th style='text-align:center; width: 12%'>Nama Barang</th>

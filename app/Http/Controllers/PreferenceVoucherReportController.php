@@ -181,7 +181,7 @@ class PreferenceVoucherReportController extends Controller
                 <th width=\"20%\" ><div style=\"text-align: center; font-weight: bold\">Kode Voucher</div></th>
                 <th width=\"20%\" ><div style=\"text-align: center; font-weight: bold\">No. Voucher</div></th>
                 <th width=\"15%\" ><div style=\"text-align: center; font-weight: bold\">Tanggal</div></th>
-                <th width=\"20%\" ><div style=\"text-align: center; font-weight: bold\">Nama Pelanggan</div></th>
+                <th width=\"20%\" ><div style=\"text-align: center; font-weight: bold\">Nama Anggota</div></th>
                 <th width=\"20%\" ><div style=\"text-align: center; font-weight: bold\">Jabatan</div></th>
             </tr>
         ";
@@ -289,7 +289,7 @@ class PreferenceVoucherReportController extends Controller
             $sheet->setCellValue('C4',"Kode Voucher");
             $sheet->setCellValue('D4',"No. Voucher");
             $sheet->setCellValue('E4',"Tanggal");
-            $sheet->setCellValue('F4',"Nama Pelanggan");
+            $sheet->setCellValue('F4',"Nama Anggota");
             $sheet->setCellValue('G4',"Jabatan");
             
             $j=5;

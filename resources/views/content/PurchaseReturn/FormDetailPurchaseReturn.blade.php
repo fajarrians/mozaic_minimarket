@@ -60,7 +60,7 @@
             </div>
             <div class="col-md-9 mt-3">
                 <div class="form-group">
-                    <a class="text-dark">Keterangan<a class='red'> *</a></a>
+                    <a class="text-dark">Keterangan</a>
                     <textarea class="form-control input-bb" name="purchase_return_remark" id="purchase_return_remark" type="text" autocomplete="off" readonly >{{ $purchasereturn['purchase_return_remark'] }}</textarea>
                 </div>
             </div>

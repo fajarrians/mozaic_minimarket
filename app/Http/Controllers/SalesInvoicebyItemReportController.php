@@ -464,16 +464,19 @@ class SalesInvoicebyItemReportController extends Controller
         ->get(); 
 
         if (empty($data_item)){
-            $coba1 = "kosong";
+            $coba1 = [];
         } else {
             foreach ($data_item as $key => $val) {
                 $coba1[$key] = $val['item_id'];
             }
         }
         if (empty($coba1)){
-            $data = [];
+            $data =  InvtItem::where('company_id', Auth::user()->company_id)
+            ->where('data_state', 0);
         }else{
-            $data = InvtItem::whereNotIn('item_id', $coba1)->get();
+            $data = InvtItem::whereNotIn('item_id', $coba1)
+            ->where('company_id', Auth::user()->company_id)
+            ->where('data_state', 0);
         }
         return view('content.SalesInvoicebyItemReport.ListSalesInvoicebyItemNotSoldReport',compact('data','start_date','end_date'));
     }
@@ -743,17 +746,20 @@ class SalesInvoicebyItemReportController extends Controller
         ->get(); 
 
         if (empty($data_item)){
-            $coba1 = "kosong";
+            $coba1 = [];
         } else {
             foreach ($data_item as $key => $val) {
                 $coba1[$key] = $val['item_id'];
             }
         }
         if (empty($coba1)){
-            $data = [];
+            $data =  InvtItem::where('company_id', Auth::user()->company_id)
+            ->where('data_state', 0);
         }else{
-            $data = InvtItem::whereNotIn('item_id', $coba1);
-        } 
+            $data = InvtItem::whereNotIn('item_id', $coba1)
+            ->where('company_id', Auth::user()->company_id)
+            ->where('data_state', 0);
+        }
 
         $draw 				= 		$request->get('draw');
         $start 				= 		$request->get("start");

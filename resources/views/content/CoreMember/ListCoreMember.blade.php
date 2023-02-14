@@ -7,7 +7,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item"><a href="{{ url('home') }}">Beranda</a></li>
-      <li class="breadcrumb-item active" aria-current="page">Daftar Pelanggan</li>
+      <li class="breadcrumb-item active" aria-current="page">Daftar Anggota</li>
     </ol>
   </nav>
 
@@ -16,7 +16,7 @@
 @section('content')
 
 <h3 class="page-title">
-    <b>Daftar Pelanggan</b> <small>Kelola Pelanggan </small>
+    <b>Daftar Anggota</b> <small>Kelola Anggota </small>
 </h3>
 <br/>
 
@@ -38,9 +38,9 @@
                 <thead>
                     <tr>
                         <th width="7%" style='text-align:center'>No</th>
-                        <th width="31%" style='text-align:center'>Nama Pelanggan</th>
+                        <th width="31%" style='text-align:center'>Nama Anggota</th>
                         <th width="31%" style='text-align:center'>Total Simpanan Wajib</th>
-                        <th width="31%" style='text-align:center'>Total Hutang</th>
+                        <th width="31%" style='text-align:center'>Total Piutang</th>
                     </tr>
                 </thead>
                 <tbody>

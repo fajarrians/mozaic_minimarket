@@ -174,7 +174,7 @@ class CoreMemberReportController extends Controller
         $tbl = "
         <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
             <tr>
-                <td><div style=\"text-align: center; font-size:14px; font-weight: bold\">LAPORAN PEMBELIAN PELANGGAN</div></td>
+                <td><div style=\"text-align: center; font-size:14px; font-weight: bold\">LAPORAN PEMBELIAN ANGGOTA</div></td>
             </tr>
             <tr>
                 <td><div style=\"text-align: center; font-size:12px\">PERIODE : ".date('d M Y', strtotime($start_date))." s.d. ".date('d M Y', strtotime($end_date))."</div></td>
@@ -189,7 +189,7 @@ class CoreMemberReportController extends Controller
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
                 <td width=\"5%\"><div style=\"text-align: center; font-weight: bold\">No</div></td>
-                <td width=\"24%\"><div style=\"text-align: center; font-weight: bold\">Nama Pelanggan</div></td>
+                <td width=\"24%\"><div style=\"text-align: center; font-weight: bold\">Nama Anggota</div></td>
                 <td width=\"23%\"><div style=\"text-align: center; font-weight: bold\">Total Transaksi</div></td>
                 <td width=\"24%\"><div style=\"text-align: center; font-weight: bold\">Total Barang</div></td>
                 <td width=\"24%\"><div style=\"text-align: center; font-weight: bold\">Total Pembelian</div></td>
@@ -236,7 +236,7 @@ class CoreMemberReportController extends Controller
 
         $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');
 
-        $filename = 'Laporan_Pembelian_Pelanggan_'.$start_date.'s.d.'.$end_date.'.pdf';
+        $filename = 'Laporan_Pembelian_Anggota_'.$start_date.'s.d.'.$end_date.'.pdf';
         $pdf::Output($filename, 'I');
     }
 
@@ -262,11 +262,11 @@ class CoreMemberReportController extends Controller
         if(count($data_member)>=0){
             $spreadsheet->getProperties()->setCreator("CST MOZAIQ POS")
                                         ->setLastModifiedBy("CST MOZAIQ POS")
-                                        ->setTitle("Laporan Pembelian Pelanggan")
+                                        ->setTitle("Laporan Pembelian Anggota")
                                         ->setSubject("")
-                                        ->setDescription("Laporan Pembelian Pelanggan")
-                                        ->setKeywords("Laporan, Pembelian, Pelanggan")
-                                        ->setCategory("Laporan Pembelian Pelanggan");
+                                        ->setDescription("Laporan Pembelian Anggota")
+                                        ->setKeywords("Laporan, Pembelian, Anggota")
+                                        ->setCategory("Laporan Pembelian Anggota");
                                  
             $sheet = $spreadsheet->getActiveSheet(0);
             $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
@@ -286,9 +286,9 @@ class CoreMemberReportController extends Controller
             $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-            $sheet->setCellValue('B1',"Laporan Pembelian Pelanggan Dari Periode ".date('d M Y', strtotime($start_date))." s.d. ".date('d M Y', strtotime($end_date)));	
+            $sheet->setCellValue('B1',"Laporan Pembelian Anggota Dari Periode ".date('d M Y', strtotime($start_date))." s.d. ".date('d M Y', strtotime($end_date)));	
             $sheet->setCellValue('B3',"No");
-            $sheet->setCellValue('C3',"Nama Pelanggan");
+            $sheet->setCellValue('C3',"Nama Anggota");
             $sheet->setCellValue('D3',"Total Transaksi");
             $sheet->setCellValue('E3',"Total Barang");
             $sheet->setCellValue('F3',"Total Pembelian");
@@ -303,7 +303,7 @@ class CoreMemberReportController extends Controller
                 if(is_numeric($key)){
                     
                     $sheet = $spreadsheet->getActiveSheet(0);
-                    $spreadsheet->getActiveSheet()->setTitle("Laporan Pembelian Pelanggan");
+                    $spreadsheet->getActiveSheet()->setTitle("Laporan Pembelian Anggota");
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
                     $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getNumberFormat()->setFormatCode('0.00');
@@ -349,7 +349,7 @@ class CoreMemberReportController extends Controller
             $spreadsheet->getActiveSheet()->getStyle('B'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
             $sheet->setCellValue('B'.$j, Auth::user()->name.", ".date('d-m-Y H:i'));
             
-            $filename='Laporan_Pembelian_Pelanggan_'.$start_date.'_s.d._'.$end_date.'.xls';
+            $filename='Laporan_Pembelian_Anggota_'.$start_date.'_s.d._'.$end_date.'.xls';
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
             header('Content-Disposition: attachment;filename="'.$filename.'"');
             header('Cache-Control: max-age=0');

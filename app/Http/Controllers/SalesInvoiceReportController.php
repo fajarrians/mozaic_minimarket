@@ -209,7 +209,7 @@ class SalesInvoiceReportController extends Controller
         <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
             <tr>
                 <th style=\"text-align:center; width: 5%;  font-weight: bold\">No</th>
-                <th style=\"text-align:center; width: 12%;  font-weight: bold\">Pelanggan</th>
+                <th style=\"text-align:center; width: 12%;  font-weight: bold\">Anggota</th>
                 <th style=\"text-align:center; width: 8%;  font-weight: bold\">Metode</th>
                 <th style=\"text-align:center; width: 10%;  font-weight: bold\">Tanggal</th>
                 <th style=\"text-align:center; width: 15%;  font-weight: bold\">No. Penjulan</th>
@@ -228,6 +228,22 @@ class SalesInvoiceReportController extends Controller
         $subtotal_amount = 0;
         $discount_amount_total = 0;
         $total_amount = 0;
+        $subtotal_item1 = 0;
+        $total_amount1 = 0;
+        $total_transaksi1 = 0;
+        $subtotal_item2 = 0;
+        $total_amount2 = 0;
+        $total_transaksi2 = 0;
+        $subtotal_item3 = 0;
+        $total_amount3 = 0;
+        $total_transaksi3 = 0;
+        $subtotal_item4 = 0;
+        $total_amount4 = 0;
+        $total_transaksi4 = 0;
+        $subtotal_item5 = 0;
+        $total_amount5 = 0;
+        $total_transaksi5 = 0;
+        
         foreach ($data as $key => $val) {
             $tblStock2 .="
             <tr>
@@ -248,7 +264,30 @@ class SalesInvoiceReportController extends Controller
             $subtotal_amount += $val['subtotal_amount'];
             $discount_amount_total += $val['discount_amount_total'];
             $total_amount += $val['total_amount'];
+
+            if ($val['sales_payment_method'] == 1) {
+                $subtotal_item1 += $val['subtotal_item'];
+                $total_amount1 += $val['total_amount'];
+                $total_transaksi1 += 1;
+            } else if ($val['sales_payment_method'] == 2) {
+                $subtotal_item2 += $val['subtotal_item'];
+                $total_amount2 += $val['total_amount'];
+                $total_transaksi2 += 1;
+            } else if ($val['sales_payment_method'] == 3) {
+                $subtotal_item3 += $val['subtotal_item'];
+                $total_amount3 += $val['total_amount'];
+                $total_transaksi3 += 1;    
+            } else if ($val['sales_payment_method'] == 4) {
+                $subtotal_item4 += $val['subtotal_item'];
+                $total_amount4 += $val['total_amount'];
+                $total_transaksi4 += 1;    
+            } else if ($val['sales_payment_method'] == 5) {
+                $subtotal_item5 += $val['subtotal_item'];
+                $total_amount5 += $val['total_amount'];
+                $total_transaksi5 += 1;    
+            }
         }
+        
         $tblStock3 = " 
         <tr>
             <td colspan=\"5\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
@@ -257,15 +296,66 @@ class SalesInvoiceReportController extends Controller
             <td colspan=\"2\" style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($discount_amount_total,2,'.',',') ."</div></td>
             <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($total_amount,2,'.',',') ."</div></td>
         </tr>
+        </table>";
 
+        $tblStock4 = "
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">
+            <tr>
+                <th style=\"text-align:center; width: 25%;  font-weight: bold\">Metode Pembayaran</th>
+                <th style=\"text-align:center; width: 25%;  font-weight: bold\">Jumlah Transaksi</th>
+                <th style=\"text-align:center; width: 25%;  font-weight: bold\">Jumlah Barang</th>
+                <th style=\"text-align:center; width: 25%;  font-weight: bold\">Total</th>
+            </tr>
+            <tr>
+                <td><div style=\"text-align: left;\">Tunai</div></td>
+                <td style=\"text-align:right;\"><div style=\"\">". $total_transaksi1 ."</div></td>
+                <td style=\"text-align:right;\"><div style=\"\">". $subtotal_item1 ."</div></td>
+                <td style=\"text-align: right\"><div style=\"\">". number_format($total_amount1,2,'.',',') ."</div></td>
+            </tr>
+            <tr>
+                <td><div style=\"text-align: left;\">Piutang</div></td>
+                <td style=\"text-align:right;\"><div style=\"\">". $total_transaksi2 ."</div></td>
+                <td style=\"text-align:right;\"><div style=\"\">". $subtotal_item2 ."</div></td>
+                <td style=\"text-align: right\"><div style=\"\">". number_format($total_amount2,2,'.',',') ."</div></td>
+            </tr>
+            <tr>
+                <td><div style=\"text-align: left;\">Gopay</div></td>
+                <td style=\"text-align:right;\"><div style=\"\">". $total_transaksi3 ."</div></td>
+                <td style=\"text-align:right;\"><div style=\"\">". $subtotal_item3 ."</div></td>
+                <td style=\"text-align: right\"><div style=\"\">". number_format($total_amount3,2,'.',',') ."</div></td>
+            </tr>
+            <tr>
+                <td><div style=\"text-align: left;\">Ovo</div></td>
+                <td style=\"text-align:right;\"><div style=\"\">". $total_transaksi4 ."</div></td>
+                <td style=\"text-align:right;\"><div style=\"\">". $subtotal_item4 ."</div></td>
+                <td style=\"text-align: right\"><div style=\"\">". number_format($total_amount4,2,'.',',') ."</div></td>
+            </tr>
+            <tr>
+                <td><div style=\"text-align: left;\">Shoppepay</div></td>
+                <td style=\"text-align:right;\"><div style=\"\">". $total_transaksi5 ."</div></td>
+                <td style=\"text-align:right;\"><div style=\"\">". $subtotal_item5 ."</div></td>
+                <td style=\"text-align: right\"><div style=\"\">". number_format($total_amount5,2,'.',',') ."</div></td>
+            </tr>
         </table>
+        ";
+        $tblStock5 = "
         <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
             <tr>
                 <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
             </tr>
         </table>";
 
-        $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');
+        if ($sales_payment_method == 0) {
+            $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3.$tblStock4.$tblStock5, true, false, false, false, '');
+        } else {
+            $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3.$tblStock5, true, false, false, false, '');
+        }
 
         $filename = 'Laporan_Penjualan_'.$start_date.'s.d.'.$end_date.'.pdf';
         $pdf::Output($filename, 'I');
@@ -346,7 +436,7 @@ class SalesInvoiceReportController extends Controller
 
             $sheet->setCellValue('B1',"Laporan Penjualan ".$sales_payment_method_list[$sales_payment_method]." Dari Periode ".date('d M Y', strtotime($start_date))." s.d. ".date('d M Y', strtotime($end_date)));
             $sheet->setCellValue('B3',"No");
-            $sheet->setCellValue('C3',"Pelanggan");
+            $sheet->setCellValue('C3',"Anggota");
             $sheet->setCellValue('D3',"Metode");
             $sheet->setCellValue('E3',"Tanggal");
             $sheet->setCellValue('F3',"No. Invoice");
@@ -362,6 +452,21 @@ class SalesInvoiceReportController extends Controller
             $subtotal_amount = 0;
             $discount_amount_total = 0;
             $total_amount = 0;
+            $subtotal_item1 = 0;
+            $total_amount1 = 0;
+            $total_transaksi1 = 0;
+            $subtotal_item2 = 0;
+            $total_amount2 = 0;
+            $total_transaksi2 = 0;
+            $subtotal_item3 = 0;
+            $total_amount3 = 0;
+            $total_transaksi3 = 0;
+            $subtotal_item4 = 0;
+            $total_amount4 = 0;
+            $total_transaksi4 = 0;
+            $subtotal_item5 = 0;
+            $total_amount5 = 0;
+            $total_transaksi5 = 0;
             foreach($data as $key=>$val){
 
                 if(is_numeric($key)){
@@ -402,7 +507,27 @@ class SalesInvoiceReportController extends Controller
                 $total_amount += $val['total_amount'];
                 $j++;
 
-                
+                if ($val['sales_payment_method'] == 1) {
+                    $subtotal_item1 += $val['subtotal_item'];
+                    $total_amount1 += $val['total_amount'];
+                    $total_transaksi1 += 1;
+                } else if ($val['sales_payment_method'] == 2) {
+                    $subtotal_item2 += $val['subtotal_item'];
+                    $total_amount2 += $val['total_amount'];
+                    $total_transaksi2 += 1;
+                } else if ($val['sales_payment_method'] == 3) {
+                    $subtotal_item3 += $val['subtotal_item'];
+                    $total_amount3 += $val['total_amount'];
+                    $total_transaksi3 += 1;    
+                } else if ($val['sales_payment_method'] == 4) {
+                    $subtotal_item4 += $val['subtotal_item'];
+                    $total_amount4 += $val['total_amount'];
+                    $total_transaksi4 += 1;    
+                } else if ($val['sales_payment_method'] == 5) {
+                    $subtotal_item5 += $val['subtotal_item'];
+                    $total_amount5 += $val['total_amount'];
+                    $total_transaksi5 += 1;    
+                }
                 
             }
             $spreadsheet->getActiveSheet()->getStyle('H'.$j.':K'.$j)->getNumberFormat()->setFormatCode('0.00');
@@ -423,6 +548,62 @@ class SalesInvoiceReportController extends Controller
             $sheet->setCellValue('H'.$j, $subtotal_amount);
             $sheet->setCellValue('I'.$j, $discount_amount_total);
             $sheet->setCellValue('K'.$j, $total_amount);
+
+            if ($sales_payment_method == 0) {
+                $j += 4;
+                $spreadsheet->getActiveSheet()->getStyle('C'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $spreadsheet->getActiveSheet()->getStyle('C'.$j.':F'.$j)->getFont()->setBold(true);
+                $spreadsheet->getActiveSheet()->getStyle('C'.$j.':F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                $sheet->setCellValue('C'.$j, 'Metode Pembayaran');
+                $sheet->setCellValue('D'.$j, 'Jumlah Transaksi');
+                $sheet->setCellValue('E'.$j, 'Jumlah Barang');
+                $sheet->setCellValue('F'.$j, 'Total');
+
+                $j++;
+                $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getNumberFormat()->setFormatCode('0.00');
+                $spreadsheet->getActiveSheet()->getStyle('C'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $spreadsheet->getActiveSheet()->getStyle('D'.$j.':F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->setCellValue('C'.$j, 'Tunai');
+                $sheet->setCellValue('D'.$j, $total_transaksi1);
+                $sheet->setCellValue('E'.$j, $subtotal_item1);
+                $sheet->setCellValue('F'.$j, $total_amount1);
+
+                $j++;
+                $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getNumberFormat()->setFormatCode('0.00');
+                $spreadsheet->getActiveSheet()->getStyle('C'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $spreadsheet->getActiveSheet()->getStyle('D'.$j.':F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->setCellValue('C'.$j, 'Piutang');
+                $sheet->setCellValue('D'.$j, $total_transaksi2);
+                $sheet->setCellValue('E'.$j, $subtotal_item2);
+                $sheet->setCellValue('F'.$j, $total_amount2);
+
+                $j++;
+                $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getNumberFormat()->setFormatCode('0.00');
+                $spreadsheet->getActiveSheet()->getStyle('C'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $spreadsheet->getActiveSheet()->getStyle('D'.$j.':F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->setCellValue('C'.$j, 'Gopay');
+                $sheet->setCellValue('D'.$j, $total_transaksi3);
+                $sheet->setCellValue('E'.$j, $subtotal_item3);
+                $sheet->setCellValue('F'.$j, $total_amount3);
+
+                $j++;
+                $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getNumberFormat()->setFormatCode('0.00');
+                $spreadsheet->getActiveSheet()->getStyle('C'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $spreadsheet->getActiveSheet()->getStyle('D'.$j.':F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->setCellValue('C'.$j, 'Ovo');
+                $sheet->setCellValue('D'.$j, $total_transaksi4);
+                $sheet->setCellValue('E'.$j, $subtotal_item4);
+                $sheet->setCellValue('F'.$j, $total_amount4);
+
+                $j++;
+                $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getNumberFormat()->setFormatCode('0.00');
+                $spreadsheet->getActiveSheet()->getStyle('C'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+                $spreadsheet->getActiveSheet()->getStyle('D'.$j.':F'.$j)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_RIGHT);
+                $sheet->setCellValue('C'.$j, 'Shopeepay');
+                $sheet->setCellValue('D'.$j, $total_transaksi5);
+                $sheet->setCellValue('E'.$j, $subtotal_item5);
+                $sheet->setCellValue('F'.$j, $total_amount5);
+            }
 
             $j++;
             $spreadsheet->getActiveSheet()->mergeCells('B'.$j.':K'.$j);
