@@ -1612,6 +1612,7 @@ class SalesInvoiceController extends Controller
         // $columnName 		= 		$columnNameArray[$columnIndex]['data'];
         // $columnSortOrder 	= 		$orderArray[0]['dir'];
         $searchValue 		= 		$searchArray['value'];
+        $valueArray         = explode (" ",$searchValue);
 
 
         $users = InvtItem::join('invt_item_packge','invt_item_packge.item_id','=','invt_item.item_id')
@@ -1627,8 +1628,13 @@ class SalesInvoiceController extends Controller
         ->where('invt_item.company_id', Auth::user()->company_id)
         ->where('invt_item_packge.item_unit_id', '!=', null);
         if (!empty($searchValue)) {
-            $totalFilter = $totalFilter->where('invt_item.item_name','like','%'.$searchValue.'%');
-            // $totalFilter = $totalFilter->orWhere('invt_item.item_code','like','%'.$searchValue.'%');
+            if (count($valueArray) != 1) {
+                foreach ($valueArray as $key => $val) {
+                    $totalFilter = $totalFilter->where('invt_item.item_name','like','%'.$val.'%');
+                }
+            } else {
+                $totalFilter = $totalFilter->where('invt_item.item_name','like','%'.$searchValue.'%');
+            }
         }
         $totalFilter = $totalFilter->count();
 
@@ -1642,8 +1648,13 @@ class SalesInvoiceController extends Controller
         // $arrData = $arrData->orderBy($columnName,$columnSortOrder);
 
         if (!empty($searchValue)) {
-            $arrData = $arrData->where('invt_item.item_name','like','%'.$searchValue.'%');
-            // $arrData = $arrData->orWhere('invt_item.item_code','like','%'.$searchValue.'%');
+            if (count($valueArray) != 1) {
+                foreach ($valueArray as $key => $val) {
+                    $arrData = $arrData->where('invt_item.item_name','like','%'.$val.'%');
+                }
+            } else {
+                $arrData = $arrData->where('invt_item.item_name','like','%'.$searchValue.'%');
+            }
         }
 
         $arrData = $arrData->get();

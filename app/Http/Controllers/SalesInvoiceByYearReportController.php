@@ -335,16 +335,17 @@ class SalesInvoiceByYearReportController extends Controller
 
     public function tableSalesInvoiceByYear(Request $request)
     {   
-        $draw 				= 		$request->get('draw');
-        $start 				= 		$request->get("start");
-        $rowPerPage 		= 		$request->get("length");
-        $orderArray 	    = 		$request->get('order');
-        $columnNameArray 	= 		$request->get('columns');
-        $searchArray 		= 		$request->get('search');
-        $columnIndex 		= 		$orderArray[0]['column'];
-        $columnName 		= 		$columnNameArray[$columnIndex]['data'];
-        $columnSortOrder 	= 		$orderArray[0]['dir'];
-        $searchValue 		= 		$searchArray['value'];
+        $draw 				= $request->get('draw');
+        $start 				= $request->get("start");
+        $rowPerPage 		= $request->get("length");
+        $orderArray 	    = $request->get('order');
+        $columnNameArray 	= $request->get('columns');
+        $searchArray 		= $request->get('search');
+        $columnIndex 		= $orderArray[0]['column'];
+        $columnName 		= $columnNameArray[$columnIndex]['data'];
+        $columnSortOrder 	= $orderArray[0]['dir'];
+        $searchValue 		= $searchArray['value'];
+        $valueArray         = explode (" ",$searchValue);
 
 
         $users = InvtItem::where('data_state','=',0)
@@ -354,7 +355,13 @@ class SalesInvoiceByYearReportController extends Controller
         $totalFilter = InvtItem::where('data_state','=',0)
         ->where('company_id', Auth::user()->company_id);
         if (!empty($searchValue)) {
-            $totalFilter = $totalFilter->where('item_name','like','%'.$searchValue.'%');
+            if (count($valueArray) != 1) {
+                foreach ($valueArray as $key => $val) {
+                    $totalFilter = $totalFilter->where('item_name','like','%'.$val.'%');
+                }
+            } else {
+                $totalFilter = $totalFilter->where('item_name','like','%'.$searchValue.'%');
+            }
         }
         $totalFilter = $totalFilter->count();
 
@@ -365,7 +372,13 @@ class SalesInvoiceByYearReportController extends Controller
         $arrData = $arrData->orderBy($columnName,$columnSortOrder);
 
         if (!empty($searchValue)) {
-            $arrData = $arrData->where('item_name','like','%'.$searchValue.'%');
+            if (count($valueArray) != 1) {
+                foreach ($valueArray as $key => $val) {
+                    $arrData = $arrData->where('item_name','like','%'.$val.'%');
+                }
+            } else {
+                $arrData = $arrData->where('item_name','like','%'.$searchValue.'%');
+            }
         }
 
         $arrData = $arrData->get();
