@@ -21,6 +21,7 @@ use App\Models\SalesCustomer;
 use App\Models\SalesInvoice;
 use App\Models\SalesInvoiceItem;
 use App\Models\SIIRemoveLog;
+use App\Models\User;
 use Elibyy\TCPDF\Facades\TCPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -1041,6 +1042,16 @@ class SalesInvoiceController extends Controller
         }
     }
 
+    public function getUsername($user_id)
+    {
+        $data = User::where('user_id', $user_id)
+        ->where('data_state',0)
+        ->where('company_id', Auth::user()->company_id)
+        ->first();
+
+        return $data['name'];
+    }
+
     public function printRepeatSalesInvoice($sales_invoice_id)
     {
         $data_company = PreferenceCompany::where('data_state',0)
@@ -1094,13 +1105,6 @@ class SalesInvoiceController extends Controller
        
         ";
         $pdf::writeHTML($tbl, true, false, false, false, '');
-        
-        $kasir = Auth::user()->name;
-        if (strlen($kasir) > 10) {
-            $kasir = substr($kasir, 0, 9) . '...';
-        } else {
-            $kasir = $kasir;
-        }
             
         $tblStock1 = "
         <div>-------------------------------------------------------</div>
@@ -1118,7 +1122,7 @@ class SalesInvoiceController extends Controller
             <tr>
                 <td width=\" 20% \">Kasir</td>
                 <td width=\" 10% \" style=\"text-align: center; \"> : </td>
-                <td width=\" 70% \">".Auth::user()->name."</td>
+                <td width=\" 70% \">".ucfirst($this->getUsername($sales_invoice['created_id']))."</td>
             </tr>
         </table>
         <div>-------------------------------------------------------</div>
@@ -1352,13 +1356,6 @@ class SalesInvoiceController extends Controller
        
         ";
         $pdf::writeHTML($tbl, true, false, false, false, '');
-        
-        $kasir = Auth::user()->name;
-        if (strlen($kasir) > 10) {
-            $kasir = substr($kasir, 0, 9) . '...';
-        } else {
-            $kasir = $kasir;
-        }
             
         $tblStock1 = "
         <div>-------------------------------------------------------</div>
@@ -1376,7 +1373,7 @@ class SalesInvoiceController extends Controller
             <tr>
                 <td width=\" 20% \">Kasir</td>
                 <td width=\" 10% \" style=\"text-align: center; \"> : </td>
-                <td width=\" 70% \">".Auth::user()->name."</td>
+                <td width=\" 70% \">".ucfirst($this->getUsername($sales_invoice['created_id']))."</td>
             </tr>
         </table>
         <div>-------------------------------------------------------</div>

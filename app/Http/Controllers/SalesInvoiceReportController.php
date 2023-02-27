@@ -174,10 +174,36 @@ class SalesInvoiceReportController extends Controller
 
         $pdf = new TCPDF('L', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $pdf::SetPrintHeader(false);
+        $pdf::setHeaderCallback(function($pdf){
+            $pdf->SetFont('helvetica', '', 8);
+            $header = "
+            <div></div>
+                <table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">
+                    <tr>
+                        <td rowspan=\"3\" width=\"76%\"><img src=\"".asset('resources/assets/img/logo_kopkar.png')."\" width=\"120\"></td>
+                        <td width=\"10%\"><div style=\"text-align: left;\">Halaman</div></td>
+                        <td width=\"2%\"><div style=\"text-align: center;\">:</div></td>
+                        <td width=\"12%\"><div style=\"text-align: left;\">".$pdf->getAliasNumPage()." / ".$pdf->getAliasNbPages()."</div></td>
+                    </tr>  
+                    <tr>
+                        <td width=\"10%\"><div style=\"text-align: left;\">Dicetak</div></td>
+                        <td width=\"2%\"><div style=\"text-align: center;\">:</div></td>
+                        <td width=\"12%\"><div style=\"text-align: left;\">".ucfirst(Auth::user()->name)."</div></td>
+                    </tr>
+                    <tr>
+                        <td width=\"10%\"><div style=\"text-align: left;\">Tgl. Cetak</div></td>
+                        <td width=\"2%\"><div style=\"text-align: center;\">:</div></td>
+                        <td width=\"12%\"><div style=\"text-align: left;\">".date('d-m-Y H:i')."</div></td>
+                    </tr>
+                </table>
+                <hr>
+            ";
+
+            $pdf->writeHTML($header, true, false, false, false, '');
+        });
         $pdf::SetPrintFooter(false);
 
-        $pdf::SetMargins(10, 10, 10, 10); // put space of 10 on top
+        $pdf::SetMargins(10, 20, 10, 10); // put space of 10 on top
 
         $pdf::setImageScale(PDF_IMAGE_SCALE_RATIO);
 
@@ -246,7 +272,7 @@ class SalesInvoiceReportController extends Controller
         
         foreach ($data as $key => $val) {
             $tblStock2 .="
-            <tr>
+            <tr nobr=\"true\">
                 <td style=\"text-align:center\">". $no++ .".</td>
                 <td>". $this->getCustomerName($val['customer_id']) ."</td>
                 <td>". $this->getPaymentName($val['sales_payment_method']) ."</td>
@@ -289,7 +315,7 @@ class SalesInvoiceReportController extends Controller
         }
         
         $tblStock3 = " 
-        <tr>
+        <tr nobr=\"true\">
             <td colspan=\"5\"><div style=\"text-align: center;  font-weight: bold\">TOTAL</div></td>
             <td style=\"text-align:right;\"><div style=\"font-weight: bold\">". $subtotal_item ."</div></td>
             <td style=\"text-align: right\"><div style=\"font-weight: bold\">". number_format($subtotal_amount,2,'.',',') ."</div></td>
@@ -306,37 +332,37 @@ class SalesInvoiceReportController extends Controller
         <br/>
         <br/>
         <table cellspacing=\"0\" cellpadding=\"2\" border=\"1\">
-            <tr>
+            <tr nobr=\"true\">
                 <th style=\"text-align:center; width: 25%;  font-weight: bold\">Metode Pembayaran</th>
                 <th style=\"text-align:center; width: 25%;  font-weight: bold\">Jumlah Transaksi</th>
                 <th style=\"text-align:center; width: 25%;  font-weight: bold\">Jumlah Barang</th>
                 <th style=\"text-align:center; width: 25%;  font-weight: bold\">Total</th>
             </tr>
-            <tr>
+            <tr nobr=\"true\">
                 <td><div style=\"text-align: left;\">Tunai</div></td>
                 <td style=\"text-align:right;\"><div style=\"\">". $total_transaksi1 ."</div></td>
                 <td style=\"text-align:right;\"><div style=\"\">". $subtotal_item1 ."</div></td>
                 <td style=\"text-align: right\"><div style=\"\">". number_format($total_amount1,2,'.',',') ."</div></td>
             </tr>
-            <tr>
+            <tr nobr=\"true\">
                 <td><div style=\"text-align: left;\">Piutang</div></td>
                 <td style=\"text-align:right;\"><div style=\"\">". $total_transaksi2 ."</div></td>
                 <td style=\"text-align:right;\"><div style=\"\">". $subtotal_item2 ."</div></td>
                 <td style=\"text-align: right\"><div style=\"\">". number_format($total_amount2,2,'.',',') ."</div></td>
             </tr>
-            <tr>
+            <tr nobr=\"true\">
                 <td><div style=\"text-align: left;\">Gopay</div></td>
                 <td style=\"text-align:right;\"><div style=\"\">". $total_transaksi3 ."</div></td>
                 <td style=\"text-align:right;\"><div style=\"\">". $subtotal_item3 ."</div></td>
                 <td style=\"text-align: right\"><div style=\"\">". number_format($total_amount3,2,'.',',') ."</div></td>
             </tr>
-            <tr>
+            <tr nobr=\"true\">
                 <td><div style=\"text-align: left;\">Ovo</div></td>
                 <td style=\"text-align:right;\"><div style=\"\">". $total_transaksi4 ."</div></td>
                 <td style=\"text-align:right;\"><div style=\"\">". $subtotal_item4 ."</div></td>
                 <td style=\"text-align: right\"><div style=\"\">". number_format($total_amount4,2,'.',',') ."</div></td>
             </tr>
-            <tr>
+            <tr nobr=\"true\">
                 <td><div style=\"text-align: left;\">Shoppepay</div></td>
                 <td style=\"text-align:right;\"><div style=\"\">". $total_transaksi5 ."</div></td>
                 <td style=\"text-align:right;\"><div style=\"\">". $subtotal_item5 ."</div></td>
@@ -344,17 +370,11 @@ class SalesInvoiceReportController extends Controller
             </tr>
         </table>
         ";
-        $tblStock5 = "
-        <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
-            <tr>
-                <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
-            </tr>
-        </table>";
 
         if ($sales_payment_method == 0) {
-            $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3.$tblStock4.$tblStock5, true, false, false, false, '');
+            $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3.$tblStock4, true, false, false, false, '');
         } else {
-            $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3.$tblStock5, true, false, false, false, '');
+            $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');
         }
 
         $filename = 'Laporan_Penjualan_'.$start_date.'s.d.'.$end_date.'.pdf';

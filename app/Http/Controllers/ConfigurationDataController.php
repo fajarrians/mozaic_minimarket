@@ -626,7 +626,7 @@ class ConfigurationDataController extends Controller
             <tr>
                 <td width=\"25%\">KASIR</td>
                 <td width=\"10%\" style=\"text-align: center;\">:</td>
-                <td width=\"60%\">".Auth::user()->name."</td>
+                <td width=\"60%\">".ucfirst(Auth::user()->name)."</td>
             </tr>
         </table>
         <div>-------------------------------------------------------</div>

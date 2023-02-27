@@ -143,10 +143,36 @@ class PreferenceVoucherReportController extends Controller
 
         $pdf = new TCPDF('P', PDF_UNIT, 'F4', true, 'UTF-8', false);
 
-        $pdf::SetPrintHeader(false);
+        $pdf::setHeaderCallback(function($pdf){
+            $pdf->SetFont('helvetica', '', 8);
+            $header = "
+            <div></div>
+                <table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">
+                    <tr>
+                        <td rowspan=\"3\" width=\"76%\"><img src=\"".asset('resources/assets/img/logo_kopkar.png')."\" width=\"120\"></td>
+                        <td width=\"10%\"><div style=\"text-align: left;\">Halaman</div></td>
+                        <td width=\"2%\"><div style=\"text-align: center;\">:</div></td>
+                        <td width=\"12%\"><div style=\"text-align: left;\">".$pdf->getAliasNumPage()." / ".$pdf->getAliasNbPages()."</div></td>
+                    </tr>  
+                    <tr>
+                        <td width=\"10%\"><div style=\"text-align: left;\">Dicetak</div></td>
+                        <td width=\"2%\"><div style=\"text-align: center;\">:</div></td>
+                        <td width=\"12%\"><div style=\"text-align: left;\">".ucfirst(Auth::user()->name)."</div></td>
+                    </tr>
+                    <tr>
+                        <td width=\"10%\"><div style=\"text-align: left;\">Tgl. Cetak</div></td>
+                        <td width=\"2%\"><div style=\"text-align: center;\">:</div></td>
+                        <td width=\"12%\"><div style=\"text-align: left;\">".date('d-m-Y H:i')."</div></td>
+                    </tr>
+                </table>
+                <hr>
+            ";
+
+            $pdf->writeHTML($header, true, false, false, false, '');
+        });
         $pdf::SetPrintFooter(false);
 
-        $pdf::SetMargins(10, 10, 10, 10); // put space of 10 on top
+        $pdf::SetMargins(10, 20, 10, 10); // put space of 10 on top
 
         $pdf::setImageScale(PDF_IMAGE_SCALE_RATIO);
 
@@ -190,7 +216,7 @@ class PreferenceVoucherReportController extends Controller
         $tblStock2 = "";
         foreach ($data as $key => $val) {
             $tblStock2 .="
-                <tr>			
+                <tr nobr=\"true\">			
                     <td style=\"text-align:center\">$no.</td>
                     <td>".$this->getVoucherCode($val['voucher_id'])."</td>
                     <td>".$val['voucher_no']."</td>
@@ -205,11 +231,6 @@ class PreferenceVoucherReportController extends Controller
         }
 
         $tblStock3 = "
-        </table>
-        <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
-            <tr>
-                <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
-            </tr>
         </table>
         ";
 

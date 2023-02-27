@@ -163,18 +163,39 @@ class SalesInvoiceDetailReportController extends Controller
             4 => 'Ovo',
             5 => 'Shopeepay'
         ];
-        
-        $sales_invoice_item = SalesInvoiceItem::where('company_id', Auth::user()->company_id)
-        ->where('data_state',0)
-        ->where('quantity','!=',0)
-        ->get();
 
         $pdf = new TCPDF('L', PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $pdf::SetPrintHeader(false);
+        $pdf::setHeaderCallback(function($pdf){
+            $pdf->SetFont('helvetica', '', 8);
+            $header = "
+            <div></div>
+                <table cellspacing=\"0\" cellpadding=\"0\" border=\"0\">
+                    <tr>
+                        <td rowspan=\"3\" width=\"76%\"><img src=\"".asset('resources/assets/img/logo_kopkar.png')."\" width=\"120\"></td>
+                        <td width=\"10%\"><div style=\"text-align: left;\">Halaman</div></td>
+                        <td width=\"2%\"><div style=\"text-align: center;\">:</div></td>
+                        <td width=\"12%\"><div style=\"text-align: left;\">".$pdf->getAliasNumPage()." / ".$pdf->getAliasNbPages()."</div></td>
+                    </tr>  
+                    <tr>
+                        <td width=\"10%\"><div style=\"text-align: left;\">Dicetak</div></td>
+                        <td width=\"2%\"><div style=\"text-align: center;\">:</div></td>
+                        <td width=\"12%\"><div style=\"text-align: left;\">".ucfirst(Auth::user()->name)."</div></td>
+                    </tr>
+                    <tr>
+                        <td width=\"10%\"><div style=\"text-align: left;\">Tgl. Cetak</div></td>
+                        <td width=\"2%\"><div style=\"text-align: center;\">:</div></td>
+                        <td width=\"12%\"><div style=\"text-align: left;\">".date('d-m-Y H:i')."</div></td>
+                    </tr>
+                </table>
+                <hr>
+            ";
+
+            $pdf->writeHTML($header, true, false, false, false, '');
+        });
         $pdf::SetPrintFooter(false);
 
-        $pdf::SetMargins(10, 10, 10, 10); // put space of 10 on top
+        $pdf::SetMargins(10, 20, 10, 10); // put space of 10 on top
 
         $pdf::setImageScale(PDF_IMAGE_SCALE_RATIO);
 
@@ -201,71 +222,143 @@ class SalesInvoiceDetailReportController extends Controller
         ";
         $pdf::writeHTML($tbl, true, false, false, false, '');
         
-        $no = 1;
-        $tblStock1 = "
-        <table cellspacing=\"0\" cellpadding=\"1\" border=\"1\" width=\"100%\">
+        $tbl1 = "
+        <table>
             <tr>
-                <td rowspan=\"2\" width=\"5%\" ><div style=\"text-align: center; vertical-align: middle; font-weight: bold\">No</div></td>
-                <td rowspan=\"2\" width=\"15%\"><div style=\"text-align: center; font-weight: bold\">Anggota</div></td>
-                <td rowspan=\"2\" width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Tanggal</div></td>
-                <td rowspan=\"2\" width=\"15%\"><div style=\"text-align: center; font-weight: bold\">No. Invoice</div></td>
-                <td rowspan=\"2\" width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Total Diskon</div></td>
-                <td colspan=\"7\" width=\"45%\"><div style=\"text-align: center; font-weight: bold\">Total</div></td>
+                <td></td>
             </tr>
-            
-            <tr>
-                <td width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Nama Barang</div></td>
-                <td width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Satuan</div></td>
-                <td width=\"5%\"><div style=\"text-align: center; font-weight: bold\">Qty</div></td>
-                <td width=\"10%\"><div style=\"text-align: center; font-weight: bold\">Harga Satuan</div></td>
-                <td width=\"10%\" ><div style=\"text-align: center; font-weight: bold\">Subtotal</div></td>
-            </tr>
-            
-            ";
-
-        $no = 1;
-        $tblStock2 =" ";
-        foreach ($sales_invoice as $key1 => $val1) {
-            $tblStock2 .="
-                <tr>
-                    <td width=\"5%\" ><div style=\"text-align: center; vertical-align: middle;\">$no.</div></td>
-                    <td width=\"15%\"><div style=\"text-align: center;\">".$this->getCustomerName($val1['customer_id'])."</div></td>
-                    <td width=\"10%\"><div style=\"text-align: center;\">".date('d-m-Y', strtotime($val1['sales_invoice_date']))."</div></td>
-                    <td width=\"15%\"><div style=\"text-align: center;\">".$val1['sales_invoice_no']."</div></td>
-                    <td width=\"10%\"><div style=\"text-align: right;\">".number_format($val1['discount_amount_total'],2,'.',',')."</div></td>
-                    <td colspan=\"7\" width=\"45%\"><div style=\"text-align: center;\">".number_format($val1['total_amount'],2,'.',',')."</div></td>
-                </tr>
-                
-            ";
-            foreach ($sales_invoice_item as $key2 => $val2) {
-                if ($val1['sales_invoice_id'] == $val2['sales_invoice_id']) {
-                    $tblStock2 .="
-                    
-                    <tr>
-                        <td width=\"55%\" rowspan=\"\"><div style=\"text-align: center;\"></div></td>
-                        <td width=\"10%\"><div style=\"text-align: center;\">".$this->getItemName($val2['item_id'])."</div></td>
-                        <td width=\"10%\"><div style=\"text-align: center;\">".$this->getItemUnitName($val2['item_unit_id'])."</div></td>
-                        <td width=\"5%\"><div style=\"text-align: right;\">".$val2['quantity']."</div></td>
-                        <td width=\"10%\"><div style=\"text-align: right;\">".number_format($val2['item_unit_price'],2,'.',',')."</div></td>
-                        <td width=\"10%\" ><div style=\"text-align: right;\">".number_format($val2['subtotal_amount_after_discount'],2,'.',',')."</div></td>
-                    </tr>
-                    
-                ";
-                }
-                
-            }
-            $no++;
-        }
-        $tblStock3 = " 
-
         </table>
-        <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
-            <tr>
-                <td style=\"text-align:right\">".Auth::user()->name.", ".date('d-m-Y H:i')."</td>
-            </tr>
-        </table>";
+        <div></div>
+        <table width=\"100%\" cellspacing=\"0\" cellpadding=\"0\" border=\"1\">
+            <div style=\"border-collapse:collapse;\">
+                <tr style=\"line-height: 0%;\">
+                    <td width=\"5%\"><div style=\"text-align: center; font-weight: bold;\">No</div></td>
+                    <td width=\"10%\"><div style=\"text-align: center; font-weight: bold;\">Tanggal</div></td>
+                    <td width=\"12%\"><div style=\"text-align: center; font-weight: bold;\">Nomor</div></td>
+                    <td width=\"32%\"><div style=\"text-align: center; font-weight: bold;\">Anggota</div></td>
+                    <td width=\"11%\"><div style=\"text-align: center; font-weight: bold;\">Harga Satuan</div></td>
+                    <td width=\"18%\"><div style=\"text-align: center; font-weight: bold;\">Diskon Barang</div></td>
+                    <td width=\"12%\"><div style=\"text-align: center; font-weight: bold;\">Jumlah</div></td>
+                </tr>
+            </div>
+        </table> ";
 
-        $pdf::writeHTML($tblStock1.$tblStock2.$tblStock3, true, false, false, false, '');
+        $no = 1;    
+        $total_amount = 0;
+
+        $tbl2 = "
+        <table width=\"100%\" cellspacing=\"0\" cellpadding=\"1\" border=\"0\">
+        ";
+        foreach ($sales_invoice as $key => $val) {
+            $tbl2 .= "
+                <tr>
+                    <td style=\"border-top:1px solid black;\" rowspan=\"2\" width=\"5%\"><div style=\"text-align: center;\">".$no.".</div></td>
+                    <td style=\"border-top:1px solid black;\" rowspan=\"2\" width=\"10%\">".date('d-m-Y', strtotime($val['sales_invoice_date']))."</td>
+                    <td style=\"border-bottom:1px solid black; border-top:1px solid black;\" rowspan=\"2\" width=\"12%\">".$val['sales_invoice_no']."</td>
+                    <td style=\"border-top:1px solid black;\" width=\"73%\">".$this->getCustomerName($val['customer_id'])." - ".$this->getCustomerDivision($val['customer_id'])."</td>
+                </tr>
+                <tr>
+                    <td style=\"border-bottom:1px solid black;\">Cara Bayar : ".$sales_payment_method_list[$val['sales_payment_method']]."</td>
+                </tr>
+            ";
+            $dataItem = SalesInvoiceItem::where('sales_invoice_id', $val['sales_invoice_id'])
+            ->where('data_state',0)
+            ->where('quantity','!=',0)
+            ->get();
+            $no1 = 1;
+
+            foreach ($dataItem as $key1 => $val1) {
+                $tbl2 .= "
+                    <tr>
+                        <td width=\"5%\"></td>
+                        <td width=\"10%\"></td>
+                        <td width=\"32%\">".$no1.") ".$this->getItemName($val1['item_id'])."</td>
+                        <td width=\"5%\" d style=\"text-align: right;\">".$val1['quantity']."</td>
+                        <td width=\"7%\">".$this->getItemUnitName($val1['item_unit_id'])."</td>
+                        <td style=\"text-align: right;\" width=\"11%\">".number_format($val1['item_unit_price'],2,'.',',')."</td>
+                        <td style=\"text-align: right;\" width=\"7%\">0 %</td>
+                        <td style=\"text-align: right;\" width=\"11%\">".number_format(0,2,'.',',')."</td>
+                        <td style=\"text-align: right;\" width=\"12%\">".number_format($val1['subtotal_amount_after_discount'],2,'.',',')."</td>
+                    </tr>
+                ";
+                $no1++;
+            }
+
+            $tbl2 .= "
+                <tr>
+                    <td width=\"5%\"></td>
+                    <td width=\"10%\"></td>
+                    <td style=\"border-top:1px solid black;\" width=\"12%\"></td>
+                    <td style=\"border-top:1px solid black;\" width=\"32%\"></td>
+                    <td style=\"border-top:1px solid black;\" width=\"11%\"></td>
+                    <td style=\"border-top:1px solid black;\" width=\"11%\">Sub Total</td>
+                    <td style=\"text-align: center; border-top:1px solid black;\" width=\"1%\">:</td>
+                    <td style=\"text-align:right; border-top:1px solid black;\" width=\"18%\">".number_format($val['subtotal_amount'],2,'.',',')."</td>
+                </tr>
+            ";
+
+            if ($val['discount_amount_total'] != 0) {
+                $tbl2 .= "
+                <tr>
+                    <td width=\"5%\"></td>
+                    <td width=\"10%\"></td>
+                    <td width=\"12%\"></td>
+                    <td width=\"32%\"></td>
+                    <td width=\"11%\"></td>
+                    <td width=\"11%\">Diskon</td>
+                    <td style=\"text-align: center;\" width=\"1%\">:</td>
+                    <td style=\"text-align:right;\" width=\"18%\">".number_format($val['discount_amount_total'],2,'.',',')."</td>
+                </tr>
+                ";
+            }
+
+            if ($val['voucher_amount'] != 0) {
+                $tbl2 .= "
+                <tr>
+                    <td width=\"5%\"></td>
+                    <td width=\"10%\"></td>
+                    <td width=\"12%\"></td>
+                    <td width=\"32%\"></td>
+                    <td width=\"11%\"></td>
+                    <td width=\"11%\">Voucher</td>
+                    <td style=\"text-align: center;\" width=\"1%\">:</td>
+                    <td style=\"text-align:right;\" width=\"18%\">".number_format($val['voucher_amount'],2,'.',',')."</td>
+                </tr>
+                ";
+            }
+
+            $tbl2 .= "
+            <tr>
+                <td width=\"5%\"></td>
+                <td width=\"10%\"></td>
+                <td width=\"12%\"></td>
+                <td width=\"32%\"></td>
+                <td width=\"11%\"></td>
+                <td style=\"border-top:1px solid black;\" width=\"11%\">Total</td>
+                <td style=\"text-align: center; border-top:1px solid black;\" width=\"1%\">:</td>
+                <td style=\"text-align:right; border-top:1px solid black;\" width=\"18%\">".number_format($val['total_amount'],2,'.',',')."</td>
+            </tr>
+            <tr>
+                <td></td>   
+            </tr>
+            ";
+
+            $no++;
+            $total_amount += $val['total_amount'];
+        }
+        $tbl3 ="
+        </table>
+        <table width=\"100%\" cellspacing=\"0\" cellpadding=\"\" border=\"0\">
+        <hr>
+            <tr>
+                <td width=\"50%\" style=\"font-weight: bold;\">Total Jumlah (Rp)</td>
+                <td width=\"50%\" style=\"text-align:right; font-weight: bold;\">".number_format($total_amount,2,'.',',')."</td>
+            </tr>
+        <hr>
+        </table>
+        ";
+
+        $pdf::writeHTML($tbl1.$tbl2.$tbl3, true, false, false, false, '');
 
         $filename = 'Laporan_Penjualan_Terperinci_'.$start_date.'s.d.'.$end_date.'.pdf';
         $pdf::Output($filename, 'I');
