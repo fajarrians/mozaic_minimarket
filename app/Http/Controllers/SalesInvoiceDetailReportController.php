@@ -123,6 +123,16 @@ class SalesInvoiceDetailReportController extends Controller
         return $data['member_name'];
     }
 
+    public function getCustomerDivision($member_id)
+    {
+        $data = CoreMember::where('data_state',0)
+        ->where('company_id', Auth::user()->company_id)
+        ->where('member_id', $member_id)
+        ->first();
+
+        return $data['division_name'];
+    }
+
     public function printSalesInvoiceReport()
     {
         if(!$start_date = Session::get('start_date')){

@@ -551,23 +551,8 @@
 
 		});
 	}
- 
-    // $('#form-prevent').on('keyup keypress', function(e) {
-    //     var keyCode = e.keyCode || e.which;
-    //     if (keyCode === 13) { 
-    //         e.preventDefault();
-    //         return false;
-    //     }
-    // }); 
 
     $(document).keydown(function(e){
-        // if ((e.keyCode == 13) && (e.shiftKey)) {
-        //     $('#form-prevent').submit();
-        // } else if ((e.keyCode == 65) && (e.shiftKey)) {
-        //     $('#staticBackdrop').modal('show');
-        // } else if ((e.keyCode == 68) && (e.shiftKey)) {
-        //     $('#form-reset').click();
-        // }
         if (e.ctrlKey && (e.keyCode == 13)) {
             $('#form-prevent').submit();
         } else if (e.ctrlKey && e.shiftKey) {
@@ -831,7 +816,7 @@
                 <div class="">
                     <div class="form-actions float-right">
                         <button type="reset" name="Reset" class="btn btn-danger" id="form-reset" onclick="reset_add();"><i class="fa fa-times"></i> Batal</button>
-                        <button type="submit" name="Save" class="btn btn-success button-prevent" onclick="$(this).addClass('disabled');" title="Save"><i class="fa fa-check"></i> Simpan</button>
+                        <button type="button" name="Save" class="btn btn-success button-prevent" onclick="$(this).addClass('disabled');$('form').submit();" title="Save"><i class="fa fa-check"></i> Simpan</button>
                     </div>
                 </div>
             </div>

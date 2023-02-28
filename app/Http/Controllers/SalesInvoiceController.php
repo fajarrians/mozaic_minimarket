@@ -472,10 +472,11 @@ class SalesInvoiceController extends Controller
         return $data['item_unit_name'];
     }
 
-    public function getItemBarcode($item_id, $item_unit_id)
+    public function getItemBarcode($item_packge_id)
     {
-        $data = InvtItemBarcode::where('item_id', $item_id)
-        ->where('item_unit_id', $item_unit_id)
+        $data = InvtItemBarcode::where('item_packge_id', $item_packge_id)
+        ->where('company_id', Auth::user()->company_id)
+        ->where('data_state',0)
         ->first();
 
         return $data['item_barcode'];
@@ -816,7 +817,6 @@ class SalesInvoiceController extends Controller
     public function selectSalesInvoice($item_barcode)
     {
         $data = InvtItemPackge::where('invt_item_packge.data_state',0)
-        ->join('invt_item', 'invt_item_packge.item_id','=','invt_item.item_id')
         ->join('invt_item_unit','invt_item_packge.item_unit_id','=','invt_item_unit.item_unit_id')
         ->join('invt_item_barcode','invt_item_barcode.item_packge_id','=','invt_item_packge.item_packge_id')
         ->where('invt_item_packge.company_id', Auth::user()->company_id)
@@ -834,7 +834,7 @@ class SalesInvoiceController extends Controller
                             'item_packge_id'                    => $data_itemses[$i]['item_packge_id'],
                             'item_id'                           => $data_itemses[$i]['item_id'],
                             'item_name'                         => $data_itemses[$i]['item_name'],
-                            'item_unit_name'                    => $data_itemses[$i]['item_unit_name'],
+                            'item_unit_name'                    => $this->getItemName($data_itemses[$i]['item_id']),
                             'item_category_id'                  => $data_itemses[$i]['item_category_id'],
                             'item_unit_id'                      => $data_itemses[$i]['item_unit_id'],
                             'item_unit_price'                   => $data_itemses[$i]['item_unit_price'],
@@ -847,7 +847,7 @@ class SalesInvoiceController extends Controller
                             'item_packge_id'                    => $data_itemses[$i]['item_packge_id'],
                             'item_id'                           => $data_itemses[$i]['item_id'],
                             'item_name'                         => $data_itemses[$i]['item_name'],
-                            'item_unit_name'                    => $data_itemses[$i]['item_unit_name'],
+                            'item_unit_name'                    => $this->getItemName($data_itemses[$i]['item_id']),
                             'item_category_id'                  => $data_itemses[$i]['item_category_id'],
                             'item_unit_id'                      => $data_itemses[$i]['item_unit_id'],
                             'item_unit_price'                   => $data_itemses[$i]['item_unit_price'],
@@ -862,7 +862,7 @@ class SalesInvoiceController extends Controller
                     $data_input = [
                         'item_packge_id'                    => $data['item_packge_id'],
                         'item_id'                           => $data['item_id'],
-                        'item_name'                         => $data['item_name'],
+                        'item_name'                         => $this->getItemName($data['item_id']),
                         'item_unit_name'                    => $data['item_unit_name'],
                         'item_category_id'                  => $data['item_category_id'],
                         'item_unit_id'                      => $data['item_unit_id'],
@@ -877,7 +877,7 @@ class SalesInvoiceController extends Controller
                 $data_input = [
                     'item_packge_id'                    => $data['item_packge_id'],
                     'item_id'                           => $data['item_id'],
-                    'item_name'                         => $data['item_name'],
+                    'item_name'                         => $this->getItemName($data['item_id']),
                     'item_unit_name'                    => $data['item_unit_name'],
                     'item_category_id'                  => $data['item_category_id'],
                     'item_unit_id'                      => $data['item_unit_id'],
@@ -963,7 +963,6 @@ class SalesInvoiceController extends Controller
     public function selectItemNameSalesInvoice($item_id, $unit_id) 
     {
         $data = InvtItemPackge::where('invt_item_packge.data_state',0)
-        ->join('invt_item', 'invt_item_packge.item_id','=','invt_item.item_id')
         ->join('invt_item_unit','invt_item_packge.item_unit_id','=','invt_item_unit.item_unit_id')
         ->where('invt_item_packge.company_id', Auth::user()->company_id)
         ->where('invt_item_packge.item_id', $item_id)
@@ -981,7 +980,7 @@ class SalesInvoiceController extends Controller
                         $data_input = [
                             'item_packge_id'                    => $data_itemses[$i]['item_packge_id'],
                             'item_id'                           => $data_itemses[$i]['item_id'],
-                            'item_name'                         => $data_itemses[$i]['item_name'],
+                            'item_name'                         => $this->getItemName($data_itemses[$i]['item_id']),
                             'item_unit_name'                    => $data_itemses[$i]['item_unit_name'],
                             'item_category_id'                  => $data_itemses[$i]['item_category_id'],
                             'item_unit_id'                      => $data_itemses[$i]['item_unit_id'],
@@ -994,7 +993,7 @@ class SalesInvoiceController extends Controller
                         $data_input = [
                             'item_packge_id'                    => $data_itemses[$i]['item_packge_id'],
                             'item_id'                           => $data_itemses[$i]['item_id'],
-                            'item_name'                         => $data_itemses[$i]['item_name'],
+                            'item_name'                         => $this->getItemName($data_itemses[$i]['item_id']),
                             'item_unit_name'                    => $data_itemses[$i]['item_unit_name'],
                             'item_category_id'                  => $data_itemses[$i]['item_category_id'],
                             'item_unit_id'                      => $data_itemses[$i]['item_unit_id'],
@@ -1010,7 +1009,7 @@ class SalesInvoiceController extends Controller
                     $data_input = [
                         'item_packge_id'                    => $data['item_packge_id'],
                         'item_id'                           => $data['item_id'],
-                        'item_name'                         => $data['item_name'],
+                        'item_name'                         => $this->getItemName($data['item_id']),
                         'item_unit_name'                    => $data['item_unit_name'],
                         'item_category_id'                  => $data['item_category_id'],
                         'item_unit_id'                      => $data['item_unit_id'],
@@ -1025,7 +1024,7 @@ class SalesInvoiceController extends Controller
                 $data_input = [
                     'item_packge_id'                    => $data['item_packge_id'],
                     'item_id'                           => $data['item_id'],
-                    'item_name'                         => $data['item_name'],
+                    'item_name'                         => $this->getItemName($data['item_id']),
                     'item_unit_name'                    => $data['item_unit_name'],
                     'item_category_id'                  => $data['item_category_id'],
                     'item_unit_id'                      => $data['item_unit_id'],
@@ -1588,10 +1587,11 @@ class SalesInvoiceController extends Controller
 
     }
 
-    public function getItemUnitPrice($item_id, $item_unit_id)
+    public function getItemUnitPrice($item_packge_id)
     {
-        $data = InvtItemPackge::where('item_id', $item_id)
-        ->where('item_unit_id', $item_unit_id)
+        $data = InvtItemPackge::where('item_packge_id', $item_packge_id)
+        ->where('company_id', Auth::user()->company_id)
+        ->where('data_state',0)
         ->first();
 
         return number_format($data['item_unit_price'],2,',','.');
@@ -1599,31 +1599,24 @@ class SalesInvoiceController extends Controller
 
     public function tableSalesItem(Request $request)
     {
-        $draw 				= 		$request->get('draw');
-        $start 				= 		$request->get("start");
-        $rowPerPage 		= 		$request->get("length");
-        // $orderArray 	    = 		$request->get('order');
-        $columnNameArray 	= 		$request->get('columns');
-        $searchArray 		= 		$request->get('search');
-        // $columnIndex 		= 		$orderArray[0]['column'];
-        // $columnName 		= 		$columnNameArray[$columnIndex]['data'];
-        // $columnSortOrder 	= 		$orderArray[0]['dir'];
-        $searchValue 		= 		$searchArray['value'];
+        $draw 				= $request->get('draw');
+        $start 				= $request->get("start");
+        $rowPerPage 		= $request->get("length");
+        $searchArray 		= $request->get('search');
+        $searchValue 		= $searchArray['value'];
         $valueArray         = explode (" ",$searchValue);
 
 
-        $users = InvtItem::join('invt_item_packge','invt_item_packge.item_id','=','invt_item.item_id')
-        ->select('invt_item_packge.item_unit_id','invt_item.item_name','invt_item.item_id')
-        ->where('invt_item.data_state',0)
-        ->where('invt_item.company_id', Auth::user()->company_id)
-        ->where('invt_item_packge.item_unit_id', '!=', null);
+        $users = InvtItemPackge::where('invt_item_packge.company_id', Auth::user()->company_id)
+        ->join('invt_item', 'invt_item.item_id','=','invt_item_packge.item_id')
+        ->where('invt_item_packge.item_unit_id', '!=', null)
+        ->where('invt_item_packge.data_state',0);
         $total = $users->count();
 
-        $totalFilter = InvtItem::join('invt_item_packge','invt_item_packge.item_id','=','invt_item.item_id')
-        ->select('invt_item_packge.item_unit_id','invt_item.item_name','invt_item.item_id')
-        ->where('invt_item.data_state',0)
-        ->where('invt_item.company_id', Auth::user()->company_id)
-        ->where('invt_item_packge.item_unit_id', '!=', null);
+        $totalFilter = InvtItemPackge::where('invt_item_packge.company_id', Auth::user()->company_id)
+        ->join('invt_item', 'invt_item.item_id','=','invt_item_packge.item_id')
+        ->where('invt_item_packge.item_unit_id', '!=', null)
+        ->where('invt_item_packge.data_state',0);
         if (!empty($searchValue)) {
             if (count($valueArray) != 1) {
                 foreach ($valueArray as $key => $val) {
@@ -1636,13 +1629,11 @@ class SalesInvoiceController extends Controller
         $totalFilter = $totalFilter->count();
 
 
-        $arrData = InvtItem::join('invt_item_packge','invt_item_packge.item_id','=','invt_item.item_id')
-        ->select('invt_item_packge.item_unit_id','invt_item.item_name','invt_item.item_id')
-        ->where('invt_item.data_state',0)
-        ->where('invt_item.company_id', Auth::user()->company_id)
-        ->where('invt_item_packge.item_unit_id', '!=', null);
+        $arrData = InvtItemPackge::where('invt_item_packge.company_id', Auth::user()->company_id)
+        ->join('invt_item', 'invt_item.item_id','=','invt_item_packge.item_id')
+        ->where('invt_item_packge.item_unit_id', '!=', null)
+        ->where('invt_item_packge.data_state',0);
         $arrData = $arrData->skip($start)->take($rowPerPage);
-        // $arrData = $arrData->orderBy($columnName,$columnSortOrder);
 
         if (!empty($searchValue)) {
             if (count($valueArray) != 1) {
@@ -1664,8 +1655,8 @@ class SalesInvoiceController extends Controller
             $row['no']              = "<div class='text-center'>".$no.".</div>";
             $row['item_name']       = $val['item_name'];
             $row['item_unit_name']  = $this->getItemUnitName($val['item_unit_id']);
-            $row['item_barcode']    = $this->getItemBarcode($val['item_id'], $val['item_unit_id']);
-            $row['item_unit_price'] = '<div class="text-right">'.$this->getItemUnitPrice($val['item_id'], $val['item_unit_id']).'</div>';
+            $row['item_barcode']    = $this->getItemBarcode($val['item_packge_id']);
+            $row['item_unit_price'] = '<div class="text-right">'.$this->getItemUnitPrice($val['item_packge_id']).'</div>';
             $row['action']          = '<div class="text-center"><button type="button" data-bs-dismiss="modal" class="btn btn-outline-success btn-sm" onclick="function_add_item('.$val['item_id'].', '.$val['item_unit_id'].');">Pilih</button></div>';
 
             $data[] = $row;
