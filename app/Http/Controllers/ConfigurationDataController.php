@@ -208,9 +208,11 @@ class ConfigurationDataController extends Controller
         }
 
         if (($data1 == true) && ($data2 == true) && ($data3 == true) && ($data4 == true) && ($data5 == true) && ($data6 == true) && ($data7 == true) && ($data8 == true) && ($data9 == true) && ($data10 == true)) {
-            return session()->flash('msg',"Data Berhasil diunduh");
+            session()->flash('msg',"Data Berhasil diunduh");
+            return redirect('configuration-data');
         } else {
-            return session()->flash('msg',"Data Gagal diunduh");
+            session()->flash('msg',"Data Gagal diunduh");
+            return redirect('configuration-data');
         }
     }   
 
@@ -354,7 +356,7 @@ class ConfigurationDataController extends Controller
         }
 
         $msg = "Data Berhasil diunggah";
-        return redirect('/configuration-data')->with('msg', $msg);
+        return redirect('configuration-data')->with('msg', $msg);
     }
 
     public function checkCloseCashierConfiguration()

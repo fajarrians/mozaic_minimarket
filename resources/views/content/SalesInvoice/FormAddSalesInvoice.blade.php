@@ -288,8 +288,11 @@
 
 
         if (msg != null) {
-            var myWindow = window.open("{{ route('print-sales-invoice') }}",'_blank');
+            var myWindow = window.open("{{ route('print-sales-invoice') }}",'','width=800, height=600');
             myWindow.print();
+            setTimeout(function() { 
+                myWindow.close();
+        }, 5000);
         }
     });
 

@@ -109,7 +109,7 @@
                     <tr>
                         <td style='text-align:center'>{{ $no++ }}.</td>
                         <td>{{ $val }}</td>
-                        <td style="text-align: right">{{ number_format($SalesRecap->getAmount($key),2,'.',',') }}</td>
+                        <td style="text-align: right">{{ number_format($SalesRecap->getAmountTotal($key),2,'.',',') }}</td>
                     </tr>
                     @endforeach
                 </tbody>
