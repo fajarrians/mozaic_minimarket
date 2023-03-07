@@ -23,6 +23,7 @@ use Elibyy\TCPDF\Facades\TCPDF;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class ConfigurationDataController extends Controller
 {
@@ -38,12 +39,8 @@ class ConfigurationDataController extends Controller
 
     public function checkDataConfiguration()
     {
-        $item_stock = curl_init();
-        curl_setopt($item_stock, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-stock');
-        curl_setopt($item_stock, CURLOPT_RETURNTRANSFER, true);
-        $response_item_stock = curl_exec($item_stock);
-        $result_item_stock = json_decode($response_item_stock,TRUE);
-        curl_close($item_stock);
+        $response = Http::get('https://ciptapro.com/kasihibu_minimarket/api/get-data-item-stock');
+        $result_item_stock = json_decode($response,TRUE);
         
         foreach ($result_item_stock as $key => $val) {
             $data_stock[$key] = InvtItemStock::where('company_id', Auth::user()->company_id)
@@ -61,157 +58,117 @@ class ConfigurationDataController extends Controller
 
     public function dwonloadConfigurationData() 
     {
-        $item_category = curl_init();
-        curl_setopt($item_category, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-category');
-        curl_setopt($item_category, CURLOPT_RETURNTRANSFER, true);
-        $response_item_category = curl_exec($item_category);
-        $result_item_category = json_decode($response_item_category,TRUE);
-        curl_close($item_category);
-        
+        $get_1 = Http::get('https://ciptapro.com/kasihibu_minimarket/api/get-data-item-category');
+        $response_1 = json_decode($get_1->body(), true);
+
         InvtItemCategory::select(DB::statement('SET FOREIGN_KEY_CHECKS=0'))
         ->whereNotNull('item_category_id')->delete();
-        foreach ($result_item_category as $key => $val) {
+        foreach ($response_1 as $key => $val) {
             if ($val['company_id'] == Auth::user()->company_id) {
                 $data1 = InvtItemCategory::create($val);
             }
         }
-        
-        $item_unit = curl_init();
-        curl_setopt($item_unit, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-unit');
-        curl_setopt($item_unit, CURLOPT_RETURNTRANSFER, true);
-        $response_item_unit = curl_exec($item_unit);
-        $result_item_unit = json_decode($response_item_unit,TRUE);
-        curl_close($item_unit);
-        
+
+        $get_2 = Http::get('https://ciptapro.com/kasihibu_minimarket/api/get-data-item-unit');
+        $response_2 = json_decode($get_2->body(), true);
+
         InvtItemUnit::select(DB::statement('SET FOREIGN_KEY_CHECKS=0'))
         ->whereNotNull('item_unit_id')->delete();
-        foreach ($result_item_unit as $key => $val) {
+        foreach ($response_2 as $key => $val) {
             if ($val['company_id'] == Auth::user()->company_id) {
                 $data2 = InvtItemUnit::create($val);
             }
         }
 
-        $item_barcode = curl_init();
-        curl_setopt($item_barcode, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-barcode');
-        curl_setopt($item_barcode, CURLOPT_RETURNTRANSFER, true);
-        $response_item_barcode = curl_exec($item_barcode);
-        $result_item_barcode = json_decode($response_item_barcode,TRUE);
-        curl_close($item_barcode);
-        
+        $get_3 = Http::get('https://ciptapro.com/kasihibu_minimarket/api/get-data-item-barcode');
+        $response_3 = json_decode($get_3->body(), true);
+
         InvtItemBarcode::select(DB::statement('SET FOREIGN_KEY_CHECKS=0'))
         ->whereNotNull('item_barcode_id')->delete();
-        foreach ($result_item_barcode as $key => $val) {
+        foreach ($response_3 as $key => $val) {
             if ($val['company_id'] == Auth::user()->company_id) {
                 $data3 = InvtItemBarcode::create($val);
             }
         }
 
-        $item_packge = curl_init();
-        curl_setopt($item_packge, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-packge');
-        curl_setopt($item_packge, CURLOPT_RETURNTRANSFER, true);
-        $response_item_packge = curl_exec($item_packge);
-        $result_item_packge = json_decode($response_item_packge,TRUE);
-        curl_close($item_packge);
-        
+        $get_4 = Http::get('https://ciptapro.com/kasihibu_minimarket/api/get-data-item-packge');
+        $response_4 = json_decode($get_4->body(), true);
+
         InvtItemPackge::select(DB::statement('SET FOREIGN_KEY_CHECKS=0'))
         ->whereNotNull('item_packge_id')->delete();
-        foreach ($result_item_packge as $key => $val) {
+        foreach ($response_4 as $key => $val) {
             if ($val['company_id'] == Auth::user()->company_id) {
                 $data4 = InvtItemPackge::create($val);
             }
         }
-        
-        $item_warehouse = curl_init();
-        curl_setopt($item_warehouse, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-warehouse');
-        curl_setopt($item_warehouse, CURLOPT_RETURNTRANSFER, true);
-        $response_item_warehouse = curl_exec($item_warehouse);
-        $result_item_warehouse = json_decode($response_item_warehouse,TRUE);
-        curl_close($item_warehouse);
+
+        $get_5 = Http::get('https://ciptapro.com/kasihibu_minimarket/api/get-data-item-warehouse');
+        $response_5 = json_decode($get_5->body(), true);
 
         InvtWarehouse::select(DB::statement('SET FOREIGN_KEY_CHECKS=0'))
         ->whereNotNull('warehouse_id')->delete();
-        foreach ($result_item_warehouse as $key => $val) {
+        foreach ($response_5 as $key => $val) {
             if ($val['company_id'] == Auth::user()->company_id) {
                 $data5 = InvtWarehouse::create($val);
             }
         }
 
-        $item = curl_init();
-        curl_setopt($item, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item');
-        curl_setopt($item, CURLOPT_RETURNTRANSFER, true);
-        $response_item = curl_exec($item);
-        $result_item = json_decode($response_item,TRUE);
-        curl_close($item);
+        $get_6 = Http::get('https://ciptapro.com/kasihibu_minimarket/api/get-data-item');
+        $response_6 = json_decode($get_6->body(), true);
 
         InvtItem::select(DB::statement('SET FOREIGN_KEY_CHECKS=0'))
         ->whereNotNull('item_id')->delete();
-        foreach ($result_item as $key => $val) {
+        foreach ($response_6 as $key => $val) {
             if ($val['company_id'] == Auth::user()->company_id) {
                 $data6 = InvtItem::create($val);
             }
         }
 
-        $item_stock = curl_init();
-        curl_setopt($item_stock, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-stock');
-        curl_setopt($item_stock, CURLOPT_RETURNTRANSFER, true);
-        $response_item_stock = curl_exec($item_stock);
-        $result_item_stock = json_decode($response_item_stock,TRUE);
-        curl_close($item_stock);
-        
+        $get_7 = Http::get('https://ciptapro.com/kasihibu_minimarket/api/get-data-item-stock');
+        $response_7 = json_decode($get_7->body(), true);
+
         InvtItemStock::whereNotNull('item_stock_id')->delete();
-        foreach ($result_item_stock as $key => $val) {
+        foreach ($response_7 as $key => $val) {
             if ($val['company_id'] == Auth::user()->company_id) {
                 $data7 = InvtItemStock::create($val);
             }
         }
 
-        $item_rack = curl_init();
-        curl_setopt($item_rack, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-item-rack');
-        curl_setopt($item_rack, CURLOPT_RETURNTRANSFER, true);
-        $response_item_rack = curl_exec($item_rack);
-        $result_item_rack = json_decode($response_item_rack,TRUE);
-        curl_close($item_rack);
-        
+        $get_8 = Http::get('https://ciptapro.com/kasihibu_minimarket/api/get-data-item-rack');
+        $response_8 = json_decode($get_8->body(), true);
+
         InvtItemRack::whereNotNull('item_rack_id')->delete();
-        foreach ($result_item_rack as $key => $val) {
+        foreach ($response_8 as $key => $val) {
             if ($val['company_id'] == Auth::user()->company_id) {
                 $data8 = InvtItemRack::create($val);
             }
         }
 
-        $core_member = curl_init();
-        curl_setopt($core_member, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-core-member');
-        curl_setopt($core_member, CURLOPT_RETURNTRANSFER, true);
-        $response_core_member = curl_exec($core_member);
-        $result_core_member = json_decode($response_core_member,TRUE);
-        curl_close($core_member);
-        
+        $get_9 = Http::get('https://ciptapro.com/kasihibu_minimarket/api/get-data-core-member');
+        $response_9 = json_decode($get_9->body(), true);
+
         CoreMember::whereNotNull('member_id')->delete();
-        foreach ($result_core_member as $key => $val) {
+        foreach ($response_9 as $key => $val) {
             if ($val['company_id'] == Auth::user()->company_id) {
                 $data9 = CoreMember::create($val);
             }
         }
 
-        $preference_voucher = curl_init();
-        curl_setopt($preference_voucher, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/get-data-preference-voucher');
-        curl_setopt($preference_voucher, CURLOPT_RETURNTRANSFER, true);
-        $response_preference_voucher = curl_exec($preference_voucher);
-        $result_preference_voucher = json_decode($response_preference_voucher,TRUE);
-        curl_close($preference_voucher);
-        
+        $get_10 = Http::get('https://ciptapro.com/kasihibu_minimarket/api/get-data-preference-voucher');
+        $response_10 = json_decode($get_10->body(), true);
+
         PreferenceVoucher::whereNotNull('voucher_id')->delete();
-        foreach ($result_preference_voucher as $key => $val) {
+        foreach ($response_10 as $key => $val) {
             if ($val['company_id'] == Auth::user()->company_id) {
                 $data10 = PreferenceVoucher::create($val);
             }
         }
 
         if (($data1 == true) && ($data2 == true) && ($data3 == true) && ($data4 == true) && ($data5 == true) && ($data6 == true) && ($data7 == true) && ($data8 == true) && ($data9 == true) && ($data10 == true)) {
-            session()->flash('msg',"Data Berhasil diunduh");
+            session()->flash('msg',"Data Berhasil didownload");
             return redirect('configuration-data');
         } else {
-            session()->flash('msg',"Data Gagal diunduh");
+            session()->flash('msg',"Data Gagal didownload");
             return redirect('configuration-data');
         }
     }   
@@ -219,143 +176,195 @@ class ConfigurationDataController extends Controller
     public function uploadConfigurationData()
     {
         $data_sales_invoice = SalesInvoice::where('status_upload',0)
-        ->where('company_id',Auth::user()->company_id)
+        ->where('company_id', Auth::user()->company_id)
         ->get();
         $data_sales_invoice_item = SalesInvoiceItem::where('status_upload',0)
-        ->where('company_id',Auth::user()->company_id)
+        ->where('company_id', Auth::user()->company_id)
         ->get();
-        $data_core_member = CoreMember::where('company_id',Auth::user()->company_id)
+        $data_core_member = CoreMember::where('member_account_receivable_amount_temp', '!=', 0)
+        ->where('company_id', Auth::user()->company_id)
         ->get();
         $data_close_cashier = CloseCashierLog::where('status_upload', 0)
-        ->where('company_id',Auth::user()->company_id)
+        ->where('company_id', Auth::user()->company_id)
         ->get();
         $data_login_log = SystemLoginLog::where('status_upload', 0)
-        ->where('company_id',Auth::user()->company_id)
+        ->where('company_id', Auth::user()->company_id)
         ->get();
         $data_sii_remove = SIIRemoveLog::where('status_upload', 0)
-        ->where('company_id',Auth::user()->company_id)
+        ->where('company_id', Auth::user()->company_id)
         ->get();
 
-        // dd($data_sales_invoice_item);
-
-        if (count($data_login_log) != 0) {
-            $data_login_log = json_decode($data_login_log,TRUE);
-            for ($i=0; $i < count($data_login_log); $i++) { 
-                $login_log = curl_init();
-                curl_setopt($login_log, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-login-log');
-                curl_setopt($login_log, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($login_log, CURLOPT_POSTFIELDS, $data_login_log[$i]);
-                $response_login_log = curl_exec($login_log);
-                $result_login_log = json_decode($response_login_log,TRUE);
-                curl_close($login_log);
-            }
-            if ($result_login_log == true) {
-                SystemLoginLog::where('status_upload',0)
-                ->where('company_id',Auth::user()->company_id)
-                ->update(['status_upload' => 1]);
-            }
-        }
-
-        if (count($data_close_cashier) != 0) {
-            $data_close_cashier = json_decode($data_close_cashier,TRUE);
-            for ($i=0; $i < count($data_close_cashier); $i++) { 
-                $close_cashier = curl_init();
-                curl_setopt($close_cashier, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-close-cashier');
-                curl_setopt($close_cashier, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($close_cashier, CURLOPT_POSTFIELDS, $data_close_cashier[$i]);
-                $response_close_cashier = curl_exec($close_cashier);
-                $result_close_cashier = json_decode($response_close_cashier,TRUE);
-                curl_close($close_cashier);
-            }
-            if ($result_close_cashier == true) {
-                CloseCashierLog::where('status_upload',0)
-                ->where('company_id',Auth::user()->company_id)
-                ->update(['status_upload' => 1]);
-            }
-        }
-
         if (count($data_sales_invoice) != 0) {
-            $data_sales_invoice = json_decode($data_sales_invoice,TRUE);
-            for ($i=0; $i < count($data_sales_invoice); $i++) { 
-                $sales_invoice = curl_init();
-                curl_setopt($sales_invoice, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-sales-invoice');
-                curl_setopt($sales_invoice, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($sales_invoice, CURLOPT_POSTFIELDS, $data_sales_invoice[$i]);
-                $response_sales_invoice = curl_exec($sales_invoice);
-                $result_sales_invoice = json_decode($response_sales_invoice,TRUE);
-                curl_close($sales_invoice);
-            }
-            if ($result_sales_invoice == true) {
-                SalesInvoice::where('status_upload',0)
-                ->where('company_id',Auth::user()->company_id)
-                ->update(['status_upload' => 1]);
+            foreach ($data_sales_invoice as $key => $val) {
+                $response = Http::post('https://ciptapro.com/kasihibu_minimarket/api/post-data-sales-invoice', [
+                    'sales_invoice_id'          => $val['sales_invoice_id'],
+                    'company_id'                => $val['company_id'],
+                    'customer_id'               => $val['customer_id'],
+                    'voucher_id'                => $val['voucher_id'],
+                    'voucher_no'                => $val['voucher_no'],
+                    'sales_invoice_no'          => $val['sales_invoice_no'],
+                    'sales_invoice_date'        => $val['sales_invoice_date'],
+                    'sales_payment_method'      => $val['sales_payment_method'],
+                    'subtotal_item'             => $val['subtotal_item'],
+                    'subtotal_amount'           => $val['subtotal_amount'],
+                    'voucher_amount'            => $val['voucher_amount'],
+                    'discount_percentage_total' => $val['discount_percentage_total'],
+                    'discount_amount_total'     => $val['discount_amount_total'],
+                    'total_amount'              => $val['total_amount'],
+                    'paid_amount'               => $val['paid_amount'],
+                    'change_amount'             => $val['change_amount'],
+                    'from_store'                => $val['from_store'],
+                    'data_state'                => $val['data_state'],
+                    'created_id'                => $val['created_id'],
+                    'updated_id'                => $val['updated_id'],
+                    'created_at'                => $val['created_at'],
+                    'updated_at'                => $val['updated_at'],
+                ]);
+    
+                if ($response->successful() == true) {
+                    SalesInvoice::where('sales_invoice_id', $val['sales_invoice_id'])
+                    ->update([
+                        'status_upload' => 1,
+                        'updated_id'    => Auth::id()
+                    ]);
+                }
             }
         }
 
         if (count($data_sales_invoice_item) != 0) {
-            $data_sales_invoice_item = json_decode($data_sales_invoice_item,TRUE);
-            for ($i=0; $i < count($data_sales_invoice_item); $i++) { 
-                $sales_invoice_item = curl_init();
-                curl_setopt($sales_invoice_item, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-sales-invoice-item');
-                curl_setopt($sales_invoice_item, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($sales_invoice_item, CURLOPT_POSTFIELDS, $data_sales_invoice_item[$i]);
-                $response_sales_invoice_item = curl_exec($sales_invoice_item);
-                $result_sales_invoice_item = json_decode($response_sales_invoice_item,TRUE);
-                curl_close($sales_invoice_item);    
-            }
-            if ($result_sales_invoice_item == true){
-                SalesInvoiceItem::where('status_upload',0)
-                ->where('company_id',Auth::user()->company_id)
-                ->update(['status_upload' => 1]);
+            foreach ($data_sales_invoice_item as $key => $val) {
+                $response = Http::post('https://ciptapro.com/kasihibu_minimarket/api/post-data-sales-invoice-item', [
+                    'sales_invoice_item_id'             => $val['sales_invoice_item_id'],
+                    'company_id'                        => $val['company_id'],
+                    'sales_invoice_id'                  => $val['sales_invoice_id'],
+                    'item_category_id'                  => $val['item_category_id'],
+                    'item_unit_id'                      => $val['item_unit_id'],
+                    'item_id'                           => $val['item_id'],
+                    'quantity'                          => $val['quantity'],
+                    'item_unit_price'                   => $val['item_unit_price'],
+                    'subtotal_amount'                   => $val['subtotal_amount'],
+                    'discount_percentage'               => $val['discount_percentage'],
+                    'discount_amount'                   => $val['discount_amount'],
+                    'subtotal_amount_after_discount'    => $val['subtotal_amount_after_discount'],
+                    'data_state'                        => $val['data_state'],
+                    'created_id'                        => $val['created_id'],
+                    'updated_id'                        => $val['updated_id'],
+                    'created_at'                        => $val['created_at'],
+                    'updated_at'                        => $val['updated_at'],
+                ]);
+    
+                if ($response->successful() == true) {
+                    SalesInvoiceItem::where('sales_invoice_item_id', $val['sales_invoice_item_id'])
+                    ->update([
+                        'status_upload' => 1,
+                        'updated_id'    => Auth::id()
+                    ]);
+                }
             }
         }
 
         if (count($data_core_member) != 0) {
-            $data_core_member = json_decode($data_core_member,TRUE);
-            for ($i=0; $i < count($data_core_member); $i++) { 
-                $core_member = curl_init();
-                curl_setopt($core_member, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-core-member');
-                curl_setopt($core_member, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($core_member, CURLOPT_POSTFIELDS, $data_core_member[$i]);
-                $response_core_member = curl_exec($core_member);
-                $result_core_member = json_decode($response_core_member,TRUE);
-                curl_close($core_member);    
-            }
-            if ($result_core_member == true) {
-                CoreMember::where('company_id',Auth::user()->company_id)
-                ->update(['member_account_receivable_amount_temp' => 0]);
+            foreach ($data_core_member as $key => $val) {
+                $response = Http::post('https://ciptapro.com/kasihibu_minimarket/api/post-data-core-member', [
+                    'member_no'                                 => $val['member_no'],
+                    'member_account_receivable_amount_temp'     => $val['member_account_receivable_amount_temp'],
+                ]);
+
+                Http::post('https://ciptapro.com/kasihibu_minimarket/api/post-data-core-member-kopkar', [
+                    'member_no'                                 => $val['member_no'],
+                    'member_account_receivable_amount_temp'     => $val['member_account_receivable_amount_temp'],
+                ]);
+    
+                if ($response->successful() == true) {
+                    CoreMember::where('member_id', $val['member_id'])
+                    ->update([
+                        'member_account_receivable_amount_temp' => 0,
+                    ]);
+                }
             }
         }
 
-        for ($i=0; $i < count($data_core_member); $i++) { 
-            $core_member_kopkar = curl_init();
-            curl_setopt($core_member_kopkar, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-core-member-kopkar');
-            curl_setopt($core_member_kopkar, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($core_member_kopkar, CURLOPT_POSTFIELDS, $data_core_member[$i]);
-            $response_core_member_kopkar = curl_exec($core_member_kopkar);
-            $result_core_member_kopkar = json_decode($response_core_member_kopkar,TRUE);
-            curl_close($core_member_kopkar);    
+        if (count($data_close_cashier) != 0) {
+            foreach ($data_core_member as $key => $val) {
+                $response = Http::post('https://ciptapro.com/kasihibu_minimarket/api/post-data-close-cashier', [
+                    'cashier_log_id'                => $val['cashier_log_id'],
+                    'company_id'                    => $val['company_id'],
+                    'cashier_log_date'              => $val['cashier_log_date'],
+                    'shift_cashier'                 => $val['shift_cashier'],
+                    'total_cash_transaction'        => $val['total_cash_transaction'],
+                    'amount_cash_transaction'       => $val['amount_cash_transaction'],
+                    'total_receivable_transaction'  => $val['total_receivable_transaction'],
+                    'amount_receivable_transaction' => $val['amount_receivable_transaction'],
+                    'total_cashless_transaction'    => $val['total_cashless_transaction'],
+                    'amount_cashless_transaction'   => $val['amount_cashless_transaction'],
+                    'total_transaction'             => $val['total_transaction'],
+                    'total_amount'                  => $val['total_amount'],
+                    'data_state'                    => $val['data_state'],
+                    'created_id'                    => $val['created_id'],
+                    'updated_id'                    => $val['updated_id'],
+                    'created_at'                    => $val['created_at'],
+                    'updated_at'                    => $val['updated_at'],
+                ]);
+    
+                if ($response->successful() == true) {
+                    CloseCashierLog::where('cashier_log_id', $val['cashier_log_id'])
+                    ->update([
+                        'status_upload' => 1,
+                        'updated_id'    => Auth::id()
+                    ]);
+                }
+            }
+        }
+
+        if (count($data_login_log) != 0) {
+            foreach ($data_login_log as $key => $val) {
+                $response = Http::post('https://ciptapro.com/kasihibu_minimarket/api/post-data-login-log', [
+                    'login_log_id'  => $val['login_log_id'],
+                    'user_id'       => $val['user_id'],
+                    'company_id'    => $val['company_id'],
+                    'log_time'      => $val['log_time'],
+                    'log_status'    => $val['log_status'],
+                    'status_upload' => $val['status_upload'],
+                    'created_at'    => $val['created_at'],
+                    'updated_at'    => $val['updated_at'],
+                ]);
+    
+                if ($response->successful() == true) {
+                    SystemLoginLog::where('login_log_id', $val['login_log_id'])
+                    ->update([
+                        'status_upload' => 1,
+                    ]);
+                }
+            }
         }
 
         if (count($data_sii_remove) != 0) {
-            $data_sii_remove = json_decode($data_sii_remove,TRUE);
-            for ($i=0; $i < count($data_sii_remove); $i++) { 
-                $sii_remove = curl_init();
-                curl_setopt($sii_remove, CURLOPT_URL,'https://ciptapro.com/kasihibu_minimarket/api/post-data-sii-remove');
-                curl_setopt($sii_remove, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($sii_remove, CURLOPT_POSTFIELDS, $data_sii_remove[$i]);
-                $response_sii_remove = curl_exec($sii_remove);
-                $result_sii_remove = json_decode($response_sii_remove,TRUE);
-                curl_close($sii_remove);    
-            }
-            if ($result_sii_remove == true) {
-                SIIRemoveLog::where('status_upload',0)
-                ->where('company_id',Auth::user()->company_id)
-                ->update(['status_upload' => 1]);
+            foreach ($data_sii_remove as $key => $val) {
+                $response = Http::post('https://ciptapro.com/kasihibu_minimarket/api/post-data-sii-remove-log', [
+                    'sii_remove_log_id'         => $val['sii_remove_log_id'],
+                    'company_id'                => $val['company_id'],
+                    'sales_invoice_id'          => $val['sales_invoice_id'],
+                    'sales_invoice_item_id'     => $val['sales_invoice_item_id'],
+                    'sales_invoice_no'          => $val['sales_invoice_no'],
+                    'sii_amount'                => $val['sii_amount'],
+                    'data_state'                => $val['data_state'],
+                    'created_id'                => $val['created_id'],
+                    'updated_id'                => $val['updated_id'],
+                    'created_at'                => $val['created_at'],
+                    'updated_at'                => $val['updated_at'],
+                ]);
+    
+                if ($response->successful() == true) {
+                    SIIRemoveLog::where('sii_remove_log_id', $val['sii_remove_log_id'])
+                    ->update([
+                        'status_upload' => 1,
+                        'updated_id'    => Auth::id()
+                    ]);
+                }
             }
         }
-
-        $msg = "Data Berhasil diunggah";
+        
+        $msg = "Data Berhasil diupload";
         return redirect('configuration-data')->with('msg', $msg);
     }
 

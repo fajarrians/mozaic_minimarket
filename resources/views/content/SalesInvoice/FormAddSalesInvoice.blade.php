@@ -4,11 +4,10 @@
 @section('title', 'MOZAIC Minimarket')
 @section('js')
 <script>
-    $('body').on('input','#item_code',function(){
-        var item_code = $('#item_code').val();
-        if (item_code.length == 8) {
+    $('#item_code').keyup(function(e){
+        if (e.keyCode == 13) {
             $.ajax({
-                url: "{{ url('select-sales') }}"+'/'+item_code,
+                url: "{{ url('select-sales') }}"+'/'+this.value,
                 type: "GET",
                 dataType: "json",
                 success:function(data)
@@ -31,7 +30,7 @@
                                         '<td>'+data[i].item_name+'</td>'+
                                         '<td>'+data[i].item_unit_name+'</td>'+
                                         '<td>'+toRp(data[i].item_unit_price)+'</td>'+
-                                        '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
+                                        '<td><input onkeyup="function_change_quantity('+data[i].item_packge_id+', this.value, '+i+')" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
                                         '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
                                         '</tr>';
     
@@ -46,120 +45,8 @@
                         change_amount = paid_amount - total_amount_af_discount;
     
                         if (paid_amount != 0) {
-                            $('#change_amount_view').val(toRp(Math.abs(change_amount)));
-                            $('#change_amount').val(Math.abs(change_amount));
-                        }
-                        $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
-                        $('#subtotal_amount_change').val(total_amount_af_discount);
-                        $('#subtotal_amount').val(total_amount);
-                        $('#discount_amount_total').val(discount_amount);
-                        $('#total_item').val(total_item);
-                        $('#show_data').html(html);
-    
-                        $('#item_code').val('');
-                    } else if (data == 0) {
-                        alert('Barcode tidak ada yang sesuai!');
-                    }
-                }
-            });
-        } else if (item_code.length == 12) {
-            $.ajax({
-                url: "{{ url('select-sales') }}"+'/'+item_code,
-                type: "GET",
-                dataType: "json",
-                success:function(data)
-                {
-                    if (data != "") {
-                        var html = '';
-                        var i = 0;
-                        var no = 1;
-                        var total_amount = 0; 
-                        var total_item = 0;
-                        var paid_amount = $('#paid_amount').val() || 0;
-                        var voucher_amount = $('#voucher_amount').val() || 0;
-                        var discount_percentage_total = $('#discount_percentage_total').val() || 0;
-                        while (i < data.length) {
-                            if (data[i].quantity != 0) {
-                                total_amount += parseInt(data[i].subtotal_amount_after_discount);
-                                total_item += parseInt(data[i].quantity);
-                                html += '<tr>'+
-                                        '<td class="text-center">'+no+'.</td>'+
-                                        '<td>'+data[i].item_name+'</td>'+
-                                        '<td>'+data[i].item_unit_name+'</td>'+
-                                        '<td>'+toRp(data[i].item_unit_price)+'</td>'+
-                                        '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
-                                        '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
-                                        '</tr>';
-    
-                                no++;
-                            }
-                            i++;
-                        }
-                        
-                        total_amount_af_voucher = total_amount - voucher_amount;
-                        discount_amount = (total_amount_af_voucher * discount_percentage_total) / 100;
-                        total_amount_af_discount = total_amount_af_voucher - discount_amount;
-                        change_amount = paid_amount - total_amount_af_discount;
-    
-                        if (paid_amount != 0) {
-                            $('#change_amount_view').val(toRp(Math.abs(change_amount)));
-                            $('#change_amount').val(Math.abs(change_amount));
-                        }
-                        $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
-                        $('#subtotal_amount_change').val(total_amount_af_discount);
-                        $('#subtotal_amount').val(total_amount);
-                        $('#discount_amount_total').val(discount_amount);
-                        $('#total_item').val(total_item);
-                        $('#show_data').html(html);
-    
-                        $('#item_code').val('');
-                    } else if (data == 0) {
-                        alert('Barcode tidak ada yang sesuai!');
-                    }
-                }
-            });
-        } else if (item_code.length == 13) {
-            $.ajax({
-                url: "{{ url('select-sales') }}"+'/'+item_code,
-                type: "GET",
-                dataType: "json",
-                success:function(data)
-                {
-                    if (data != "") {
-                        var html = '';
-                        var i = 0;
-                        var no = 1;
-                        var total_amount = 0; 
-                        var total_item = 0;
-                        var paid_amount = $('#paid_amount').val() || 0;
-                        var voucher_amount = $('#voucher_amount').val() || 0;
-                        var discount_percentage_total = $('#discount_percentage_total').val() || 0;
-                        while (i < data.length) {
-                            if (data[i].quantity != 0) {
-                                total_amount += parseInt(data[i].subtotal_amount_after_discount);
-                                total_item += parseInt(data[i].quantity);
-                                html += '<tr>'+
-                                        '<td class="text-center">'+no+'.</td>'+
-                                        '<td>'+data[i].item_name+'</td>'+
-                                        '<td>'+data[i].item_unit_name+'</td>'+
-                                        '<td>'+toRp(data[i].item_unit_price)+'</td>'+
-                                        '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
-                                        '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
-                                        '</tr>';
-    
-                                no++;
-                            }
-                            i++;
-                        }
-                        
-                        total_amount_af_voucher = total_amount - voucher_amount;
-                        discount_amount = (total_amount_af_voucher * discount_percentage_total) / 100;
-                        total_amount_af_discount = total_amount_af_voucher - discount_amount;
-                        change_amount = paid_amount - total_amount_af_discount;
-    
-                        if (paid_amount != 0) {
-                            $('#change_amount_view').val(toRp(Math.abs(change_amount)));
-                            $('#change_amount').val(Math.abs(change_amount));
+                            $('#change_amount_view').val(toRp(change_amount));
+                            $('#change_amount').val(change_amount);
                         }
                         $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
                         $('#subtotal_amount_change').val(total_amount_af_discount);
@@ -176,6 +63,178 @@
             });
         }
     });
+    // $('body').on('input','#item_code',function(){
+    //     var item_code = $('#item_code').val();
+    //     if (item_code.length == 8) {
+    //         $.ajax({
+    //             url: "{{ url('select-sales') }}"+'/'+item_code,
+    //             type: "GET",
+    //             dataType: "json",
+    //             success:function(data)
+    //             {
+    //                 if (data != "") {
+    //                     var html = '';
+    //                     var i = 0;
+    //                     var no = 1;
+    //                     var total_amount = 0; 
+    //                     var total_item = 0;
+    //                     var paid_amount = $('#paid_amount').val() || 0;
+    //                     var voucher_amount = $('#voucher_amount').val() || 0;
+    //                     var discount_percentage_total = $('#discount_percentage_total').val() || 0;
+    //                     while (i < data.length) {
+    //                         if (data[i].quantity != 0) {
+    //                             total_amount += parseInt(data[i].subtotal_amount_after_discount);
+    //                             total_item += parseInt(data[i].quantity);
+    //                             html += '<tr>'+
+    //                                     '<td class="text-center">'+no+'.</td>'+
+    //                                     '<td>'+data[i].item_name+'</td>'+
+    //                                     '<td>'+data[i].item_unit_name+'</td>'+
+    //                                     '<td>'+toRp(data[i].item_unit_price)+'</td>'+
+    //                                     '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
+    //                                     '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
+    //                                     '</tr>';
+    
+    //                             no++;
+    //                         }
+    //                         i++;
+    //                     }
+                        
+    //                     total_amount_af_voucher = total_amount - voucher_amount;
+    //                     discount_amount = (total_amount_af_voucher * discount_percentage_total) / 100;
+    //                     total_amount_af_discount = total_amount_af_voucher - discount_amount;
+    //                     change_amount = paid_amount - total_amount_af_discount;
+    
+    //                     if (paid_amount != 0) {
+    //                         $('#change_amount_view').val(toRp(change_amount));
+    //                         $('#change_amount').val(change_amount);
+    //                     }
+    //                     $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
+    //                     $('#subtotal_amount_change').val(total_amount_af_discount);
+    //                     $('#subtotal_amount').val(total_amount);
+    //                     $('#discount_amount_total').val(discount_amount);
+    //                     $('#total_item').val(total_item);
+    //                     $('#show_data').html(html);
+    
+    //                     $('#item_code').val('');
+    //                 } else if (data == 0) {
+    //                     alert('Barcode tidak ada yang sesuai!');
+    //                 }
+    //             }
+    //         });
+    //     } else if (item_code.length == 12) {
+    //         $.ajax({
+    //             url: "{{ url('select-sales') }}"+'/'+item_code,
+    //             type: "GET",
+    //             dataType: "json",
+    //             success:function(data)
+    //             {
+    //                 if (data != "") {
+    //                     var html = '';
+    //                     var i = 0;
+    //                     var no = 1;
+    //                     var total_amount = 0; 
+    //                     var total_item = 0;
+    //                     var paid_amount = $('#paid_amount').val() || 0;
+    //                     var voucher_amount = $('#voucher_amount').val() || 0;
+    //                     var discount_percentage_total = $('#discount_percentage_total').val() || 0;
+    //                     while (i < data.length) {
+    //                         if (data[i].quantity != 0) {
+    //                             total_amount += parseInt(data[i].subtotal_amount_after_discount);
+    //                             total_item += parseInt(data[i].quantity);
+    //                             html += '<tr>'+
+    //                                     '<td class="text-center">'+no+'.</td>'+
+    //                                     '<td>'+data[i].item_name+'</td>'+
+    //                                     '<td>'+data[i].item_unit_name+'</td>'+
+    //                                     '<td>'+toRp(data[i].item_unit_price)+'</td>'+
+    //                                     '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
+    //                                     '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
+    //                                     '</tr>';
+    
+    //                             no++;
+    //                         }
+    //                         i++;
+    //                     }
+                        
+    //                     total_amount_af_voucher = total_amount - voucher_amount;
+    //                     discount_amount = (total_amount_af_voucher * discount_percentage_total) / 100;
+    //                     total_amount_af_discount = total_amount_af_voucher - discount_amount;
+    //                     change_amount = paid_amount - total_amount_af_discount;
+    
+    //                     if (paid_amount != 0) {
+    //                         $('#change_amount_view').val(toRp(change_amount));
+    //                         $('#change_amount').val(change_amount);
+    //                     }
+    //                     $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
+    //                     $('#subtotal_amount_change').val(total_amount_af_discount);
+    //                     $('#subtotal_amount').val(total_amount);
+    //                     $('#discount_amount_total').val(discount_amount);
+    //                     $('#total_item').val(total_item);
+    //                     $('#show_data').html(html);
+    
+    //                     $('#item_code').val('');
+    //                 } else if (data == 0) {
+    //                     alert('Barcode tidak ada yang sesuai!');
+    //                 }
+    //             }
+    //         });
+    //     } else if (item_code.length == 13) {
+    //         $.ajax({
+    //             url: "{{ url('select-sales') }}"+'/'+item_code,
+    //             type: "GET",
+    //             dataType: "json",
+    //             success:function(data)
+    //             {
+    //                 if (data != "") {
+    //                     var html = '';
+    //                     var i = 0;
+    //                     var no = 1;
+    //                     var total_amount = 0; 
+    //                     var total_item = 0;
+    //                     var paid_amount = $('#paid_amount').val() || 0;
+    //                     var voucher_amount = $('#voucher_amount').val() || 0;
+    //                     var discount_percentage_total = $('#discount_percentage_total').val() || 0;
+    //                     while (i < data.length) {
+    //                         if (data[i].quantity != 0) {
+    //                             total_amount += parseInt(data[i].subtotal_amount_after_discount);
+    //                             total_item += parseInt(data[i].quantity);
+    //                             html += '<tr>'+
+    //                                     '<td class="text-center">'+no+'.</td>'+
+    //                                     '<td>'+data[i].item_name+'</td>'+
+    //                                     '<td>'+data[i].item_unit_name+'</td>'+
+    //                                     '<td>'+toRp(data[i].item_unit_price)+'</td>'+
+    //                                     '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
+    //                                     '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
+    //                                     '</tr>';
+    
+    //                             no++;
+    //                         }
+    //                         i++;
+    //                     }
+                        
+    //                     total_amount_af_voucher = total_amount - voucher_amount;
+    //                     discount_amount = (total_amount_af_voucher * discount_percentage_total) / 100;
+    //                     total_amount_af_discount = total_amount_af_voucher - discount_amount;
+    //                     change_amount = paid_amount - total_amount_af_discount;
+    
+    //                     if (paid_amount != 0) {
+    //                         $('#change_amount_view').val(toRp(change_amount));
+    //                         $('#change_amount').val(change_amount);
+    //                     }
+    //                     $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
+    //                     $('#subtotal_amount_change').val(total_amount_af_discount);
+    //                     $('#subtotal_amount').val(total_amount);
+    //                     $('#discount_amount_total').val(discount_amount);
+    //                     $('#total_item').val(total_item);
+    //                     $('#show_data').html(html);
+    
+    //                     $('#item_code').val('');
+    //                 } else if (data == 0) {
+    //                     alert('Barcode tidak ada yang sesuai!');
+    //                 }
+    //             }
+    //         });
+    //     }
+    // });
 
     function function_add_item(item_id,unit_id,item_name){
         $.ajax({
@@ -201,7 +260,7 @@
                                     '<td>'+data[i].item_name+'</td>'+
                                     '<td>'+data[i].item_unit_name+'</td>'+
                                     '<td>'+toRp(data[i].item_unit_price)+'</td>'+
-                                    '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
+                                    '<td><input onkeyup="function_change_quantity('+data[i].item_packge_id+', this.value, '+i+')" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
                                     '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
                                     '</tr>';
                             no++;
@@ -215,8 +274,8 @@
                     change_amount = paid_amount - total_amount_af_discount;
 
                     if (paid_amount != 0) {
-                        $('#change_amount_view').val(toRp(Math.abs(change_amount)));
-                        $('#change_amount').val(Math.abs(change_amount));
+                        $('#change_amount_view').val(toRp(change_amount));
+                        $('#change_amount').val(change_amount);
                     }
                     $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
                     $('#subtotal_amount_change').val(total_amount_af_discount);
@@ -253,7 +312,7 @@
                             '<td>'+data[i].item_name+'</td>'+
                             '<td>'+data[i].item_unit_name+'</td>'+
                             '<td>'+toRp(data[i].item_unit_price)+'</td>'+
-                            '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
+                            '<td><input onkeyup="function_change_quantity('+data[i].item_packge_id+', this.value, '+i+')" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
                             '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
                             '</tr>';
 
@@ -268,8 +327,8 @@
             change_amount = paid_amount - total_amount_af_discount;
 
             if (paid_amount != 0) {
-                $('#change_amount_view').val(toRp(Math.abs(change_amount)));
-                $('#change_amount').val(Math.abs(change_amount));
+                $('#change_amount_view').val(toRp(change_amount));
+                $('#change_amount').val(change_amount);
             }
             $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
             $('#subtotal_amount_change').val(total_amount_af_discount);
@@ -292,13 +351,13 @@
             myWindow.print();
             setTimeout(function() { 
                 myWindow.close();
-        }, 5000);
+        }, 2000);
         }
     });
 
-    function function_change_quantity(item_packge_id, value){
-        if (value != '') {
-            setTimeout(function(){
+    function function_change_quantity(item_packge_id, value, no){
+        $('#'+no+'_quantity').keyup(function(e){
+            if (e.keyCode == 13) {
                 $.ajax({
                     url: "{{ url('sales-invoice/change-qty') }}"+'/'+item_packge_id+'/'+value,
                     type: "GET",
@@ -322,7 +381,7 @@
                                         '<td>'+data[i].item_name+'</td>'+
                                         '<td>'+data[i].item_unit_name+'</td>'+
                                         '<td>'+toRp(data[i].item_unit_price)+'</td>'+
-                                        '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
+                                        '<td><input onkeyup="function_change_quantity('+data[i].item_packge_id+', this.value, '+i+')" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
                                         '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
                                         '</tr>';
         
@@ -337,8 +396,8 @@
                         change_amount = paid_amount - total_amount_af_discount;
         
                         if (paid_amount != 0) {
-                            $('#change_amount_view').val(toRp(Math.abs(change_amount)));
-                            $('#change_amount').val(Math.abs(change_amount));
+                            $('#change_amount_view').val(toRp(change_amount));
+                            $('#change_amount').val(change_amount);
                         }
                         $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
                         $('#subtotal_amount_change').val(total_amount_af_discount);
@@ -348,8 +407,61 @@
                         $('#show_data').html(html);
                     }
                 });
-            }, 1500);
-        }
+            }
+        })
+        // if (value != '') {
+        //     setTimeout(function(){
+        //         $.ajax({
+        //             url: "{{ url('sales-invoice/change-qty') }}"+'/'+item_packge_id+'/'+value,
+        //             type: "GET",
+        //             dataType: "json",
+        //             success:function(data)
+        //             {
+        //                 var html = '';
+        //                 var i = 0;
+        //                 var no = 1;
+        //                 var total_amount = 0;
+        //                 var total_item = 0;
+        //                 var paid_amount = $('#paid_amount').val() || 0;
+        //                 var voucher_amount = $('#voucher_amount').val() || 0;
+        //                 var discount_percentage_total = $('#discount_percentage_total').val() || 0;
+        //                 while (i < data.length) {
+        //                     if (data[i].quantity != 0) {
+        //                         total_amount += parseInt(data[i].subtotal_amount_after_discount);
+        //                         total_item += parseInt(data[i].quantity);
+        //                         html += '<tr>'+
+        //                                 '<td class="text-center">'+no+'.</td>'+
+        //                                 '<td>'+data[i].item_name+'</td>'+
+        //                                 '<td>'+data[i].item_unit_name+'</td>'+
+        //                                 '<td>'+toRp(data[i].item_unit_price)+'</td>'+
+        //                                 '<td><input oninput="function_change_quantity('+data[i].item_packge_id+', this.value)" type="number" name="'+i+'_quantity" id="'+i+'_quantity" style="width: 100%; text-align: center; height: 30px; font-weight: bold; font-size: 15px" class="form-control input-bb" value="'+data[i].quantity+'" autocomplete="off">'+
+        //                                 '<td><div id="'+i+'_price_amount" name="'+i+'_price_amount" class="text-right">'+toRp(data[i].subtotal_amount_after_discount)+'</div></td>'+
+        //                                 '</tr>';
+        
+        //                         no++;
+        //                     }
+        //                     i++;
+        //                 }
+                        
+        //                 total_amount_af_voucher = total_amount - voucher_amount;
+        //                 discount_amount = (total_amount_af_voucher * discount_percentage_total) / 100;
+        //                 total_amount_af_discount = total_amount_af_voucher - discount_amount;
+        //                 change_amount = paid_amount - total_amount_af_discount;
+        
+        //                 if (paid_amount != 0) {
+        //                     $('#change_amount_view').val(toRp(change_amount));
+        //                     $('#change_amount').val(change_amount);
+        //                 }
+        //                 $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_discount));
+        //                 $('#subtotal_amount_change').val(total_amount_af_discount);
+        //                 $('#subtotal_amount').val(total_amount);
+        //                 $('#discount_amount_total').val(discount_amount);
+        //                 $('#total_item').val(total_item);
+        //                 $('#show_data').html(html);
+        //             }
+        //         });
+        //     }, 1500);
+        // }
     }
 
     function count_total(){
@@ -379,8 +491,8 @@
                             $('#subtotal_amount_view').text('Rp '+toRp(total_amount_af_voucher_amount));
                             $('#subtotal_amount_change').val(total_amount_af_voucher_amount);
                             if (paid_amount != '') {
-                                $('#change_amount_view').val(toRp(Math.abs(change_amount)));
-                                $('#change_amount').val(Math.abs(change_amount));
+                                $('#change_amount_view').val(toRp(change_amount));
+                                $('#change_amount').val(change_amount);
                             }
                         }
                 }
@@ -394,8 +506,8 @@
             $('#subtotal_amount_change').val(total_amount_af_discount);
             $('#discount_amount_total').val(discount_amount);
             if (paid_amount != '') {
-                $('#change_amount_view').val(toRp(Math.abs(change_amount)));
-                $('#change_amount').val(Math.abs(change_amount));
+                $('#change_amount_view').val(toRp(change_amount));
+                $('#change_amount').val(change_amount);
             }
         } else if ((voucher_id != null) && ((discount_percentage_total != 0) && (discount_percentage_total <= 100))) {
             $.ajax({
@@ -419,8 +531,8 @@
                             $('#subtotal_amount_change').val(total_amount_af_discount);
                             $('#discount_amount_total').val(discount_amount);
                             if (paid_amount != '') {
-                                $('#change_amount_view').val(toRp(Math.abs(change_amount)));
-                                $('#change_amount').val(Math.abs(change_amount));
+                                $('#change_amount_view').val(toRp(change_amount));
+                                $('#change_amount').val(change_amount);
                             }
                         }
                 }
@@ -431,8 +543,8 @@
 
             if (paid_amount != '') {
                 change_amount = paid_amount - subtotal_amount;
-                $('#change_amount_view').val(toRp(Math.abs(change_amount)));
-                $('#change_amount').val(Math.abs(change_amount));
+                $('#change_amount_view').val(toRp(change_amount));
+                $('#change_amount').val(change_amount);
             }
         } else if (discount_percentage_total > 100) {
             alert('Diskon Tidak Boleh Melebihi 100%');
@@ -444,8 +556,8 @@
             $('#subtotal_amount_change').val(subtotal_amount_af_voucher_amount);
             if (paid_amount != '') {
                 change_amount = paid_amount - subtotal_amount_af_voucher_amount;
-                $('#change_amount_view').val(toRp(Math.abs(change_amount)));
-                $('#change_amount').val(Math.abs(change_amount));
+                $('#change_amount_view').val(toRp(change_amount));
+                $('#change_amount').val(change_amount);
             }
         }
 
