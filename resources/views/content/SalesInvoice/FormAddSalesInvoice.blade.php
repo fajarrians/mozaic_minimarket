@@ -615,8 +615,6 @@
     $(document).ready(function(){
         var customer_id = {!! json_encode($datases['customer_id']) !!}
         var sales_payment_method = {!! json_encode($datases['sales_payment_method']) !!};
-        console.log(customer_id);
-        console.log(sales_payment_method);
         if (customer_id == null) {
             $('#customer_id').select2('val','0');
         }
@@ -643,6 +641,7 @@
             $('#label_voucher').removeClass('d-none');
         } else {
             $('#label_voucher').addClass('d-none');
+            $('#voucher_id').select2('val','0');
         }
     });
 

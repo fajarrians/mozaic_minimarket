@@ -364,8 +364,14 @@ class ConfigurationDataController extends Controller
             }
         }
         
-        $msg = "Data Berhasil diupload";
-        return redirect('configuration-data')->with('msg', $msg);
+        if ($response->successful() == true) {
+            $msg = "Data Berhasil diupload";
+            return redirect('configuration-data')->with('msg', $msg);
+        } else {
+            $msg = "Data Gagal diupload";
+            return redirect('configuration-data')->with('msg', $msg);
+        }
+
     }
 
     public function checkCloseCashierConfiguration()
