@@ -425,6 +425,7 @@ Route::get('/core-member',[CoreMemberController::class, 'index'])->name('core-me
 Route::get('/core-member-report', [CoreMemberReportController::class, 'index'])->name('core-member-report');
 Route::post('/core-member-report/filter', [CoreMemberReportController::class, 'filterCoreMemberReport'])->name('filter-core-member-report');
 Route::get('/core-member-report/reset-filter', [CoreMemberReportController::class, 'resetFilterCoreMemberReport'])->name('reset-filter-core-member-report');
+Route::get('/core-member-report/print-card/{member_id}', [CoreMemberReportController::class, 'printCardCoreMemberReport'])->name('print-core-member-report-card');
 Route::get('/core-member-report/print', [CoreMemberReportController::class, 'printCoreMemberReport'])->name('print-core-member-report');
 Route::get('/core-member-report/export', [CoreMemberReportController::class, 'exportCoreMemberReport'])->name('export-core-member-report');
 
