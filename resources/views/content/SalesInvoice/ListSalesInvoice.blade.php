@@ -26,7 +26,9 @@
                     if (msg == 1) {
                         alert('Data yang sudah diunggah tidak bisa dihapus!');
                     } else {
-                        location.href="{{ url('sales-invoice/delete') }}"+'/'+sales_invoice_id;
+                        if (confirm('Apakah Anda Yakin Ingin Menghapus Data Ini ?')) {
+                            location.href="{{ url('sales-invoice/delete') }}"+'/'+sales_invoice_id;
+                        }
                     }
 			}
 
