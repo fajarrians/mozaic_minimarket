@@ -1245,13 +1245,18 @@ class SalesInvoiceController extends Controller
             <tr>
                 <td width=\" 100% \" style=\"text-align: left;\">No. Voucher : ".$sales_invoice['voucher_no']."</td>
             </tr>
-            <tr>
-                <td width=\" 100% \" style=\"text-align: left;\">".$coremember['member_name']." - ".$coremember['division_name']."</td>
-            </tr>
-            <tr>
-                <td width=\" 100% \" style=\"text-align: left;\">NIK. ".$coremember['member_no']."</td>
-            </tr>
             ";
+
+            if ($sales_invoice['customer_id'] != null ) {
+                $tblStock4 .= "
+                <tr>
+                    <td width=\" 100% \" style=\"text-align: left;\">".$coremember['member_name']." - ".$coremember['division_name']."</td>
+                </tr>
+                <tr>
+                    <td width=\" 100% \" style=\"text-align: left;\">NIK. ".$coremember['member_no']."</td>
+                </tr>
+                ";
+            }
         }
 
         $tblStock5 = "
@@ -1470,13 +1475,18 @@ class SalesInvoiceController extends Controller
             <tr>
                 <td width=\" 100% \" style=\"text-align: left;\">No. Voucher : ".$sales_invoice['voucher_no']."</td>
             </tr>
-            <tr>
-                <td width=\" 100% \" style=\"text-align: left;\">".$coremember['member_name']." - ".$coremember['division_name']."</td>
-            </tr>
-            <tr>
-                <td width=\" 100% \" style=\"text-align: left;\">NIK. ".$coremember['member_no']."</td>
-            </tr>
             ";
+
+            if ($sales_invoice['customer_id'] != null ) {
+                $tblStock4 .= "
+                <tr>
+                    <td width=\" 100% \" style=\"text-align: left;\">".$coremember['member_name']." - ".$coremember['division_name']."</td>
+                </tr>
+                <tr>
+                    <td width=\" 100% \" style=\"text-align: left;\">NIK. ".$coremember['member_no']."</td>
+                </tr>
+                ";
+            }
         }
 
         $tblStock5 = "

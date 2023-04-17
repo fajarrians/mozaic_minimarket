@@ -625,7 +625,7 @@
             $('#label-payment').text('Piutang');
         }
 
-        if ((customer_id != null) && ((sales_payment_method == 1) || (sales_payment_method == ''))) {
+        if (((sales_payment_method == 1) || (sales_payment_method == '') || (sales_payment_method == null))) {
             $('#label_voucher').removeClass('d-none');
         } else {
             $('#label_voucher').addClass('d-none');
@@ -637,7 +637,7 @@
     $('#customer_id').change(function(){
         var customer_id = $('#customer_id').val();
         var sales_payment_method = $('#sales_payment_method').val();
-        if ((customer_id != null) && (sales_payment_method == 1)) {
+        if (sales_payment_method == 1) {
             $('#label_voucher').removeClass('d-none');
         } else {
             $('#label_voucher').addClass('d-none');
@@ -648,7 +648,7 @@
     $('#sales_payment_method').change(function(){
         var customer_id = $('#customer_id').val();
         var sales_payment_method = $('#sales_payment_method').val();
-        if ((customer_id != null) && (sales_payment_method == 1)) {
+        if (sales_payment_method == 1) {
             $('#label_voucher').removeClass('d-none');
         } else {
             $('#label_voucher').addClass('d-none');
