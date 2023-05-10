@@ -27,7 +27,7 @@
                         alert('Data yang sudah diunggah tidak bisa dihapus!');
                     } else {
                         if (confirm('Apakah Anda Yakin Ingin Menghapus Data Ini ?')) {
-                            $('#button-delete').addClass('disabled');
+                            $('#button-delete-'+sales_invoice_id).addClass('disabled');
                             location.href="{{ url('sales-invoice/delete') }}"+'/'+sales_invoice_id;
                         }
                     }
@@ -156,7 +156,7 @@
                             <a type="button" class="btn btn-outline-warning btn-sm" href="{{ url('/sales-invoice/detail/'.$row['sales_invoice_id']) }}">Detail</a>
                             <a type="button" class="btn btn-outline-success btn-sm" href="{{ url('/sales-invoice/print-repeat/'.$row['sales_invoice_id']) }}">Nota</a>
                             {{-- <a type="button" class="btn btn-outline-danger btn-sm" href="{{ url('/sales-invoice/delete/'.$row['sales_invoice_id']) }}">Hapus</a> --}}
-                            <a type="button" class="btn btn-outline-danger btn-sm" id="button-delete" onclick="check_upload({{ $row['sales_invoice_id'] }});">Hapus</a>
+                            <a type="button" class="btn btn-outline-danger btn-sm" id="button-delete-{{ $row['sales_invoice_id'] }}" onclick="check_upload({{ $row['sales_invoice_id'] }});">Hapus</a>
                         </td>
                     </tr>
                     @endforeach

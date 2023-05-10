@@ -875,15 +875,15 @@
             </div>
         </div>
     </div>
-    <div class="col-md-4 mt-4">
+    <div class="col-md-6 mt-4">
         <div class="card border border-dark h-100">
             <div class="card-body">
                 <div class="d-none" id="label_voucher">
                     <div class="row mb-3">
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <a class="text-dark col-form-label">Voucher</a>
                         </div>
-                        <div class="col-sm-4">
+                        <div class="col-sm-5">
                             {!! Form::select('voucher_id', $vouchers, 0, ['class' => 'form-control selection-search-clear select-form', 'id' => 'voucher_id','name' => 'voucher_id', 'onchange' => 'count_total()']) !!}
                         </div>
                         <div class="col-sm-4">
@@ -891,37 +891,37 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-sm-4">
+                        <div class="col-sm-3">
                             <a class="text-dark col-form-label">No. Voucher</a>
                         </div>
-                        <div class="col-sm-8">
+                        <div class="col-sm-9">
                             <input class="form-control input-bb" type="text" value="" id="voucher_no" name="voucher_no" autocomplete="off">
                         </div>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <a class="text-dark col-form-label">Diskon (%)</a>
                     </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-9">
                         <input class="form-control input-bb" id="discount_percentage_total" name="discount_percentage_total" autocomplete="off" onchange="count_total()"/>
                         <input id="discount_amount_total" name="discount_amount_total" autocomplete="off" hidden/>
                         <input type="text" value="" id="total_item" name="total_item" hidden>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <a class="text-dark col-form-label">Bayar</a><a class='red'> *</a></a>
                     </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-9">
                         <input class="form-control input-bb text-right" id="paid_amount" name="paid_amount" autocomplete="off" onchange="count_total()"/>
                     </div>
                 </div>
                 <div class="row mb-3">
-                    <div class="col-sm-4">
+                    <div class="col-sm-3">
                         <a id="label-payment" class="text-dark col-form-label">Kembalian</a><a class='red'> *</a></a>
                     </div>
-                    <div class="col-sm-8">
+                    <div class="col-sm-9">
                         <input class="form-control input-bb text-right" id="change_amount_view" name="change_amount_view" disabled/>
                         <input class="form-control input-bb" id="change_amount" name="change_amount" hidden/>
                     </div>
