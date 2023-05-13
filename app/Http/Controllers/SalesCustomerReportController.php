@@ -171,7 +171,7 @@ class SalesCustomerReportController extends Controller
         $tbl = "
         <table cellspacing=\"0\" cellpadding=\"2\" border=\"0\">
             <tr>
-                <td><div style=\"text-align: center; font-size:14px; font-weight: bold\">LAPORAN PEMBELIAN ANGGOTA</div></td>
+                <td><div style=\"text-align: center; font-size:14px; font-weight: bold\">LAPORAN PIUTANG</div></td>
             </tr>
             <tr>
                 <td><div style=\"text-align: center; font-size:12px\">PERIODE : ".date('d M Y', strtotime($start_date))." s.d. ".date('d M Y', strtotime($end_date))."</div></td>
@@ -242,11 +242,11 @@ class SalesCustomerReportController extends Controller
         if(count($data_customer)>=0){
             $spreadsheet->getProperties()->setCreator("CST MOZAIQ POS")
                                         ->setLastModifiedBy("CST MOZAIQ POS")
-                                        ->setTitle("Laporan Pembelian Anggota")
+                                        ->setTitle("Laporan Piutang")
                                         ->setSubject("")
-                                        ->setDescription("Laporan Pembelian Anggota")
-                                        ->setKeywords("Laporan, Pembelian, Anggota")
-                                        ->setCategory("Laporan Pembelian Anggota");
+                                        ->setDescription("Laporan Piutang")
+                                        ->setKeywords("Laporan, Piutang")
+                                        ->setCategory("Laporan Piutang");
                                  
             $sheet = $spreadsheet->getActiveSheet(0);
             $spreadsheet->getActiveSheet()->getPageSetup()->setFitToWidth(1);
@@ -265,7 +265,7 @@ class SalesCustomerReportController extends Controller
             $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
             $spreadsheet->getActiveSheet()->getStyle('B3:F3')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-            $sheet->setCellValue('B1',"Laporan Pembelian Anggota Dari Periode ".date('d M Y', strtotime($start_date))." s.d. ".date('d M Y', strtotime($end_date)));	
+            $sheet->setCellValue('B1',"Laporan Piutang Dari Periode ".date('d M Y', strtotime($start_date))." s.d. ".date('d M Y', strtotime($end_date)));	
             $sheet->setCellValue('B3',"No");
             $sheet->setCellValue('C3',"Nama Anggota");
             $sheet->setCellValue('D3',"Total Transaksi");
@@ -280,7 +280,7 @@ class SalesCustomerReportController extends Controller
                 if(is_numeric($key)){
                     
                     $sheet = $spreadsheet->getActiveSheet(0);
-                    $spreadsheet->getActiveSheet()->setTitle("Laporan Pembelian Anggota");
+                    $spreadsheet->getActiveSheet()->setTitle("Laporan Piutang");
                     $spreadsheet->getActiveSheet()->getStyle('B'.$j.':F'.$j)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
                     $spreadsheet->getActiveSheet()->getStyle('F'.$j)->getNumberFormat()->setFormatCode('0.00');
